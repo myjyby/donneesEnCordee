@@ -20,7 +20,7 @@ Montagnes.init = _data => {
 
 	const greyscale = d3.scaleLinear()
 		.domain([0, data.length])
-		.range(['#333', '#eee'])
+		.range(['#333', 'steelblue'])
 
 	const xscale = d3.scaleBand()
 		.domain(data.map(d => d['Commune']).shuffle())
