@@ -1,0 +1,457 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"h",
+				"height"
+			],
+			[
+				"tran",
+				"transform"
+			],
+			[
+				"ax",
+				"axis--x"
+			],
+			[
+				"trans",
+				"translate"
+			],
+			[
+				"ma",
+				"margin"
+			],
+			[
+				"tit",
+				"title_i"
+			],
+			[
+				"title",
+				"title_options"
+			],
+			[
+				"co",
+				"color\tproperty"
+			],
+			[
+				"paren",
+				"parentbox"
+			],
+			[
+				"font",
+				"font-weight\tproperty"
+			],
+			[
+				"sele",
+				"select"
+			],
+			[
+				"reu",
+				"return"
+			],
+			[
+				"wid",
+				"width--full"
+			],
+			[
+				"span",
+				"spanbox"
+			],
+			[
+				"time",
+				"timer"
+			],
+			[
+				"anim",
+				"animation"
+			],
+			[
+				"margin",
+				"margin-bottom\tproperty"
+			],
+			[
+				"v",
+				"vertical-align\tproperty"
+			],
+			[
+				"ta",
+				"table-cell\tdisplay"
+			],
+			[
+				"tex",
+				"text-align\tproperty"
+			],
+			[
+				"N",
+				"NEGATIVE_INFINITY"
+			],
+			[
+				"min",
+				"minFontSize"
+			],
+			[
+				"max",
+				"maxFontSize"
+			],
+			[
+				"conte",
+				"content_c1"
+			],
+			[
+				"padd",
+				"padding-top\tproperty"
+			],
+			[
+				"proj",
+				"projects_messages"
+			],
+			[
+				"proje",
+				"projects_radio"
+			],
+			[
+				"dele",
+				"deleteRadio"
+			],
+			[
+				"stor",
+				"storeRadio"
+			],
+			[
+				"create",
+				"created_by"
+			],
+			[
+				"radio",
+				"radio-short"
+			],
+			[
+				"modeu",
+				"modules"
+			],
+			[
+				"sou",
+				"soundFiles"
+			],
+			[
+				"crea",
+				"createWriteStream"
+			],
+			[
+				"aTu",
+				"Authorization"
+			],
+			[
+				"resu",
+				"result"
+			],
+			[
+				"sound",
+				"soundBlob"
+			],
+			[
+				"mo",
+				"module"
+			],
+			[
+				"key",
+				"keycode"
+			],
+			[
+				"width",
+				"width"
+			],
+			[
+				"back",
+				"background-color\tproperty"
+			],
+			[
+				"marg",
+				"margin\tproperty"
+			],
+			[
+				"margi",
+				"margin-right\tproperty"
+			],
+			[
+				"chi",
+				"chipBbox"
+			],
+			[
+				"get",
+				"getBoundingClientRect"
+			],
+			[
+				"margin-",
+				"margin-left\tproperty"
+			],
+			[
+				"lo",
+				"log"
+			],
+			[
+				"poi",
+				"pointerdown"
+			],
+			[
+				"tres",
+				"trends_48h"
+			],
+			[
+				"re",
+				"result"
+			],
+			[
+				"requ",
+				"request"
+			],
+			[
+				"ht",
+				"https_options"
+			],
+			[
+				"ur",
+				"apiURL"
+			],
+			[
+				"mouse",
+				"mousemove"
+			],
+			[
+				"mou",
+				"mouseup"
+			],
+			[
+				"project",
+				"projects_id"
+			],
+			[
+				"mess",
+				"messages_tags"
+			],
+			[
+				"load",
+				"loader"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"css",
+				"Set Syntax: CSS"
+			]
+		],
+		"width": 444.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/jeremy/Documents/localweb/PLK/Qatalog/public/js.2018-05-11/base.fn.js",
+		"/Users/jeremy/Documents/localweb/PLK/Qatalog/routes/index.js",
+		"/Users/jeremy/Documents/localweb/helpCenter/Gijs/index.html",
+		"/Users/jeremy/Documents/localweb/PLK/Qatalog/public/css/qata.css",
+		"/Users/jeremy/Documents/localweb/PLK/Qatalog/public/css/main.css",
+		"/Users/jeremy/Documents/localweb/HateGame/games/views/partials/head.ejs",
+		"/Users/jeremy/Documents/localweb/PLK/Qatalog/public/js/base.fn.js",
+		"/Users/jeremy/Documents/localweb/HateGame/games/package.json",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/routes/index.js",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/public/js/ui.clone.js",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/psql_structure.txt",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/public/js/ui.taxonomy.js",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/public/js/app.projects.js",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/public/js/app.assign.js",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/public/js/app.analyze.js",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/public/js/app.account.js",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/public/js/ui.calendar.js",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/public/js/app.login.js",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/views/login.ejs",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/public/js/app.query.js",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/package.json",
+		"/Users/jeremy/Documents/localweb/PLK/Radio3_Somalia/views/partials/head.ejs"
+	],
+	"find":
+	{
+		"height": 28.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "",
+	"replace":
+	{
+		"height": 52.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 592.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 226.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
