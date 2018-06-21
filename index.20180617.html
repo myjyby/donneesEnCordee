@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+	<title>Données en cordée</title>
+
+	<script type='text/javascript' src='../../../_01_libs/d3.min.js'></script>
+	<script type='text/javascript' src='../../../_01_libs/d3.selection.multi.js'></script>
+	<script type='text/javascript' src='../../../_01_libs/topojson.min.js'></script>
+
+	<script type='text/javascript' src='./js/base.fn.js'></script>
+
+	<link rel='stylesheet' type='text/css' href='css/main.css'>
+</head>
+
+<body>
+
+
+<script type='text/javascript'>
+	let maxHeight
+	const debug = false
+
+	if (!UI) { var UI = {} }
+	UI.svg = () => {
+		d3.select('body').addElem('svg', 'canvas')
+			.attrs({
+				'width': width(),
+				'height': height()
+			})
+	}
+	UI.init = () => {
+		UI.svg()
+	}
+
+	// fetch('https://spreadsheets.google.com/feeds/list/1k3uZ_1vzauA_-rsxRbRhm1R6gx52hqqGCx-wKKmLv5c/3/public/basic?alt=json')
+	// .then(res => res.json())
+	// .then(json => {
+	// 	console.log(json)
+	// 	const entries = json.feed.entry
+	// 	const rows = entries.map(d => {
+	// 		const row = d.content['$t']
+	// 		const split = row.split(',')
+	// 		const keyValuePairs = split.map(c => {
+	// 			const split = c.split(':')
+	// 			const key = `"${split[0].trim()}"`
+	// 			const value = `"${split[1].trim()}"`
+	// 			const keyValuePair = `{${key}:${value}}`
+	// 			return JSON.parse(keyValuePair)
+	// 		})
+	// 		return keyValuePairs
+	// 	})
+	// 	console.log(rows)
+	// })
+	// .catch(err => { throw err })
+
+	d3.queue()
+		.defer(d3.csv, '../../../data/csv/autonomie.csv')
+		.defer(d3.csv, '../../../data/csv/indicateurs_autonomie.csv')
+		.await((err, autonomie, indicateurs_autonomie) => {
+			if (err) throw err
+
+			const communes = d3.set(autonomie.map(d => d.Commune_court)).values()
+
+			console.log(indicateurs_autonomie.filter(d => d['Type'] === 'nombre'))
+
+			
+			// res.forEach(d => {
+			// 	for (let key in d) 
+			// 		if (Number.isInteger(+d[key]) && d[key] !== 0) d[key] = +d[key]
+			// })
+
+			// maxHeight = height() / res.length
+
+			// // INITIALIZE THE USER INTERFACE
+			// UI.init()
+			// Menu.init(res)
+
+			// Montagnes.init(res)
+		})
+
+	if (!Menu) { var Menu = {} }
+	Menu.init = _data => {
+		const hierarchie = Menu.data(_data)
+		const list = d3.select('body')
+			.addElem('ul', 'menu-list')
+		.addElems('li', 'list-item', hierarchie)
+			.html(d => d.key)
+		.each(Menu.list)
+	}
+	Menu.data = _data => {
+		const indicateurs_numeriques = _data.map(d => { // THIS KEEPS ONLY THE NUMERICAL INDICATORS
+			const obj = {}
+			for (let key in d) {
+				if (Number.isInteger(d[key])) obj[key] = d[key]
+			}
+			return obj
+		})
+
+		const indicateurs_uniques = d3.set(indicateurs_numeriques.map(d => d3.keys(d)).flatten()).values()
+		const rgx = /([A-Za-z]+)_/g
+		const indicateurs_decomposes = indicateurs_uniques.map(d => d.split(rgx).filter(c => c.length))
+
+		const hierarchie = []
+		indicateurs_decomposes.forEach(d => {
+			if (hierarchie.map(c => c.key).indexOf(d[0]) === -1) hierarchie.push({ key: d[0], path: d[0] })
+			let obj = hierarchie.filter(c => c.key === d[0])[0]
+			d.forEach((c, j) => {
+				if (j > 0) {
+					if (!obj.values) obj.values = []
+					if (obj.values.map(b => b.key).indexOf(c) === -1) obj.values.push({ key: c, path: `${obj.path}_${c}` })
+					obj = obj.values.filter(b => b.key === c)[0]
+				}
+			})
+		})
+		return hierarchie
+	}
+	Menu.list = function (_d) {
+		const sel = d3.select(this)
+		const list = sel.addElems('ul', 'sub-list', d => d.values ? d.values : [])
+			.addElems('li', 'sub-item')
+			.html(d => d.key)
+			.on(`${pointerType}up`, d => {
+				d3.event.stopPropagation()
+
+				const sums = d3.selectAll('g.chaine').data()
+					.map(c => Montagnes.height(c, d.path))
+
+				const localScale = d3.scaleLinear()
+					.domain([0, d3.max(sums)])
+					.range([0, maxHeight])
+				
+				d3.selectAll('g.chaine')
+					.select('rect')
+					.attr('height', c => localScale(Montagnes.height(c, d.path)))
+
+			})
+		if (_d.values && _d.values.length) list.each(Menu.list)
+	}
+	
+
+	if (!Montagnes) { var Montagnes = {} }
+	Montagnes.init = _data => {
+		const data = Montagnes.data(_data)
+		console.log(data)
+		d3.select('svg')
+			.addElems('g', 'chaine', data)
+			.attr('transform', (d, i) => `translate(${[0, i * maxHeight]})`)
+			.each(Montagnes.draw)
+	}
+	Montagnes.data = _data => {
+		return _data.map(d => { // THIS KEEPS ONLY THE NUMERICAL INDICATORS
+			const obj = {}
+			for (let key in d) {
+				if (Number.isInteger(d[key])) obj[key] = d[key]
+			}
+			obj['Commune'] = d['Commune']
+			obj['Commune_court'] = d['Commune_court']
+			return obj
+		})
+	}
+	Montagnes.draw = function (_d) {
+		const sel = d3.select(this)
+		sel.append('rect')
+			.attrs({
+				'width': width,
+				'height': maxHeight
+			})
+	}
+	Montagnes.height = (_d, _path) => {
+		if (debug) {
+			const obj = {}
+			for (let key in _d)
+				if (key.indexOf(_path) !== -1) obj[key] = _d[key]
+			console.log(obj)
+		}
+
+		let value = 0
+		for (let key in _d) {
+			if (key.indexOf(_path) !== -1) value += +_d[key]
+		}
+		return value
+	}
+
+
+</script>
+
+</body>
+
+</html>
