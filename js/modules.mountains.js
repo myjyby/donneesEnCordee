@@ -1,10 +1,25 @@
 if (!Montagnes) { var Montagnes = {} }
 Montagnes.scale = d3.scaleLinear()
 Montagnes.axisScale = d3.scaleLinear()
+Montagnes.position = d3.scaleBand()
+	.rangeRound([width() * .25, width() - width() * .25])
+	.padding(.1)
+Montagnes.chaine = []
+Montagnes.drag = d3.drag()
+	.on('start', () => {
+		d3.select('svg').classed('dragging', true)
+		d3.selectAll('line.axis--link').remove()
+		d3.selectAll('.label').remove()
+	})
+	.on('drag', function (d) {
+		const evt = d3.event
+		d3.select(this).attr('transform', `translate(${[d.x += evt.dx, d.y]})`)
+	})
+	.on('end', () => d3.select('svg').classed('dragging', false))
 Montagnes.init = _data => {
 	const data = _data ? Montagnes.data(_data) : d3.selectAll('g.chaine').data()
 
-	const indicateurs = d3.select('ul.menu-list').selectAll('li.selected').data()
+	const indicateurs = Montagnes.chaine //d3.select('ul.menu-list').selectAll('li.selected').data()
 	data.sort((a, b) => 
 		d3.sum(indicateurs.map(c => Montagnes.height(b, c.path))) - d3.sum(indicateurs.map(c => Montagnes.height(a, c.path)))
 	)
@@ -22,10 +37,10 @@ Montagnes.init = _data => {
 		.domain([0, data.length])
 		.range(['#333', 'steelblue'])
 
-	const xscale = d3.scaleBand()
-		.domain(data.map(d => d['Commune']).shuffle())
-		.rangeRound([width() * .33, width() - width() * .33])
-		.padding(.1)
+	if (!Montagnes.position.domain().length) {
+		Montagnes.position
+			.domain(data.map(d => d['Commune']).shuffle())
+	}
 
 	const svg = d3.select('svg')
 	const montagnes = svg.select('g.montagnes')
@@ -33,13 +48,17 @@ Montagnes.init = _data => {
 
 	const chaines = montagnes.selectAll('g.chaine')
 		.data(data)
+	chaines.exit().remove()
 	const chainesEnter = chaines.enter()
 		.append('g')
 		.attrs({
 			'class': 'chaine',
-			'transform': (d, i) => `translate(${[d.x = xscale(d['Commune']), d.y = horizon + i * maxHeight / 5]})`
+			'transform': (d, i) => `translate(${[d.x = Montagnes.position(d['Commune']), d.y = horizon + i * maxHeight / 5]})`
 		})
 		.on('mouseover', function (d) {
+			const svg = d3.select('svg')
+			if (svg.classed('dragging')) return null
+
 			const node = this
 			const sel = d3.select(this)
 
@@ -62,14 +81,18 @@ Montagnes.init = _data => {
 				
 			sel.style('fill', greyscale(i))
 		})
+	.call(Montagnes.drag)
 	.merge(chaines)
 	chainesEnter.moveToFront()
 		.each(Montagnes.draw)
 	.transition()
-		.attr('transform', (d, i) => `translate(${[d.x = xscale(d['Commune']), d.y = horizon + i * maxHeight / 5]})`)
+		.attr('transform', (d, i) => `translate(${[d.x = Montagnes.position(d['Commune']), d.y = horizon + i * maxHeight / 5]})`)
 		.style('fill', (d, i) => greyscale(i))
 
-	echelle.attr('transform', `translate(${[d3.min(data, d => xscale(d['Commune'])), horizon - d3.max(Montagnes.scale.range()) - 1]})`)
+	// echelle.attr('transform', `translate(${[d3.min(data, d => Montagnes.position(d['Commune'])), horizon - d3.max(Montagnes.scale.range()) - 1]})`)
+	
+
+	echelle.attr('transform', `translate(${[d3.min(Montagnes.position.range()), horizon - d3.max(Montagnes.scale.range()) - 1]})`)
 	.transition()
 		.call(d3.axisLeft(Montagnes.axisScale))
 }
@@ -84,8 +107,8 @@ Montagnes.data = _data => {
 		return obj
 	})
 }
-Montagnes.paths = (_commune) => { // WE STILL HAVE A SORTING PROBLEM HERE
-	const indicateurs = d3.select('ul.menu-list').selectAll('li.selected').data()
+Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
+	const indicateurs = Montagnes.chaine//d3.select('ul.menu-list').selectAll('li.selected').data()
 
 	const obj = {}
 	obj.paths = []
@@ -228,54 +251,28 @@ Montagnes.draw = function (_d, _i) {
 			'd': c => c.enter.join(' ')
 		})
 		.on('mouseover', function (d) {
+			if (svg.classed('dragging')) return null
 			const peakBBox = this.getBoundingClientRect()
 
-			svg.addElems('line', 'axis--link light', d.peaks)
-			svg.addElems('line', 'axis--link dark', d.peaks)
+			monts.addElems('line', 'axis--link light', d.peaks)
+			// svg.addElems('line', 'axis--link dark', d.peaks)
 			d3.selectAll('.axis--link')
 				.attrs({
-					'x1': () => {
-						const yAxis = d3.select('g.axis--y').node().getBoundingClientRect()
-						return yAxis.right
-					},
-					'x2': c => {
-						const bbox = this.getBoundingClientRect()
-						return bbox.left + c.point[0]
-					},
-					'y1': c => {
-						const bbox = this.getBoundingClientRect()
-						return horizon + c.point[1]
-					},
-					'y2': c => {
-						const bbox = this.getBoundingClientRect()
-						return horizon + c.point[1]
-					}
+					'x1': c => c.point[0],
+					'x2': c => c.point[0],
+					'y1': 0,
+					'y2': c => c.point[1] - 16
 				})
-			const labels = svg.addElems('g', 'label', d.peaks)
-				.attr('transform', c => {
-					const yAxis = d3.select('g.axis--y').node().getBoundingClientRect()
-					const bbox = this.getBoundingClientRect()
-					// console.log(this)
-					return `translate(${[yAxis.right, horizon + c.point[1]]})` // THE +1 HERE IS BECAUSE OF THE PEAK BORDER
-				})
+			const labels = monts.addElems('g', 'label', d.peaks)
+				.attr('transform', c => `translate(${[c.point[0], c.point[1] - (16 + 8)]})`)
 			labels.addElems('text', 'label--value label dark')
-				.attrs({
-					'x': c => {
-						const yAxis = d3.select('g.axis--y').node().getBoundingClientRect()
-						return peakBBox.left + c.point[0] <= yAxis.right ? 10 : -10
-					},
-					'text-anchor': c => {
-						const yAxis = d3.select('g.axis--y').node().getBoundingClientRect()
-						return peakBBox.left + c.point[0] <= yAxis.right ? 'start' : 'end'
-					}
-				})
+				.attr('text-anchor', 'middle')
 				.text(c => c.value)
 			labels.insertElems('text.label--value', 'rect', 'label--box label')
 				.attrs({
 					'x': function (c) {
 						const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
-						const yAxis = d3.select('g.axis--y').node().getBoundingClientRect()
-						return peakBBox.left + c.point[0] <= yAxis.right ? 0 : -(bbox.width + 20)
+						return -(bbox.width / 2 + 10)
 					},
 					'y': function () {
 						const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()

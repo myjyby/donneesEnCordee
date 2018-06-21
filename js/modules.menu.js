@@ -47,7 +47,10 @@ Menu.list = function (_d) {
 			d3.event.stopPropagation()
 			d3.select(this).classed('selected', !d3.select(this).classed('selected'))
 
+			Montagnes.chaine.push(Object.assign({}, d))
+
 			Montagnes.init()
+			Reasoning.init()
 		})
 }
 Menu.expand = _sel => {

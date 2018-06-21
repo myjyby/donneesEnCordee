@@ -1,5 +1,6 @@
 if (!UI) { var UI = {} }
 UI.drag = d3.drag()
+	.on('start', () => d3.select('svg').classed('dragging', true))
 	.on('drag', function () {
 		const evt = d3.event
 
@@ -12,6 +13,7 @@ UI.drag = d3.drag()
 				return `translate(${[d.x, d.y]})`
 			})
 	})
+	.on('end', () => d3.select('svg').classed('dragging', false))
 UI.svg = () => {
 	const svg = d3.select('body').addElem('svg', 'canvas')
 		.attrs({
@@ -24,8 +26,15 @@ UI.svg = () => {
 			'height': height()
 		})
 	.call(UI.drag)
+	// svg.addElem('line', 'horizon')
+	// 	.attrs({
+	// 		'x1': 0,
+	// 		'x2': width(),
+	// 		'y1': horizon,
+	// 		'y2': horizon
+	// 	})
 	svg.addElem('g', 'montagnes')
-	svg.addElems('g', 'axis axis--y')
+	svg.addElem('g', 'axis axis--y')
 }
 UI.init = () => {
 	UI.svg()
