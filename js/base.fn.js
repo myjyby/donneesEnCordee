@@ -218,3 +218,14 @@ String.prototype.replaceURLWithHTMLLinks = function () {
 	var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
 	return this.valueOf().replace(exp, '<a href="$1" target="_blank">$1</a>')
 }
+
+if (!Heuristics) { var Heuristics = {} }
+Heuristics.isDate = _val => {
+	const parser = d3.timeParse('%Y')
+	const epoch = new Date(0)
+	if (parser(_val) && parser(_val) > epoch) return true
+	return false
+}
+Heuristics.hasYear = _arr => {
+	return _arr.map(d => Heuristics.isDate(d)).indexOf(true)
+}

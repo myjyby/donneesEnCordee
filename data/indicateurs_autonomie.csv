@@ -1,0 +1,42 @@
+Structure,Indicateur,Type,Type_JB
+APA_domicile_Annee_2016,Bénéficaires de l'APA à domicile en 2016,Nombre,nombre
+APA_domicile_Annee_2011,Bénéficiaires de l'APA à domicile en 2011,Nombre,nombre
+APA_domicile_variation_annuelle,Taux de variation annuel moyen des bénéficiaires de l'APA à domicile (2011-2016),Pourcentage,taux
+APA_domicile_Sexe_hommes,Dont hommes,Nombre,nombre
+APA_domicile_Sexe_femmes,Dont femmes,Nombre,nombre
+APA_domicile_GIR_1-2,Dont GIR 1 et 2,Nombre,nombre
+APA_domicile_GIR_3-4,Dont GIR 3 et 4,Nombre,nombre
+APA_domicile_Age_60-79,Dont 60-79 ans,Nombre,nombre
+APA_domicile_Age_80-84,Dont 80-84 ans,Nombre,nombre
+APA_domicile_Age_85,Dont plus de 85 ans,Nombre,nombre
+APA_etablissement_Annee_2016,Bénéficiaires de l'APA en établissement en 2016,Nombre,nombre
+APA_etablissement_Annee_2011,Bénéficiaires de l'APA en établissement en 2011,Nombre,nombre
+APA_etablissement_variation_annuelle,Taux de variation annuel moyen des bénéficiaires de l'APA en établissement (2011-2016),Pourcentage,taux
+APA_etablissement_Sexe_hommes,Dont hommes,Nombre,nombre
+APA_etablissement_Sexe_femmes,Dont femmes,Nombre,nombre
+APA_etablissement_GIR_1-2,Dont GIR 1 et 2,Nombre,nombre
+APA_etablissement_GIR_3-4,Dont GIR 3 et 4,Nombre,nombre
+APA_etablissement_Age_60-79,Dont 60-79 ans,Nombre,nombre
+APA_etablissement_Age_80-84,Dont 80-84 ans,Nombre,nombre
+APA_etablissement_Age_85,Dont plus de 85 ans,Nombre,nombre
+Demographie_2013_Age_60-79,60-79 ans 2013,Nombre,nombre
+Demographie_2008_Age_60-79,60-79 ans 2008,Nombre,nombre
+Demographie_pourcentage_Age_60-79,Part des 60-79 ans dans la pop,Pourcentage,taux
+Demographie_variation_annuelle_Age_60-79,Taux variation annuel moyen 60-79 ans,Pourcentage,taux
+Demographie_2013_Age_80-84,80-84 ans 2013,Nombre,nombre
+Demographie_2008_Age_80-84,80-84 ans 2008,Nombre,nombre
+Demographie_pourcentage_Age_80-84,Part des 80-84 ans dans la pop,Pourcentage,taux
+Demographie_variation_annuelle_Age_80-84,Taux variation annuel moyen 80-84 ans,Pourcentage,taux
+Demographie_2013_Age_85,85 ans ou plus 2013,Nombre,nombre
+Demographie_2008_Age_85,85 ans ou plus 2008,Nombre,nombre
+Demographie_pourcentage_Age_85,Part des 85 ans ou plus dans la pop,Pourcentage,taux
+Demographie_variation_annuelle_Age_85,Taux variation annuel moyen 85 ans ou plus,Pourcentage,taux
+Population totale,Pop,Nombre,nombre
+PCH_2016,PCH 2016,Nombre,nombre
+EHPAD,EHPAD,Nombre,nombre
+EHPAD_places,EHPAD places,Nombre,nombre
+EHPAD_places_pour_100_personnes_Age_80,Places EHPAD pour 100 personnes de 80 ans ou plus,Nombre,taux
+Minimum_vieillesse_RG_2016,Nb retraités bénéficiaires du minimum vieillesse du RG 2016,Nombre,nombre
+Logement_ordinaire_Age_80,80 ans ou plus logement ordinaire,Nombre,nombre
+Logement_etablissement_Age_80,80 ans ou plus étab,Nombre,nombre
+Logement_autre_Age_80,80 ans ou plus autres,Nombre,nombre
