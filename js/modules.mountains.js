@@ -35,7 +35,8 @@ Montagnes.init = _data => {
 
 	const greyscale = d3.scaleLinear()
 		.domain([0, data.length])
-		.range(['#333', 'steelblue'])
+		// .range(['#333', 'steelblue'])
+		.range(['#344758', '#CED5E4'])
 
 	if (!Montagnes.position.domain().length) {
 		Montagnes.position
@@ -68,7 +69,7 @@ Montagnes.init = _data => {
 					.duration(150)
 					.style('opacity', .25)
 					
-				sel.style('fill', '#333')
+				sel.style('fill', '#344758')
 			}
 		})
 		.on('mouseout', function (d, i) {
@@ -108,7 +109,7 @@ Montagnes.data = _data => {
 	})
 }
 Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
-	const indicateurs = Montagnes.chaine//d3.select('ul.menu-list').selectAll('li.selected').data()
+	const indicateurs = Montagnes.chaine
 
 	const obj = {}
 	obj.paths = []
@@ -120,7 +121,9 @@ Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 
 	indicateurs.forEach((d1, i) => {
 
-		const v1 = Montagnes.height(_commune, d1.path)
+		let v1 = 0
+		if (d1.type === 'sum') v1 = d3.sum(d1.sources.map(d => Montagnes.height(_commune, d.path)))
+		else v1 = Montagnes.height(_commune, d1.path)
 		const p1 = Montagnes.scale(v1)
 
 		if (i === 0) {
@@ -214,6 +217,7 @@ Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 
 			}
 		}
+		// THIS CLOSES OFF THE PATH
 		if (i === indicateurs.length - 1) {
 			obj.x += p1 / 2
 			path.enter.push(`L${[obj.x, 0]} Z`)
@@ -254,9 +258,7 @@ Montagnes.draw = function (_d, _i) {
 			if (svg.classed('dragging')) return null
 			const peakBBox = this.getBoundingClientRect()
 
-			monts.addElems('line', 'axis--link light', d.peaks)
-			// svg.addElems('line', 'axis--link dark', d.peaks)
-			d3.selectAll('.axis--link')
+			monts.addElems('line', 'axis--link', d.peaks)
 				.attrs({
 					'x1': c => c.point[0],
 					'x2': c => c.point[0],
@@ -265,14 +267,19 @@ Montagnes.draw = function (_d, _i) {
 				})
 			const labels = monts.addElems('g', 'label', d.peaks)
 				.attr('transform', c => `translate(${[c.point[0], c.point[1] - (16 + 8)]})`)
-			labels.addElems('text', 'label--value label dark')
-				.attr('text-anchor', 'middle')
-				.text(c => c.value)
-			labels.insertElems('text.label--value', 'rect', 'label--box label')
+			labels.addElems('text', 'label--value')
+				.attrs({
+					'text-anchor': 'start',
+					'x': 10,
+					'dy': '.07em'
+				})
+				.text(c => printNumber(c.value))
+			labels.insertElems('text.label--value', 'rect', 'label--box')
 				.attrs({
 					'x': function (c) {
-						const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
-						return -(bbox.width / 2 + 10)
+						// const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
+						// return -(bbox.width / 2 + 10)
+						return 0
 					},
 					'y': function () {
 						const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
@@ -309,6 +316,35 @@ Montagnes.draw = function (_d, _i) {
 			'y1': 0,
 			'y2': 0
 		})
+	const nameLabel = monts.addElems('g', 'namelabel')
+		// .attr('transform', d => `translate(${[0, ]})`)
+	nameLabel.addElems('text', 'label--value')
+		.attrs({
+			'text-anchor': 'start',
+			'x': 10
+		})
+		.text(_d['Commune_court'])
+	nameLabel.attr('transform', d => {
+		const bbox = d3.select(this).select('text.label--value').node().getBBox()
+		return `translate(${[-d.x / 5, bbox.height]})`
+	})
+	nameLabel.insertElems('text.label--value', 'rect', 'label--box')
+		.attrs({
+			'x': 0,
+			'y': function () {
+				const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
+				return -(bbox.height)
+			},
+			'width': function () {
+				const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
+				return bbox.width + 20
+			},
+			'height': function () {
+				const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
+				return bbox.height + 8
+			}
+		})
+
 }
 Montagnes.height = (_d, _path) => {
 	if (debug) {

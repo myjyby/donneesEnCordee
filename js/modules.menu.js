@@ -25,7 +25,13 @@ Menu.data = _data => {
 		d.forEach((c, j) => {
 			if (j > 0) {
 				if (!obj.values) obj.values = []
-				if (obj.values.map(b => b.key).indexOf(c) === -1) obj.values.push({ key: c, path: `${obj.path}_${c}` })
+				if (obj.values.map(b => b.key).indexOf(c) === -1) {
+					if (_data.filter(a => a['Structure'] === `${obj.path}_${c}`)[0]) {
+						const indicateur_detail = _data.filter(a => a['Structure'] === `${obj.path}_${c}`)[0]['Indicateur']
+						obj.values.push({ key: c, path: `${obj.path}_${c}`, value: indicateur_detail })
+					}
+					else obj.values.push({ key: c, path: `${obj.path}_${c}` })
+				}
 				obj = obj.values.filter(b => b.key === c)[0]
 			}
 		})
@@ -47,7 +53,7 @@ Menu.list = function (_d) {
 			d3.event.stopPropagation()
 			d3.select(this).classed('selected', !d3.select(this).classed('selected'))
 
-			Montagnes.chaine.push(Object.assign({}, d))
+			Montagnes.chaine.push(Object.assign({ type: 'value' }, d))
 
 			Montagnes.init()
 			Reasoning.init()

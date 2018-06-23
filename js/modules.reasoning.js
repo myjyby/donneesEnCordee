@@ -17,12 +17,12 @@ Reasoning.drag = d3.drag()
 		d.x >= d3.max(Reasoning.scale.range()) ? d.x = d3.max(Reasoning.scale.range()) : null
 		sel.attr('transform', `translate(${[d.x, 0]})`)
 
-		// console.log(positions)
 		const hitTest = positions.map((c, j) => (c - 25 <= d.x && c + 25 >= d.x) ? j : null)
 			.filter(d => d !== null)
 		
 		if (hitTest.length) {
 			const target = otherNodes.filter((c, j) => j === hitTest[0])
+			// ANIMATE THE SIZE OF THE TARGET NODE
 			if (!target.classed('transitionning')) {
 				target.classed('transitionning', true)
 					.select('circle')
@@ -56,7 +56,77 @@ Reasoning.drag = d3.drag()
 		// 			.attr('r', 10)
 
 	})
-	.on('end', function () {
+	.on('end', function (d) {
+		const node = this
+		const sel = d3.select(this)
+		const otherNodes = d3.selectAll('g.node').filter(function () { return this != node })
+		const positions = otherNodes.data().map(c => c.x)
+
+		const hitTest = positions.map((c, j) => (c - 25 <= d.x && c + 25 >= d.x) ? j : null)
+			.filter(c => c !== null)
+		
+		if (hitTest.length) {
+			const target = otherNodes.filter((c, j) => j === hitTest[0])
+			
+			// ESTABLISH THE RELATIONSHIP WITH TARGET NODE
+			const d1 = target.datum()
+			// HERE h STANDS FOR *hierarchy*
+			const h0 = d.path.split('_')
+			const h1 = d1.path.split('_')
+			// HERE h*p STANDS FOR *hierarchy OF THE PARENT*
+			const h0p = h0.slice(0)
+			h0p.pop()
+			const h1p = h1.slice(0)
+			h1p.pop()
+
+			// 01 - IF THE INDICATOR *IS* A SIBLING OF THE PREVIOUS ONE
+			if (h0p.join('_') === h1p.join('_')) {
+				// THE VALUES CAN BE ADDED
+
+				// 01.a - IF EITHER NODE *IS NOT* ALREADY A SUM
+				if (d.type !== 'sum' && d1.type !== 'sum') {
+					// THEN CREATE THE SUM IN Montagnes.chaine
+					
+					Montagnes.chaine.push({ 
+						type: 'sum', 
+						key: `${d.key}+${d1.key}`, 
+						path: `${h0.join('_')}+${d1.key}`, 
+						value: `${h0.join('_')}+${d1.key}`, 
+						x: d.x + d1.x,
+						sources: [Object.assign({}, d), Object.assign({}, d1)]
+					})
+					Montagnes.chaine.splice(Montagnes.chaine.map(c => c.path).indexOf(d.path), 1)
+					Montagnes.chaine.splice(Montagnes.chaine.map(c => c.path).indexOf(d1.path), 1)
+				}
+				// 01.b - IF EITHER NODE *IS* ALREADY A SUM
+				else {
+					// THEN ADD EITHER THE CURRENT OR TARGET NODE TO THE SUM
+
+					if (d.sources) {
+						d.key += `+${d1.key}`
+						d.path += `+${d1.key}`
+						d.value += `+${d1.key}`
+						d.sources.push(Object.assign({}, d1))
+						Montagnes.chaine.splice(Montagnes.chaine.map(c => c.path).indexOf(d1.path), 1)
+					}
+					else if (d1.sources) {
+						d1.key += `+${d.key}`
+						d1.path += `+${d.key}`
+						d1.value += `+${d.key}`
+						d1.sources.push(Object.assign({}, d))
+						Montagnes.chaine.splice(Montagnes.chaine.map(c => c.path).indexOf(d.path), 1)
+					}
+				}
+				console.log(Montagnes.chaine)
+			}
+			// 02 - IF THE INDICATOR *IS NOT* A SIBLING OF THE PREVIOUS ONE
+			else {
+				// THE VALUES COULD BE MADE INTO A RATIO, IF THE TARGET NODE IS A PARENT OF THE CURRENT NODE
+
+
+			}
+		}
+
 		const order = d3.select(this.parentNode).selectAll('g.node').data()
 			.sort((a, b) => a.x - b.x)
 			.map((d, i) => {
@@ -74,7 +144,7 @@ Reasoning.init = _data => {
 	const data = _data ? Montagnes.data(_data) : d3.selectAll('g.chaine').data()
 
 	Reasoning.scale
-		.domain([0, Montagnes.chaine.length + 1])//Montagnes.chaine.map(d => d.path))
+		.domain([0, Montagnes.chaine.length + 1])
 
 	const svg = d3.select('svg')
 	const chain = svg.addElems('g', 'raisonnement', [Montagnes.chaine])
@@ -123,6 +193,6 @@ Reasoning.draw = function (_d, _i) {
 			'transform': 'rotate(-45)'
 		})
 		.style('text-anchor', 'end')
-		.text(d => d.path)
+		.text(d => d.value)
 
 }

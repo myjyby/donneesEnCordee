@@ -218,6 +218,9 @@ String.prototype.replaceURLWithHTMLLinks = function () {
 	var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
 	return this.valueOf().replace(exp, '<a href="$1" target="_blank">$1</a>')
 }
+const printNumber = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+}
 
 if (!Heuristics) { var Heuristics = {} }
 Heuristics.isDate = _val => {
