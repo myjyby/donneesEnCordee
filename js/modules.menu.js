@@ -1,8 +1,15 @@
 if (!Menu) { var Menu = {} }
 Menu.init = _data => {
+	const body = d3.select('body')
+
+	const title = body.addElem('div', 'title')
+		
+	title.addElem('h1').html('Données en cordée')
+	title.addElem('h3').html('Un paysage social du département Isère')
+
 	const hierarchie = Menu.data(_data)
-	const list = d3.select('body')
-		.addElem('ul', 'menu-list')
+	
+	const list = body.addElem('ul', 'menu-list')
 	.addElems('li', 'list-item', hierarchie)
 		.html(d => d.key)
 	.on(`${pointerType}up`, function (d) {

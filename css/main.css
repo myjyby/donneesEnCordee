@@ -1,18 +1,36 @@
+@import url('https://fonts.googleapis.com/css?family=Encode+Sans+Condensed:200,400,700');
+
 * {
 	padding: 0;
 	margin: 0;
 }
 body {
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: 'Encode Sans Condensed', Helvetica, Arial, sans-serif;
 	background-color: #E5E2D9;
+}
+div.title {
+	position: absolute;
+	top: 2rem;
+	left: 2rem;	
+}
+h1 {
+	font-weight: 700;
+	font-style: italic;
+	font-size: 1.5rem;
+	line-height: 1.75rem;
+}
+h3 {
+	font-weight: 200;
+	font-size: 1.25rem;
+	line-height: 1.75rem;
 }
 ul.menu-list {
 	position: absolute;
-	top: 2rem;
+	top: 7.25rem;
 	left: 2rem;
 	/*border: 1px solid grey;*/
 	border-top: 5px solid #333;
-	max-height: calc(100vh - 8rem - 5px);
+	max-height: calc(100vh - 14.5rem - 5px);
 	overflow: auto;
 	padding: 1rem 1rem;
 	background-color: #fff;
@@ -26,7 +44,7 @@ li.sub-item {
 	cursor: pointer;
 }
 li.sub-item {
-	font-weight: 300;
+	font-weight: 200;
 	max-height: 0;
 	overflow: hidden;
 	transition: max-height .2s ease-out;
@@ -75,7 +93,6 @@ g.axis {
 }
 line.basis {
 	stroke: rgba(0,0,0,.33);
-	pointer-events: none;
 }
 line.axis--link {
 	/*stroke-dasharray: 1, 5;*/
@@ -92,12 +109,17 @@ line.dark {
 	stroke: #333;
 	stroke-width: 1;
 }
+g.label,
+g.nameLabel {
+	cursor: ew-resize;
+}
 text {
 	font-size: 12px;
 }
 text.label--value {
 	fill: #333;
-	cursor: ew-resize;
+	font-weight: 600;
+	letter-spacing: .05em;
 }
 text.light {
 	stroke: rgba(255,255,255,.75);

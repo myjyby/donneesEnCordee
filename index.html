@@ -29,26 +29,25 @@
 
 	
 	d3.queue()
-		.defer(d3.csv, './data/autonomie.csv')
-		.defer(d3.csv, './data/indicateurs_autonomie.csv')
-		.await((err, autonomie, indicateurs_autonomie) => {
+		.defer(d3.csv, './data/data.csv')
+		.defer(d3.csv, './data/indicators.csv')
+		.await((err, data, indicators) => {
 			if (err) throw err
 
-			const communes = d3.set(autonomie.map(d => d.Commune_court)).values()
+			const communes = d3.set(data.map(d => d.Commune_court)).values()
 
-			
-			autonomie.forEach(d => {
+			data.forEach(d => {
 				for (let key in d) 
 					if (Number.isInteger(+d[key]) && d[key] !== 0) d[key] = +d[key]
 			})
 
-			maxHeight = height() / autonomie.length
+			maxHeight = height() / data.length
 
 			// // INITIALIZE THE USER INTERFACE
 			UI.init()
-			Menu.init(indicateurs_autonomie)
+			Menu.init(indicators)
 
-			Montagnes.init(autonomie)
+			Montagnes.init(data)
 		})
 
 
