@@ -9,14 +9,30 @@ Menu.init = _data => {
 
 	const hierarchie = Menu.data(_data)
 	
-	const list = body.addElem('ul', 'menu-list')
-	.addElems('li', 'list-item', hierarchie)
+	const menu = body.addElem('div', 'menu--indicators')
+	menu.addElems('ul', 'menu-list', hierarchie)
+	.addElems('li', 'list-item')
+		.classed('node', d => d.values.length)
+		.classed('leaf', d => !d.values.length)
 		.html(d => d.key)
-	.on(`${pointerType}up`, function (d) {
-		d3.event.stopPropagation()
-	})
 	.each(Menu.list)
-	.each(function () { d3.select(this).call(Menu.expand) })
+	// .each(function () { d3.select(this).call(Menu.expand) })
+
+	d3.selectAll('.node')
+		.on(`${pointerType}up`, function (d) {
+			d3.event.stopPropagation()
+			d3.select(this).call(Menu.expand)
+		})
+	d3.selectAll('.leaf')
+		.on(`${pointerType}up`, function (d) {
+			d3.event.stopPropagation()
+			d3.select(this).classed('selected', !d3.select(this).classed('selected'))
+
+			Montagnes.chaine.push(Object.assign({ type: 'value' }, d))
+
+			Montagnes.init()
+			Reasoning.init()
+		})
 }
 Menu.data = _data => {
 	indicateurs_nombres = _data.filter(d => d['Type'].toLowerCase() === 'nombre')
@@ -47,24 +63,36 @@ Menu.data = _data => {
 }
 Menu.list = function (_d) {
 	const sel = d3.select(this)
-	const list = sel.addElems('ul', 'sub-list', d => d.values ? d.values : [])
-		.addElems('li', 'sub-item node')
-	.on(`${pointerType}up`, function (d) {
-		d3.event.stopPropagation()
-		d3.select(this).call(Menu.expand)
-	})
-		.html(d => d.key)
-	if (_d.values && _d.values.length) list.each(Menu.list)
-	else sel.classed('node', false).classed('leaf', true)
-		.on(`${pointerType}up`, function (d) {
-			d3.event.stopPropagation()
-			d3.select(this).classed('selected', !d3.select(this).classed('selected'))
+		.classed('node', d => d.values && d.values.length)
+		.classed('leaf', d => !(d.values && d.values.length))
+		
+	// CHECK THE CHILD NODES: IF THEY ARE ALL AT THE SAME LEVEL (NO GRAND CHILDREN)
+	// ADD THEM IN PARENTHESES, OTHERWISE RE-ITERATE
+	if (_d.values) {
+		const grandChildren = _d.values.map(d => d.values ? d.values.length : 0)
+		if (!d3.sum(grandChildren) && _d.values.length > 1) {
+			sel.classed('node leaf', false)
+				.classed('multi-leaf', true)
+				.on(`${pointerType}up`, () => d3.event.stopPropagation())
+			.addElems('span', 'leaf', d => d.values)
+				.html((d, i) => {
+					if (i === 0 && _d.values.length === 1) return ` (<u>${d.key}</u>)`
+					else if (i === 0 && _d.values.length > 1) return ` (<u>${d.key}</u> | `
+					else if (i === _d.values.length - 1) return `<u>${d.key}</u>)`
+					else return `<u>${d.key}</u> | `
+				})
+				// .html(d => ` (${d.values.map(c => c.key).join(', ')})`)
+		}
+		else {
+			const list = sel.addElems('ul', 'sub-list', d => d.values)
+				.addElems('li', 'sub-item')
+				.html(d => d.key)
+			.each(Menu.list)
+		}
+	}
 
-			Montagnes.chaine.push(Object.assign({ type: 'value' }, d))
 
-			Montagnes.init()
-			Reasoning.init()
-		})
+	// else sel.classed('node', false).classed('leaf', true)
 }
 Menu.expand = _sel => {
 	const sublist = _sel.node().children
@@ -85,7 +113,12 @@ Menu.expand = _sel => {
 
 			parentItem.selectAll('li.expanded')
 			.style('max-height', function () {
-				return `${(d3.select(this).selectAll('.sub-item').filter(function () { return this.style.maxHeight }).size() + 1) * lineHeight}rem`
+				return `${(
+					d3.select(this).selectAll('.sub-item')
+					.filter(function () { 
+						return this.style.maxHeight 
+					}).size() + 1) * lineHeight
+				}rem`
 			})
 		}
 		else {

@@ -7,11 +7,13 @@
 body {
 	font-family: 'Encode Sans Condensed', Helvetica, Arial, sans-serif;
 	background-color: #E5E2D9;
+	font-size: 14px;
 }
 div.title {
 	position: absolute;
 	top: 2rem;
-	left: 2rem;	
+	left: 2rem;
+	color: #333;
 }
 h1 {
 	font-weight: 700;
@@ -24,16 +26,19 @@ h3 {
 	font-size: 1.25rem;
 	line-height: 1.75rem;
 }
-ul.menu-list {
+div.menu--indicators {
 	position: absolute;
 	top: 7.25rem;
 	left: 2rem;
-	/*border: 1px solid grey;*/
-	border-top: 5px solid #333;
 	max-height: calc(100vh - 14.5rem - 5px);
+	overflow: auto;
+}
+ul.menu-list {
+	border-top: 5px solid #333;
 	overflow: auto;
 	padding: 1rem 1rem;
 	background-color: #fff;
+	margin-bottom: 1rem;
 }
 li {
 	list-style: none;
@@ -43,18 +48,48 @@ li.list-item,
 li.sub-item {
 	cursor: pointer;
 }
+li.list-item {
+	text-transform: uppercase;
+	font-weight: 700;
+}
+li.list-item.node::before {
+	content: '';
+	width: 0;
+	height: 0;
+	border-top: .25rem solid transparent;
+	border-left: .5rem solid #333;
+	border-bottom: .25rem solid transparent;
+	margin-left: -1.5rem;
+	margin-top: .5rem;
+	position: absolute;
+	right: 1rem;
+	transform: rotate(90deg);
+	transition: transform .2s;
+}
+li.list-item.node.expanded::before {
+	transform: rotate(-90deg);
+}
 li.sub-item {
 	font-weight: 200;
 	max-height: 0;
 	overflow: hidden;
 	transition: max-height .2s ease-out;
+	text-transform: none;
 }
 li.sub-item.node {
 	padding-left: 1.5rem;
 	font-style: italic;
 }
-li.sub-item.leaf {
+li.sub-item.leaf,
+li.sub-item.multi-leaf {
 	font-style: normal;
+	font-weight: 400;
+}
+span.leaf u {
+	text-decoration: none;
+}
+span.leaf u:hover {
+	text-decoration: underline;
 }
 .expanded > ul > li.sub-item.node::before {
 	content: '';
