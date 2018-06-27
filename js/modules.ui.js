@@ -34,7 +34,7 @@ UI.svg = () => {
 	// 		'y2': horizon
 	// 	})
 	svg.addElem('g', 'montagnes')
-	svg.addElem('g', 'axis axis--y')
+	// svg.addElem('g', 'axis axis--y')
 }
 UI.init = () => {
 	UI.svg()

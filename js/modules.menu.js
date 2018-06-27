@@ -1,4 +1,6 @@
 if (!Menu) { var Menu = {} }
+Menu.colors = d3.scaleOrdinal()
+	.range(['#34453D', '#344758', '#3F332D'])
 Menu.init = _data => {
 	const body = d3.select('body')
 
@@ -8,9 +10,11 @@ Menu.init = _data => {
 	title.addElem('h3').html('Un paysage social du département Isère')
 
 	const hierarchie = Menu.data(_data)
+	Menu.colors.domain(hierarchie.map(d => d.key))
 	
 	const menu = body.addElem('div', 'menu--indicators')
 	menu.addElems('ul', 'menu-list', hierarchie)
+		.style('border-color', (d, i) => Menu.colors(d.key))
 	.addElems('li', 'list-item')
 		.classed('node', d => d.values.length)
 		.classed('leaf', d => !d.values.length)
@@ -21,7 +25,13 @@ Menu.init = _data => {
 	d3.selectAll('.node')
 		.on(`${pointerType}up`, function (d) {
 			d3.event.stopPropagation()
-			d3.select(this).call(Menu.expand)
+			const node = this
+			const sel = d3.select(this)
+			
+			if (sel.classed('list-item'))
+				d3.selectAll('.list-item.expanded').filter(function () { return this !== node }).call(Menu.expand)
+
+			sel.call(Menu.expand)
 		})
 	d3.selectAll('.leaf')
 		.on(`${pointerType}up`, function (d) {
@@ -95,6 +105,7 @@ Menu.list = function (_d) {
 	// else sel.classed('node', false).classed('leaf', true)
 }
 Menu.expand = _sel => {
+	if (!_sel.node()) return null
 	const sublist = _sel.node().children
 	const isExpanded = _sel.classed('expanded')
 	const lineHeight = 1.5

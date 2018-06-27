@@ -1,6 +1,5 @@
 if (!Montagnes) { var Montagnes = {} }
 Montagnes.scale = d3.scaleLinear()
-Montagnes.axisScale = d3.scaleLinear()
 Montagnes.position = d3.scaleBand()
 	.rangeRound([width() * .25, width() - width() * .25])
 	.padding(.1)
@@ -31,10 +30,7 @@ Montagnes.init = _data => {
 
 	Montagnes.scale
 		.domain([0, d3.max(sums)])
-		.range([0, horizon - horizon * .33]) // CHANGE THIS FOR MOUNT HEIGHT
-	Montagnes.axisScale
-		.domain([d3.max(sums), 0])
-		.range([0, horizon - horizon * .33])
+		.range([0, -(horizon - horizon * .33)]) // CHANGE THIS FOR MOUNT HEIGHT
 
 	const greyscale = d3.scaleLinear()
 		.domain([0, data.length])
@@ -48,7 +44,7 @@ Montagnes.init = _data => {
 
 	const svg = d3.select('svg')
 	const montagnes = svg.select('g.montagnes')
-	const echelle = svg.select('g.axis--y')
+	// const echelle = svg.select('g.axis--y')
 
 	const chaines = montagnes.selectAll('g.chaine')
 		.data(data)
@@ -92,13 +88,6 @@ Montagnes.init = _data => {
 	.transition()
 		.attr('transform', (d, i) => `translate(${[d.x = Montagnes.position(d['Commune']), d.y = horizon + i * maxHeight / 5]})`)
 		.style('fill', (d, i) => greyscale(i))
-
-	// echelle.attr('transform', `translate(${[d3.min(data, d => Montagnes.position(d['Commune'])), horizon - d3.max(Montagnes.scale.range()) - 1]})`)
-	
-
-	echelle.attr('transform', `translate(${[d3.min(Montagnes.position.range()), horizon - d3.max(Montagnes.scale.range()) - 1]})`)
-	.transition()
-		.call(d3.axisLeft(Montagnes.axisScale))
 }
 Montagnes.data = _data => {
 	return _data.map(d => { // THIS KEEPS ONLY THE NUMERICAL INDICATORS
@@ -142,17 +131,17 @@ Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 				overlay.transition.push([`M${[obj.x, 0]}`])
 			}
 
-			obj.x += p1 / 2
+			obj.x -= p1 / 2
 			path.enter.push(`L${[obj.x, 0]}`)
-			path.transition.push(`L${[obj.x, -p1]}`)
-			path.peaks.push({ point: [obj.x, -p1], value: v1 })
+			path.transition.push(`L${[obj.x, p1]}`)
+			path.peaks.push({ point: [obj.x, p1], value: v1 })
 
 			if (d1.type === 'sum') {
 				const v = Montagnes.height(_commune, d1.sources[0].path)
 				const p = Montagnes.scale(v)
 				overlay.enter.push(`L${[obj.x, 0]}`)
-				overlay.transition.push(`L${[obj.x, -p]}`)
-				overlay.peaks.push({ point: [obj.x, -p], value: v })
+				overlay.transition.push(`L${[obj.x, p]}`)
+				overlay.peaks.push({ point: [obj.x, p], value: v })
 			}
 		} 
 		else {
@@ -177,7 +166,7 @@ Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 				// IT IS A *DISCRETE* RELATIONSHIP (NO RELATIONSHIP) BY DEFAULT
 				
 				// 01.a - CLOSE OFF THE PREVIOUS PATH p0
-				obj.x += p0 / 2
+				obj.x -= p0 / 2
 				path.enter.push(`L${[obj.x, 0]} Z`)
 				path.transition.push(`L${[obj.x, 0]} Z`)
 
@@ -203,17 +192,17 @@ Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 					overlay.peaks = []
 				}
 				
-				obj.x += p1 / 2
+				obj.x -= p1 / 2
 				path.enter.push(`L${[obj.x, 0]}`)
-				path.transition.push(`L${[obj.x, -p1]}`)
-				path.peaks.push({ point: [obj.x, -p1], value: v1 })
+				path.transition.push(`L${[obj.x, p1]}`)
+				path.peaks.push({ point: [obj.x, p1], value: v1 })
 
 				if (d1.type === 'sum') {
 					const v = Montagnes.height(_commune, d1.sources[0].path)
 					const p = Montagnes.scale(v)
 					overlay.enter.push(`L${[obj.x, 0]}`)
-					overlay.transition.push(`L${[obj.x, -p]}`)
-					overlay.peaks.push({ point: [obj.x, -p], value: v })
+					overlay.transition.push(`L${[obj.x, p]}`)
+					overlay.peaks.push({ point: [obj.x, p], value: v })
 				}
 			}
 			// 02 - IF THE INDICATOR *IS* A SIBLING OF THE PREVIOUS ONE				
@@ -227,17 +216,17 @@ Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 					// OR IF THERE IS A YEAR IN THE HIERARCHY TREE, BUT IT IS NOT THE LAST LEAF, AND THE LAST LEAF OF THE SIBLING INDICATORS IS THE SAME (e.g. Demographie_2013_Age_60-79 AND Demographie_2008_Age_60-79)
 					if (Heuristics.hasYear(h1) === h1.length - 1 || h0.last() === h1.last()) {
 						// IT IS A *SERIES* RELATIONSHIP
-						obj.x += p0 / 2 + p1 / 2
+						obj.x -= (p0 / 2 + p1 / 2)
 						path.enter.push(`L${[obj.x, 0]}`)
-						path.transition.push(`L${[obj.x, -p1]}`)
-						path.peaks.push({ point: [obj.x, -p1], value: v1 })
+						path.transition.push(`L${[obj.x, p1]}`)
+						path.peaks.push({ point: [obj.x, p1], value: v1 })
 
 						if (d1.type === 'sum') {
 							const v = Montagnes.height(_commune, d1.sources[0].path)
 							const p = Montagnes.scale(v)
 							overlay.enter.push(`L${[obj.x, 0]}`)
-							overlay.transition.push(`L${[obj.x, -p]}`)
-							overlay.peaks.push({ point: [obj.x, -p], value: v })
+							overlay.transition.push(`L${[obj.x, p]}`)
+							overlay.peaks.push({ point: [obj.x, p], value: v })
 						}
 					}
 					// 02.a.ii - IF THE SIBLING INDICATORS HAVE THE SAME YEAR IN THEIR HIERARCHY
@@ -245,27 +234,27 @@ Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 						// IT IS AN *ORDINAL* RELATIONSHIP
 
 						// obj.x += d3.max([p0, p1]) / 2
-						obj.x += p0 / 2
+						obj.x -= p0 / 2
 						path.enter.push(`L${[obj.x, 0]}`)
 						// path.transition.push(`L${[obj.x, -d3.min([p0, p1]) / 2]}`)
-						path.transition.push(`L${[obj.x, -d3.min([p0, p1]) / 2]}`)
+						path.transition.push(`L${[obj.x, d3.min([p0, p1]) / 2]}`)
 
 						if (d1.type === 'sum') {
 							overlay.enter.push(`L${[obj.x, 0]}`)
-							overlay.transition.push(`L${[obj.x, -d3.min([p0, p1]) / 2]}`)
+							overlay.transition.push(`L${[obj.x, d3.min([p0, p1]) / 2]}`)
 						}
 						
-						obj.x += p1 / 2
+						obj.x -= p1 / 2
 						path.enter.push(`L${[obj.x, 0]}`)
-						path.transition.push(`L${[obj.x, -p1]}`)
-						path.peaks.push({ point: [obj.x, -p1], value: v1 })
+						path.transition.push(`L${[obj.x, p1]}`)
+						path.peaks.push({ point: [obj.x, p1], value: v1 })
 
 						if (d1.type === 'sum') {
 							const v = Montagnes.height(_commune, d1.sources[0].path)
 							const p = Montagnes.scale(v)
 							overlay.enter.push(`L${[obj.x, 0]}`)
-							overlay.transition.push(`L${[obj.x, -p]}`)
-							overlay.peaks.push({ point: [obj.x, -p], value: v })
+							overlay.transition.push(`L${[obj.x, p]}`)
+							overlay.peaks.push({ point: [obj.x, p], value: v })
 						}
 					}
 				}
@@ -274,21 +263,21 @@ Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 					// IT IS AN *ORDINAL* RELATIONSHIP
 
 					// obj.x += d3.max([p0, p1]) / 2
-					obj.x += p0 / 2
+					obj.x -= p0 / 2
 					path.enter.push(`L${[obj.x, 0]}`)
-					path.transition.push(`L${[obj.x, -d3.min([p0, p1]) / 2]}`)
+					path.transition.push(`L${[obj.x, d3.min([p0, p1]) / 2]}`)
 					
-					obj.x += p1 / 2
+					obj.x -= p1 / 2
 					path.enter.push(`L${[obj.x, 0]}`)
-					path.transition.push(`L${[obj.x, -p1]}`)
-					path.peaks.push({ point: [obj.x, -p1], value: v1 })
+					path.transition.push(`L${[obj.x, p1]}`)
+					path.peaks.push({ point: [obj.x, p1], value: v1 })
 				}
 
 			}
 		}
 		// THIS CLOSES OFF THE PATH
 		if (i === indicateurs.length - 1) {
-			obj.x += p1 / 2
+			obj.x -= p1 / 2
 			path.enter.push(`L${[obj.x, 0]} Z`)
 			path.transition.push(`L${[obj.x, 0]} Z`)
 			
@@ -329,6 +318,9 @@ Montagnes.draw = function (_d, _i) {
 		.attrs({
 			'class': 'pic',
 			'd': c => c.enter.join(' ')
+		})
+		.style('fill', (d, i) => {
+			return d3.rgb(Menu.colors(Montagnes.chaine[i].path.split('_')[0])).brighter((_i / d3.selectAll('g.chaine').size()) * 3)
 		})
 		.on('mouseover', function (d) {
 			if (svg.classed('dragging')) return null
@@ -384,6 +376,9 @@ Montagnes.draw = function (_d, _i) {
 		.attrs({
 			'd': c => c.transition.join(' ')
 		})
+		.style('fill', (d, i) => {
+			return d3.rgb(Menu.colors(Montagnes.chaine[i].path.split('_')[0])).brighter((_i / d3.selectAll('g.chaine').size()) * 3)
+		})
 
 	monts.addElems('line', 'basis')
 		.attrs({
@@ -392,6 +387,16 @@ Montagnes.draw = function (_d, _i) {
 			'y1': 0,
 			'y2': 0
 		})
+
+	if (_i === 0) {
+		monts.addElems('g', 'axis axis--y')
+			.attr('transform', `translate(${[0, 0]})`)
+		.transition()
+			.call(d3.axisLeft(Montagnes.scale))
+	}
+	else {
+		monts.selectAll('g.axis--y').remove()
+	}
 	
 	// const nameLabel = monts.addElems('g', 'namelabel')
 	// nameLabel.addElems('text', 'label--value')
