@@ -52,14 +52,7 @@ Mountains.init = function (_data) {
 		d3.sum(Mountains.rangeValues.map(c => Mountains.height(b, c.path))) - d3.sum(Mountains.rangeValues.map(c => Mountains.height(a, c.path)))
 	) // MIGHT NEED TO CHANGE THIS TO ACCOUNT FOR SUMS
 
-	const sums = Mountains.data.map(d => d3.max(Mountains.rangeValues.map(c => {
-		if (c.type === 'sum') return d3.sum(c.sources, b => Mountains.height(d, b.path))
-		return Mountains.height(d, c.path)
-	})))
-
-	Mountains.scale
-		.domain([0, d3.max(sums)])
-		.range([0, -(horizon - horizon * .33)]) // CHANGE THIS FOR MOUNT HEIGHT
+	Mountains.scale.range([0, -(horizon - horizon * .33)]) // CHANGE THIS FOR MOUNT HEIGHT
 
 	if (!Mountains.position.domain().length) {
 		Mountains.position.domain(Mountains.data.map(d => d['Commune']).shuffle())
@@ -168,6 +161,7 @@ Mountains.rangeRelations = _ => {
 
 Mountains.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 	const relations = Mountains.rangeRelations()
+	const indicators = d3.select('div.menu--indicators').datum()
 
 	const obj = {}
 	obj.paths = []
@@ -178,10 +172,28 @@ Mountains.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 	path.transition = []
 
 	Mountains.rangeValues.forEach((d, i) => {
-		const p1 = Mountains.scale(_commune[d.path])
+
+
+		// const p1 = Mountains.scale(_commune[d.path])
+
+		// console.log(d)
+
+
+		// d.path = c['Structure']
 
 		if (relations[i] === 'discrete') { // THIS IS WHERE WE SHOULD CHECK FOR NEW SCALES
-			if (i > 0) {
+			if (i === 0) {
+				Mountains.setScale(i)
+			}
+			else if (i > 0) {
+				// CHECK WHETHER THE NEW PEAK SHOULD BE PROJECTED ON THE SAME SCALE
+				const prevPath = Mountains.rangeValues[i - 1].path
+				const prevScale = indicators.filter(c => c['Structure'] === prevPath)[0]['Index_Echelle']
+				const scale = indicators.filter(c => c['Structure'] === d.path)[0]['Index_Echelle']
+				// IF THE TYPE OF SCALE IS NOT THE SAME, THE CHANGE THE Mountains.scale.domain()
+				// AND PUSH THE NEXT PEAK HORIZONTALLY AWAY
+
+				console.log(Mountains.scale.domain())
 				const p0 = Mountains.scale(_commune[Mountains.rangeValues[i - 1].path])
 				obj.x -= p0 * .5
 				
@@ -192,7 +204,16 @@ Mountains.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 				path = {}
 				path.enter = []
 				path.transition = []
+
+				if (prevScale !== scale) {
+					Mountains.setScale(i)
+					obj.x += 50
+				}
 			}
+
+			const p1 = Mountains.scale(_commune[d.path])
+
+			// console.log(Mountains.scale.domain())
 
 			path.color = d.path.split('_')[0]
 
@@ -204,6 +225,7 @@ Mountains.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 			path.transition.push(`L${[obj.x, p1]}`)
 		}
 		else if (relations[i] === 'ordinal') {
+			const p1 = Mountains.scale(_commune[d.path])
 			const p0 = Mountains.scale(_commune[Mountains.rangeValues[i - 1].path])
 			
 			if (Math.abs(p0) < Math.abs(p1)) {
@@ -226,12 +248,16 @@ Mountains.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 			}
 		}
 		else if (relations[i] === 'series') {
+			const p1 = Mountains.scale(_commune[d.path])
+
 			obj.x -= p1 * .5
 			path.enter.push(`L${[obj.x, 0]}`)
 			path.transition.push(`L${[obj.x, p1]}`)
 		}
 
 		if (i === Mountains.rangeValues.length - 1) {
+			const p1 = Mountains.scale(_commune[d.path])
+
 			obj.x -= p1 * .5
 			path.enter.push(`L${[obj.x, 0]}`)
 			path.transition.push(`L${[obj.x, 0]}`)
@@ -378,10 +404,34 @@ Mountains.draw = function (_d, _i) {
 	// 	})
 
 }
-Mountains.height = (_d, _path) => {
+Mountains.height = (_d, _path) => { // THIS CAN PROBABLY BE REMOVED SINCE WE ARE NOT SUMMING UP THINGS IN HIGHER HIERARCHIES
 	let value = 0
 	for (let key in _d) {
 		if (key.indexOf(_path) !== -1) value += +_d[key]
 	}
 	return value
+}
+Mountains.setScale = _i => {
+	const indicators = d3.select('div.menu--indicators').datum()
+	let scaleTypes = Mountains.rangeValues.map((d, i) => {
+		const obj = {}
+		obj.index = i
+		obj.type = indicators.filter(c => c['Structure'] === d.path)[0]['Index_Echelle']
+		return obj
+	})
+	scaleTypes = d3.nest()
+		.key(d => d.type)
+		.entries(scaleTypes)
+
+	const thisType = scaleTypes.filter(d => d.values.map(c => c.index).indexOf(_i) !== -1)[0].values
+
+	const sums = Mountains.data.map(d => {
+		return d3.max(Mountains.rangeValues.filter((c, j) => thisType.map(c => c.index).indexOf(j) !== -1)
+			.map(c => {
+				// if (c.type === 'sum') return d3.sum(c.sources, c => Mountains.height(d, c.path))
+				// console.log(d, c.path)
+				return Mountains.height(d, c.path)
+			}))
+	})
+	Mountains.scale.domain([0, d3.max(sums)])
 }

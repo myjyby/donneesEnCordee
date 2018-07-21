@@ -13,7 +13,7 @@ Menu.init = _data => {
 	Menu.colors.domain(hierarchie.map(d => d.key))
 	Menu.colors.domain().forEach(d => UI.setGradient(d))
 	
-	const menu = body.addElem('div', 'menu--indicators')
+	const menu = body.addElems('div', 'menu--indicators', [_data])
 	menu.addElems('ul', 'menu-list', hierarchie)
 		.style('border-color', (d, i) => Menu.colors(d.key))
 	.addElems('li', 'list-item')
