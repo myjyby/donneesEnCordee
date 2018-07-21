@@ -26,6 +26,7 @@
 	const debug = false
 	const horizon = height() - height() * .5
 
+	var montagnes
 	
 	d3.queue()
 		.defer(d3.csv, './data/data.csv')
@@ -47,6 +48,7 @@
 			Menu.init(indicators)
 
 			Mountains.init(data)
+			Reasoning.init(data)
 			// new Mountains(data)
 		})
 
