@@ -2,7 +2,7 @@ if (!Menu) { var Menu = {} }
 Menu.colors = d3.scaleOrdinal()
 	.range(['#34453D', '#344758', '#3F332D'])
 Menu.init = _data => {
-	const body = d3.select('body')
+	const body = d3.select('div.slide.vis')
 
 	const title = body.addElem('div', 'title')
 		
@@ -11,6 +11,7 @@ Menu.init = _data => {
 
 	const hierarchie = Menu.data(_data)
 	Menu.colors.domain(hierarchie.map(d => d.key))
+	Menu.colors.domain().forEach(d => UI.setGradient(d))
 	
 	const menu = body.addElem('div', 'menu--indicators')
 	menu.addElems('ul', 'menu-list', hierarchie)
@@ -38,10 +39,13 @@ Menu.init = _data => {
 			d3.event.stopPropagation()
 			d3.select(this).classed('selected', !d3.select(this).classed('selected'))
 
-			Montagnes.chaine.push(Object.assign({ type: 'value' }, d))
+			Mountains.rangeValues.push(Object.assign({ type: 'value' }, d))
 
-			Montagnes.init()
+			Mountains.init()
 			Reasoning.init()
+
+			console.log(Mountains.rangeValues)
+			console.log(Mountains.rangeRelations())
 		})
 }
 Menu.data = _data => {

@@ -1,6 +1,7 @@
 if (!Reasoning) { var Reasoning = {} }
 Reasoning.scale = d3.scaleLinear()
-	.rangeRound(Montagnes.position.range())
+	.rangeRound(Mountains.position.range())
+
 Reasoning.drag = d3.drag()
 	.on('start', function () { d3.select(this).moveToFront() })
 	.on('drag', function (d) {
@@ -85,9 +86,9 @@ Reasoning.drag = d3.drag()
 
 				// 01.a - IF EITHER NODE *IS NOT* ALREADY A SUM
 				if (d.type !== 'sum' && d1.type !== 'sum') {
-					// THEN CREATE THE SUM IN Montagnes.chaine
+					// THEN CREATE THE SUM IN Mountains.rangeValues
 					
-					Montagnes.chaine.push({ 
+					Mountains.rangeValues.push({ 
 						type: 'sum', 
 						key: `${d.key}+${d1.key}`, 
 						path: `${h0.join('_')}+${d1.key}`, 
@@ -95,8 +96,8 @@ Reasoning.drag = d3.drag()
 						x: d.x + d1.x,
 						sources: [Object.assign({}, d), Object.assign({}, d1)]
 					})
-					Montagnes.chaine.splice(Montagnes.chaine.map(c => c.path).indexOf(d.path), 1)
-					Montagnes.chaine.splice(Montagnes.chaine.map(c => c.path).indexOf(d1.path), 1)
+					Mountains.rangeValues.splice(Mountains.rangeValues.map(c => c.path).indexOf(d.path), 1)
+					Mountains.rangeValues.splice(Mountains.rangeValues.map(c => c.path).indexOf(d1.path), 1)
 				}
 				// 01.b - IF EITHER NODE *IS* ALREADY A SUM
 				else {
@@ -107,17 +108,17 @@ Reasoning.drag = d3.drag()
 						d.path += `+${d1.key}`
 						d.value += `+${d1.key}`
 						d.sources.push(Object.assign({}, d1))
-						Montagnes.chaine.splice(Montagnes.chaine.map(c => c.path).indexOf(d1.path), 1)
+						Mountains.rangeValues.splice(Mountains.rangeValues.map(c => c.path).indexOf(d1.path), 1)
 					}
 					else if (d1.sources) {
 						d1.key += `+${d.key}`
 						d1.path += `+${d.key}`
 						d1.value += `+${d.key}`
 						d1.sources.push(Object.assign({}, d))
-						Montagnes.chaine.splice(Montagnes.chaine.map(c => c.path).indexOf(d.path), 1)
+						Mountains.rangeValues.splice(Mountains.rangeValues.map(c => c.path).indexOf(d.path), 1)
 					}
 				}
-				console.log(Montagnes.chaine)
+				console.log(Mountains.rangeValues)
 			}
 			// 02 - IF THE INDICATOR *IS NOT* A SIBLING OF THE PREVIOUS ONE
 			else {
@@ -134,20 +135,21 @@ Reasoning.drag = d3.drag()
 				obj[d.path] = i
 				return obj
 			})
-		Montagnes.chaine.sort((a, b) => a.x - b.x)
-		// console.log(Montagnes.chaine, order)
+		Mountains.rangeValues.sort((a, b) => a.x - b.x)
+		// console.log(Mountains.rangeValues, order)
 
-		Montagnes.init()
+		Mountains.init()
 		Reasoning.init()
 	})
-Reasoning.init = _data => {
-	const data = _data ? Montagnes.data(_data) : d3.selectAll('g.chaine').data()
 
-	Reasoning.scale
-		.domain([0, Montagnes.chaine.length + 1])
+Reasoning.init = _data => {
+	const data = _data ? Mountains.parseData(_data) : d3.selectAll('g.range').data()
+
+	// Reasoning.scale.domain([0, Mountains.rangeValues.length + 1])
+	Reasoning.scale.domain([0, Mountains.rangeRelations().filter(d => d === 'discrete').length + 1])
 
 	const svg = d3.select('svg')
-	const chain = svg.addElems('g', 'raisonnement', [Montagnes.chaine])
+	const chain = svg.addElems('g', 'raisonnement', [Mountains.rangeValues])
 		.attr('transform', `translate(${[0, horizon + (height() - horizon) * .5]})`)
 		.each(Reasoning.draw)
 	chain.addElems('line')
@@ -158,35 +160,40 @@ Reasoning.init = _data => {
 			'y2': 0
 		})
 }
+
 Reasoning.draw = function (_d, _i) {
 	const sel = d3.select(this)
+	const relations = Mountains.rangeRelations()
 
-	const g = sel.selectAll('g.node')
+	let g = sel.selectAll('g.node')
 		.data(_d, d => d.path)
 	g.exit()
 		.remove()
-	const gEnter = g.enter()
+	g = g.enter()
 		.append('g')
 		.attrs({
 			'class': 'node',
 			'transform': (d, i) => `translate(${[d.x = Reasoning.scale(i + 1), 0]})`
 		})
 	.call(Reasoning.drag)
-	.merge(g)
-	gEnter.transition()
-		.attr('transform', (d, i) => `translate(${[d.x = Reasoning.scale(i + 1), 0]})`)
+		.merge(g)
+	g.transition()
+		.attr('transform', (d, i) => {
+			if (relations[i] === 'discrete') return `translate(${[d.x = Reasoning.scale(i + 1), 0]})`
+			else return `translate(${[d.x = Reasoning.scale(i) + 10, 0]})`
+		})
 
-	const circle = gEnter.selectAll('circle')
+	let circle = g.selectAll('circle')
 		.data(d => [d], d => d.path)
-	const circleEnter = circle.enter()
+	circle = circle.enter()
 		.append('circle')
 		.each(function (d, i) { d3.select(this).classed(`c-${i}`, true) })
 		.attr('r', 0)
-	.merge(circle)
-	circleEnter.transition()
+		.merge(circle)
+	circle.transition()
 		.attr('r', 10)
 
-	const label = gEnter.addElems('text', 'label--value')
+	const label = g.addElems('text', 'label--value')
 		.attrs({
 			'x': -20,
 			'y': 5,

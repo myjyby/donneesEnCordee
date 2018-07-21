@@ -1,95 +1,14 @@
-if (!Montagnes) { var Montagnes = {} }
-Montagnes.scale = d3.scaleLinear()
-Montagnes.position = d3.scaleBand()
-	.rangeRound([width() * .25, width() - width() * .25])
-	.padding(.1)
-Montagnes.chaine = []
-Montagnes.drag = d3.drag()
-	.on('start', () => {
-		d3.select('svg').classed('dragging', true)
-		d3.selectAll('line.axis--link').remove()
-		d3.selectAll('.label').remove()
-	})
-	.on('drag', function (d) {
-		const evt = d3.event
-		d3.select(this).attr('transform', `translate(${[d.x += evt.dx, d.y]})`)
-	})
-	.on('end', () => d3.select('svg').classed('dragging', false))
-Montagnes.init = _data => {
-	const data = _data ? Montagnes.data(_data) : d3.selectAll('g.chaine').data()
+// TAXONOMY FOR MOUNTAINS
+// FOR INSPIRATION, SEE https://www.google.com/search?q=Mountain+range&stick=H4sIAAAAAAAAAONgecToyC3w8sc9YSmLSWtOXmM04uIKzsgvd80rySypFFLhYoOypLh4pDj0c_UNTMorijQYpLi44DweACtZhdhGAAAA&sa=X&ved=0ahUKEwj34NqQoKHcAhVqk-AKHSXOCC0Q6RMI0wEwEA&biw=1680&bih=949
+// 0: MOUNTAINS
+// 1: RANGE
+// 2: RIDGE (for continuous connections) / PASS (for ordinal connections)
+// 3: PEAK
 
-	const indicateurs = Montagnes.chaine //d3.select('ul.menu-list').selectAll('li.selected').data()
-	data.sort((a, b) => 
-		d3.sum(indicateurs.map(c => Montagnes.height(b, c.path))) - d3.sum(indicateurs.map(c => Montagnes.height(a, c.path)))
-	) // MIGHT NEED TO CHANGE THIS TO ACCOUNT FOR SUMS
+if (!Mountains) { var Mountains = {} }
+Mountains.data = []
 
-	const sums = data.map(d => d3.max(indicateurs.map(c => {
-		if (c.type === 'sum') return d3.sum(c.sources, b => Montagnes.height(d, b.path))
-		return Montagnes.height(d, c.path)
-	})))
-
-	Montagnes.scale
-		.domain([0, d3.max(sums)])
-		.range([0, -(horizon - horizon * .33)]) // CHANGE THIS FOR MOUNT HEIGHT
-
-	const greyscale = d3.scaleLinear()
-		.domain([0, data.length])
-		// .range(['#333', 'steelblue'])
-		.range(['#344758', '#CED5E4'])
-
-	if (!Montagnes.position.domain().length) {
-		Montagnes.position
-			.domain(data.map(d => d['Commune']).shuffle())
-	}
-
-	const svg = d3.select('svg')
-	const montagnes = svg.select('g.montagnes')
-	// const echelle = svg.select('g.axis--y')
-
-	const chaines = montagnes.selectAll('g.chaine')
-		.data(data)
-	chaines.exit().remove()
-	const chainesEnter = chaines.enter()
-		.append('g')
-		.attrs({
-			'class': 'chaine',
-			'transform': (d, i) => `translate(${[d.x = Montagnes.position(d['Commune']), d.y = horizon + i * maxHeight / 5]})`
-		})
-		.on('mouseover', function (d) {
-			const svg = d3.select('svg')
-			if (svg.classed('dragging')) return null
-
-			const node = this
-			const sel = d3.select(this)
-
-			if (Math.round(d.y) === Math.round(horizon)) {
-				chainesEnter.filter(function () { return this !== node })
-					.transition()
-					.duration(150)
-					.style('opacity', .25)
-					
-				sel.style('fill', '#344758')
-			}
-		})
-		.on('mouseout', function (d, i) {
-			const sel = d3.select(this)
-
-			chainesEnter
-				.transition()
-				.duration(150)
-				.style('opacity', 1)
-				
-			sel.style('fill', greyscale(i))
-		})
-	.call(Montagnes.drag)
-	.merge(chaines)
-	chainesEnter.moveToFront()
-		.each(Montagnes.draw)
-	.transition()
-		.attr('transform', (d, i) => `translate(${[d.x = Montagnes.position(d['Commune']), d.y = horizon + i * maxHeight / 5]})`)
-		.style('fill', (d, i) => greyscale(i))
-}
-Montagnes.data = _data => {
+Mountains.parseData = _data => {
 	return _data.map(d => { // THIS KEEPS ONLY THE NUMERICAL INDICATORS
 		const obj = {}
 		for (let key in d) {
@@ -100,58 +19,102 @@ Montagnes.data = _data => {
 		return obj
 	})
 }
-Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
-	const indicateurs = Montagnes.chaine
 
-	const obj = {}
-	obj.paths = []
-	obj.x = 0
-	let path = {}
-	path.enter = []
-	path.transition = []
-	path.peaks = []
-	let overlay = {}
-	overlay.enter = []
-	overlay.transition = []
-	overlay.peaks = []
+Mountains.scale = d3.scaleLinear()
 
-	indicateurs.forEach((d1, i) => {
+Mountains.position = d3.scaleBand()
+	.rangeRound([width() * .25, width() - width() * .25])
+	.padding(.1)
 
-		let v1 = 0
-		if (d1.type === 'sum') v1 = d3.sum(d1.sources.map(d => Montagnes.height(_commune, d.path)))
-		else v1 = Montagnes.height(_commune, d1.path)
-		const p1 = Montagnes.scale(v1)
+Mountains.rangeValues = []
 
-		if (i === 0) {
-			path.enter.push([`M${[obj.x, 0]}`])
-			path.transition.push([`M${[obj.x, 0]}`])
+Mountains.colors = d3.scaleLinear()
+	.domain([0, Mountains.data.length])
+	.range(['#344758', '#CED5E4'])
 
-			if (d1.type === 'sum') {
-				overlay.enter.push([`M${[obj.x, 0]}`])
-				overlay.transition.push([`M${[obj.x, 0]}`])
+Mountains.drag = d3.drag()
+	.on('start', _ => {
+		const svg = d3.select('svg').classed('dragging', true)
+		svg.selectAll('line.axis--link').remove()
+		svg.selectAll('.label').remove()
+	})
+	.on('drag', function (d) {
+		const evt = d3.event
+		d3.select(this).attr('transform', `translate(${[d.x += evt.dx, d.y]})`)
+	})
+	.on('end', _ => d3.select('svg').classed('dragging', false))
+
+Mountains.init = function (_data) {
+	Mountains.data = _data ? Mountains.parseData(_data) : d3.selectAll('g.range').data()
+	// console.log(this)
+
+	Mountains.data.sort((a, b) => 
+		d3.sum(Mountains.rangeValues.map(c => Mountains.height(b, c.path))) - d3.sum(Mountains.rangeValues.map(c => Mountains.height(a, c.path)))
+	) // MIGHT NEED TO CHANGE THIS TO ACCOUNT FOR SUMS
+
+	const sums = Mountains.data.map(d => d3.max(Mountains.rangeValues.map(c => {
+		if (c.type === 'sum') return d3.sum(c.sources, b => Mountains.height(d, b.path))
+		return Mountains.height(d, c.path)
+	})))
+
+	Mountains.scale
+		.domain([0, d3.max(sums)])
+		.range([0, -(horizon - horizon * .33)]) // CHANGE THIS FOR MOUNT HEIGHT
+
+	if (!Mountains.position.domain().length) {
+		Mountains.position
+			.domain(Mountains.data.map(d => d['Commune']).shuffle())
+	}
+
+	const svg = d3.select('svg')
+	const mountain = svg.select('g.mountain')
+
+	const ranges = mountain.addElems('g', 'range', Mountains.data)
+		.attr('transform', (d, i) => `translate(${[d.x = Mountains.position(d['Commune']), d.y = horizon + i * maxHeight / 5]})`)
+		.on('mouseover', function (d) {
+			if (svg.classed('dragging')) return null
+
+			const node = this
+			const sel = d3.select(this)
+
+			if (Math.round(d.y) === Math.round(horizon)) {
+				svg.selectAll('g.range')
+					.filter(function () { return this !== node })
+				.transition()
+					.duration(150)
+					.style('opacity', .25)
+					
+				sel.style('fill', '#344758')
 			}
+		})
+		.on('mouseout', function (d, i) {
+			// if (svg.classed('dragging')) return null
 
-			obj.x -= p1 / 2
-			path.enter.push(`L${[obj.x, 0]}`)
-			path.transition.push(`L${[obj.x, p1]}`)
-			path.peaks.push({ point: [obj.x, p1], value: v1 })
+			const sel = d3.select(this)
 
-			if (d1.type === 'sum') {
-				const v = Montagnes.height(_commune, d1.sources[0].path)
-				const p = Montagnes.scale(v)
-				overlay.enter.push(`L${[obj.x, 0]}`)
-				overlay.transition.push(`L${[obj.x, p]}`)
-				overlay.peaks.push({ point: [obj.x, p], value: v })
-			}
-		} 
+			svg.selectAll('g.range')
+				.transition()
+				.duration(150)
+				.style('opacity', 1)
+				
+			sel.style('fill', Mountains.colors(i))
+		})
+		.call(Mountains.drag)
+		.each(Mountains.draw)
+	.transition()
+		.attr('transform', (d, i) => `translate(${[d.x = Mountains.position(d['Commune']), d.y = horizon + i * maxHeight / 5]})`)
+		.style('fill', (d, i) => Mountains.colors(i))
+
+	// console.log(Mountains.rangeRelations())
+}
+
+Mountains.rangeRelations = _ => {
+	return Mountains.rangeValues.map((d1, i) => {
+		
+		if (i === 0) return 'discrete'
 		else {
-			const d0 = indicateurs[i - 1]
-			// HERE p STANDS FOR *point* (1D VALUE FOR THE HEIGHT OF THE PEAK)
-			let v0 = 0
-			if (d0.type === 'sum') v0 = d3.sum(d0.sources.map(d => Montagnes.height(_commune, d.path)))
-			else v0 = Montagnes.height(_commune, d0.path)
-			const p0 = Montagnes.scale(v0)
-
+			// THIS IS THE PREVIOUS INDICATOR IN THE RANGE
+			const d0 = Mountains.rangeValues[i - 1]
 			// HERE h STANDS FOR *hierarchy*
 			const h0 = d0.path.split('_')
 			const h1 = d1.path.split('_')
@@ -160,245 +123,236 @@ Montagnes.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 			h0p.pop()
 			const h1p = h1.slice(0)
 			h1p.pop()
-
-			// 01 - IF THE INDICATOR *IS NOT* A SIBLING OF THE PREVIOUS ONE
-			if (h0p.join('_') !== h1p.join('_')) {
-				// IT IS A *DISCRETE* RELATIONSHIP (NO RELATIONSHIP) BY DEFAULT
-				
-				// 01.a - CLOSE OFF THE PREVIOUS PATH p0
-				obj.x -= p0 / 2
-				path.enter.push(`L${[obj.x, 0]} Z`)
-				path.transition.push(`L${[obj.x, 0]} Z`)
-
-				obj.paths.push(path)
-
-				if (d0.type === 'sum') {
-					overlay.enter.push(`L${[obj.x, 0]} Z`)
-					overlay.transition.push(`L${[obj.x, 0]} Z`)
-					
-					obj.paths.push(overlay)
-				}
-				
-				// 01.b - BEGIN A NEW ONE WITH THIS p1
-				path = {}
-				path.enter = [`M${[obj.x, 0]}`]
-				path.transition = [`M${[obj.x, 0]}`]
-				path.peaks = []
-
-				if (d1.type === 'sum') {
-					overlay = {}
-					overlay.enter = [`M${[obj.x, 0]}`]
-					overlay.transition = [`M${[obj.x, 0]}`]
-					overlay.peaks = []
-				}
-				
-				obj.x -= p1 / 2
-				path.enter.push(`L${[obj.x, 0]}`)
-				path.transition.push(`L${[obj.x, p1]}`)
-				path.peaks.push({ point: [obj.x, p1], value: v1 })
-
-				if (d1.type === 'sum') {
-					const v = Montagnes.height(_commune, d1.sources[0].path)
-					const p = Montagnes.scale(v)
-					overlay.enter.push(`L${[obj.x, 0]}`)
-					overlay.transition.push(`L${[obj.x, p]}`)
-					overlay.peaks.push({ point: [obj.x, p], value: v })
-				}
-			}
-			// 02 - IF THE INDICATOR *IS* A SIBLING OF THE PREVIOUS ONE				
-			else {
-				// IT IS EITHER A *SERIES* OR AN *ORDINAL* RELATIONSHIP
-
-				// 02.a - IF THERE IS A YEAR IN THE HIERARCHY AND THE SIBLING INDICATORS HAVE A *TEMPORAL* (YEAR) CONNECTION
-				if (Heuristics.hasYear(h1) !== -1 && Heuristics.hasYear(h0) === Heuristics.hasYear(h1)) {
-
-					// 02.a.i - IF THE YEAR IS THE LAST LEAF OF THE HIERARCHY TREE (e.g., APA_domicile_Annee_2016),
-					// OR IF THERE IS A YEAR IN THE HIERARCHY TREE, BUT IT IS NOT THE LAST LEAF, AND THE LAST LEAF OF THE SIBLING INDICATORS IS THE SAME (e.g. Demographie_2013_Age_60-79 AND Demographie_2008_Age_60-79)
-					if (Heuristics.hasYear(h1) === h1.length - 1 || h0.last() === h1.last()) {
-						// IT IS A *SERIES* RELATIONSHIP
-						obj.x -= (p0 / 2 + p1 / 2)
-						path.enter.push(`L${[obj.x, 0]}`)
-						path.transition.push(`L${[obj.x, p1]}`)
-						path.peaks.push({ point: [obj.x, p1], value: v1 })
-
-						if (d1.type === 'sum') {
-							const v = Montagnes.height(_commune, d1.sources[0].path)
-							const p = Montagnes.scale(v)
-							overlay.enter.push(`L${[obj.x, 0]}`)
-							overlay.transition.push(`L${[obj.x, p]}`)
-							overlay.peaks.push({ point: [obj.x, p], value: v })
-						}
-					}
-					// 02.a.ii - IF THE SIBLING INDICATORS HAVE THE SAME YEAR IN THEIR HIERARCHY
-					else if (h0[Heuristics.hasYear(h0)] === h1[Heuristics.hasYear(h1)]) {
-						// IT IS AN *ORDINAL* RELATIONSHIP
-
-						// obj.x += d3.max([p0, p1]) / 2
-						obj.x -= p0 / 2
-						path.enter.push(`L${[obj.x, 0]}`)
-						// path.transition.push(`L${[obj.x, -d3.min([p0, p1]) / 2]}`)
-						path.transition.push(`L${[obj.x, d3.min([p0, p1]) / 2]}`)
-
-						if (d1.type === 'sum') {
-							overlay.enter.push(`L${[obj.x, 0]}`)
-							overlay.transition.push(`L${[obj.x, d3.min([p0, p1]) / 2]}`)
-						}
-						
-						obj.x -= p1 / 2
-						path.enter.push(`L${[obj.x, 0]}`)
-						path.transition.push(`L${[obj.x, p1]}`)
-						path.peaks.push({ point: [obj.x, p1], value: v1 })
-
-						if (d1.type === 'sum') {
-							const v = Montagnes.height(_commune, d1.sources[0].path)
-							const p = Montagnes.scale(v)
-							overlay.enter.push(`L${[obj.x, 0]}`)
-							overlay.transition.push(`L${[obj.x, p]}`)
-							overlay.peaks.push({ point: [obj.x, p], value: v })
-						}
-					}
-				}
-				// 02.b - IF THERE IS NO YEAR IN THE HIERARCHY
-				else {
-					// IT IS AN *ORDINAL* RELATIONSHIP
-
-					// obj.x += d3.max([p0, p1]) / 2
-					obj.x -= p0 / 2
-					path.enter.push(`L${[obj.x, 0]}`)
-					path.transition.push(`L${[obj.x, d3.min([p0, p1]) / 2]}`)
-					
-					obj.x -= p1 / 2
-					path.enter.push(`L${[obj.x, 0]}`)
-					path.transition.push(`L${[obj.x, p1]}`)
-					path.peaks.push({ point: [obj.x, p1], value: v1 })
-				}
-
-			}
-		}
-		// THIS CLOSES OFF THE PATH
-		if (i === indicateurs.length - 1) {
-			obj.x -= p1 / 2
-			path.enter.push(`L${[obj.x, 0]} Z`)
-			path.transition.push(`L${[obj.x, 0]} Z`)
 			
-			obj.paths.push(path)
-
-			if (d1.type === 'sum') {
-				overlay.enter.push(`L${[obj.x, 0]} Z`)
-				overlay.transition.push(`L${[obj.x, 0]} Z`)
-				
-				obj.paths.push(overlay)
+			// 01 — IF THE INDICATOR HAS A YEAR IN ITS HIERARCHY
+			// AND THE PREVIOUS INDICATOR HAS A YEAR AT THE SAME LEVEL OF HIERARCHY
+			// AND THE YEAR IS THE SAME
+			// IT IS A *SERIES* RELATIONSHIP
+			if (Heuristics.hasYear(h1) !== -1 
+				&& Heuristics.hasYear(h0) === Heuristics.hasYear(h1) 
+				&& h0[Heuristics.hasYear(h0)] === h1[Heuristics.hasYear(h1)]
+			) {
+				// IF THERE IS ONLY ONE LEVEL IN THE HIERARCHY THAT DIFFERS
+				// AND THAT LEVEL IS NOT THE TOP LEVEL
+				const arr =[]
+				h0r = h0.slice(0, Heuristics.hasYear(h0))
+				h1r = h1.slice(0, Heuristics.hasYear(h1))
+				h0r.forEach((c, j) => arr.push(c === h1r[j]))
+				if (arr.filter(c => c === false).length <= 1 && arr[0] === true) return 'ordinal'
+			}
+			// 02 - IF THE INDICATOR *IS NOT* A SIBLING OF THE PREVIOUS ONE
+			// IT IS A *DISCRETE* RELATIONSHIP (NO RELATIONSHIP) BY DEFAULT
+			else if (h0p.join('_') !== h1p.join('_')) return 'discrete'
+			// 03 - IF THE INDICATOR *IS* A SIBLING OF THE PREVIOUS ONE
+			// IT IS EITHER A *SERIES* OR AN *ORDINAL* RELATIONSHIP
+			else {
+				// 03.a - IF THERE IS A YEAR IN THE HIERARCHY AND THE SIBLING INDICATORS HAVE A *TEMPORAL* (YEAR) CONNECTION
+				if (Heuristics.hasYear(h1) !== -1 && Heuristics.hasYear(h0) === Heuristics.hasYear(h1)) {
+					// 03.a.i - IF THE YEAR IS THE LAST LEAF OF THE HIERARCHY TREE (e.g., APA_domicile_Annee_2016),
+					// OR IF THERE IS A YEAR IN THE HIERARCHY TREE, 
+						// BUT IT IS NOT THE LAST LEAF, 
+						// AND THE LAST LEAF OF THE SIBLING INDICATORS IS THE SAME 
+						// (e.g. Demographie_2013_Age_60-79 AND Demographie_2008_Age_60-79)
+					// IT IS A *SERIES* RELATIONSHIP
+					if (Heuristics.hasYear(h1) === h1.length - 1 || h0.last() === h1.last()) return 'series'
+					// 03.a.ii - IF THE SIBLING INDICATORS HAVE THE SAME YEAR IN THEIR HIERARCHY
+					// IT IS AN *ORDINAL* RELATIONSHIP
+					else if (h0[Heuristics.hasYear(h0)] === h1[Heuristics.hasYear(h1)]) return 'ordinal'
+				}
+				// 03.b - IF THERE IS NO YEAR IN THE HIERARCHY
+				// IT IS AN *ORDINAL* RELATIONSHIP
+				else return 'ordinal'				
 			}
 		}
 	})
-	// console.log(obj)
+}
+
+Mountains.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
+	const relations = Mountains.rangeRelations()
+
+	const obj = {}
+	obj.paths = []
+	obj.x = 0
+
+	let path = {}
+	path.enter = []
+	path.transition = []
+
+	Mountains.rangeValues.forEach((d, i) => {
+		const p1 = Mountains.scale(_commune[d.path])
+
+		if (relations[i] === 'discrete') { // THIS IS WHERE WE SHOULD CHECK FOR NEW SCALES
+			if (i > 0) {
+				const p0 = Mountains.scale(_commune[Mountains.rangeValues[i - 1].path])
+				obj.x -= p0 * .5
+				
+				path.enter.push(`L${[obj.x, 0]}`)
+				path.transition.push(`L${[obj.x, 0]}`)
+				// RESET THE PATH
+				// path.color = Menu.colors(d.path.split('_')[0])
+				// path.parent = d.path.split('_')[0]
+				obj.paths.push(path)
+				
+				path = {}
+				path.enter = []
+				path.transition = []
+			}
+
+			path.color = d.path.split('_')[0]
+
+			path.enter.push(`M${[obj.x, 0]}`)
+			path.transition.push(`M${[obj.x, 0]}`)
+
+			obj.x -= p1 * .5
+			path.enter.push(`L${[obj.x, 0]}`)
+			path.transition.push(`L${[obj.x, p1]}`)
+		}
+		else if (relations[i] === 'ordinal') {
+			const p0 = Mountains.scale(_commune[Mountains.rangeValues[i - 1].path])
+			
+			if (Math.abs(p0) < Math.abs(p1)) {
+				obj.x -= p0 * .25
+				path.enter.push(`L${[obj.x, 0]}`)
+				path.transition.push(`L${[obj.x, p0 * .5]}`)
+
+				obj.x -= (p1 * .5 - p0 * .25)
+				path.enter.push(`L${[obj.x, 0]}`)
+				path.transition.push(`L${[obj.x, p1]}`)
+			}
+			else {
+				obj.x -= (p0 * .5 - p1 * .25)
+				path.enter.push(`L${[obj.x, 0]}`)
+				path.transition.push(`L${[obj.x, p1 * .5]}`)
+
+				obj.x -= p1 * .25
+				path.enter.push(`L${[obj.x, 0]}`)
+				path.transition.push(`L${[obj.x, p1]}`)	
+			}
+		}
+		else if (relations[i] === 'series') {
+			obj.x -= p1 * .5
+			path.enter.push(`L${[obj.x, 0]}`)
+			path.transition.push(`L${[obj.x, p1]}`)
+		}
+
+		if (i === Mountains.rangeValues.length - 1) {
+			obj.x -= p1 * .5
+			path.enter.push(`L${[obj.x, 0]}`)
+			path.transition.push(`L${[obj.x, 0]}`)
+
+			obj.paths.push(path)
+		}
+	})
 	return obj
 }
-Montagnes.draw = function (_d, _i) {
-	const sel = d3.select(this)
+
+Mountains.draw = function (_d, _i) {
 	const svg = d3.select('svg')
+	const sel = d3.select(this)
 	
 	// WORKING HERE
-	const paths = Montagnes.paths(_d)
+	const paths = Mountains.paths(_d)
 
-	const monts = sel.addElems('g', 'monts', [paths])
-	monts.transition()
+	// if (_d.Commune_court === 'Massif du Vercors') console.log(paths)
+
+	const ridges = sel.addElems('g', 'ridge', [paths])
+	ridges.transition()
 		.attr('transform', (d, i) => `translate(${[-d.x / 2, 0]})`)
 		
-	const pics = monts.selectAll('path.pic')
+	let peaks = ridges.selectAll('path.peak')
 		.data(d => d.paths)
-	pics.exit()
+	
+	peaks.exit()
 		.transition()
-		.attrs({
-			'd': c => c.enter.join(' ')
-		})
+		.attr('d', d => d.enter.join(' '))
 	.on('end', function () { d3.select(this).remove() })
-	const picsEnter = pics.enter()
+	
+	peaks = peaks.enter()
 		.append('path')
 		.attrs({
-			'class': 'pic',
-			'd': c => c.enter.join(' ')
+			'class': 'peak',
+			'd': d => d.enter.join(' ')
 		})
 		.style('fill', (d, i) => {
-			return d3.rgb(Menu.colors(Montagnes.chaine[i].path.split('_')[0])).brighter((_i / d3.selectAll('g.chaine').size()) * 3)
+			return `url(#gradient-${d.color})`
+			// return d3.rgb(Menu.colors(d.color)).brighter(((d3.selectAll('g.range').size() - _i) / d3.selectAll('g.range').size()) * 2)
 		})
-		.on('mouseover', function (d) {
-			if (svg.classed('dragging')) return null
-			const peakBBox = this.getBoundingClientRect()
+		// .on('mouseover', function (d) {
+		// 	if (svg.classed('dragging')) return null
+		// 	const ridge = d3.select(this.parentNode)
+		// 	const peakBBox = this.getBoundingClientRect()
 
-			monts.addElems('line', 'axis--link', d.peaks)
-				.attrs({
-					'x1': c => c.point[0],
-					'x2': c => c.point[0],
-					'y1': 0,
-					'y2': c => c.point[1] - 16
-				})
-			const labels = monts.addElems('g', 'label', d.peaks)
-				.attr('transform', c => `translate(${[c.point[0], c.point[1] - (16 + 8)]})`)
-			labels.addElems('text', 'label--value')
-				.attrs({
-					'text-anchor': 'start',
-					'x': 10,
-					'dy': '.07em'
-				})
-				.text(c => printNumber(c.value))
-			labels.insertElems('text.label--value', 'rect', 'label--box')
-				.attrs({
-					'x': function (c) {
-						// const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
-						// return -(bbox.width / 2 + 10)
-						return 0
-					},
-					'y': function () {
-						const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
-						return -(bbox.height)
-					},
-					'width': function () {
-						const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
-						return bbox.width + 20
-					},
-					'height': function () {
-						const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
-						return bbox.height + 8
-					}
-				})
-		})
-		.on('mouseout', () => {
-			d3.selectAll('line.axis--link').remove()
-			d3.selectAll('.label').remove()
-		})
-		.on('dblclick', function (d) {
-			console.log(d)
-		})
-	.merge(pics)
-	picsEnter.transition()
+		// 	ridge.addElems('line', 'axis--link', d.peaks)
+		// 		.attrs({
+		// 			'x1': c => c.point[0],
+		// 			'x2': c => c.point[0],
+		// 			'y1': 0,
+		// 			'y2': c => c.point[1] - 16
+		// 		})
+		// 	const labels = ridge.addElems('g', 'label', d.peaks)
+		// 		.attr('transform', c => `translate(${[c.point[0], c.point[1] - (16 + 8)]})`)
+			
+		// 	labels.addElems('text', 'label--value')
+		// 		.attrs({
+		// 			'text-anchor': 'start',
+		// 			'x': 10,
+		// 			'dy': '.07em'
+		// 		})
+		// 		.text(c => printNumber(c.value))
+			
+		// 	labels.insertElems('text.label--value', 'rect', 'label--box')
+		// 		.attrs({
+		// 			'x': 0,
+		// 			'y': function () {
+		// 				const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
+		// 				return -bbox.height
+		// 			},
+		// 			'width': function () {
+		// 				const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
+		// 				return bbox.width + 20
+		// 			},
+		// 			'height': function () {
+		// 				const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
+		// 				return bbox.height + 8
+		// 			}
+		// 		})
+		// })
+		// .on('mouseout', _ => {
+		// 	svg.selectAll('line.axis--link').remove()
+		// 	svg.selectAll('.label').remove()
+		// })
+		.on('dblclick', console.log)
+	.merge(peaks)
+	
+	peaks.transition()
 		// .duration(500)
-		.attrs({
-			'd': c => c.transition.join(' ')
-		})
+		.attr('d', d => d.transition.join(' '))
 		.style('fill', (d, i) => {
-			return d3.rgb(Menu.colors(Montagnes.chaine[i].path.split('_')[0])).brighter((_i / d3.selectAll('g.chaine').size()) * 3)
+			return `url(#gradient-${d.color})`
+			// return d3.rgb(Menu.colors(d.color)).brighter(((d3.selectAll('g.range').size() - _i) / d3.selectAll('g.range').size()) * 2)
+			// return d3.rgb(Menu.colors(Mountains.rangeValues[i].path.split('_')[0]))
+				// .brighter(((d3.selectAll('g.range').size() - _i) / d3.selectAll('g.range').size()) * 2)
 		})
 
-	monts.addElems('line', 'basis')
+	ridges.addElems('line', 'basis')
 		.attrs({
-			'x1': c => -c.x / 5,
-			'x2': c => c.x * 6 / 5,
+			'x1': d => -d.x / 5,
+			'x2': d => d.x * 6 / 5,
 			'y1': 0,
 			'y2': 0
 		})
 
 	if (_i === 0) {
-		monts.addElems('g', 'axis axis--y')
-			.attr('transform', `translate(${[0, 0]})`)
+		ridges.addElems('g', 'axis axis--y')
+			.attr('transform', `translate(${[0, -1]})`)
 		.transition()
-			.call(d3.axisLeft(Montagnes.scale))
+			.call(d3.axisLeft(Mountains.scale))
 	}
 	else {
-		monts.selectAll('g.axis--y').remove()
+		ridges.selectAll('g.axis--y').remove()
 	}
 	
-	// const nameLabel = monts.addElems('g', 'namelabel')
+	// const nameLabel = ridges.addElems('g', 'namelabel')
 	// nameLabel.addElems('text', 'label--value')
 	// 	.attrs({
 	// 		'text-anchor': 'start',
@@ -427,13 +381,7 @@ Montagnes.draw = function (_d, _i) {
 	// 	})
 
 }
-Montagnes.height = (_d, _path) => {
-	if (debug) {
-		const obj = {}
-		for (let key in _d)
-			if (key.indexOf(_path) !== -1) obj[key] = _d[key]
-	}
-
+Mountains.height = (_d, _path) => {
 	let value = 0
 	for (let key in _d) {
 		if (key.indexOf(_path) !== -1) value += +_d[key]

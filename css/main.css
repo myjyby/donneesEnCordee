@@ -6,7 +6,8 @@
 }
 body {
 	font-family: 'Encode Sans Condensed', Helvetica, Arial, sans-serif;
-	background-color: #E5E2D9;
+	/*background-color: #E5E2D9;*/
+	background-color: #333;
 	font-size: 14px;
 }
 div.title {
@@ -14,6 +15,35 @@ div.title {
 	top: 2rem;
 	left: 2rem;
 	color: #333;
+}
+div.slide {
+	min-height: 100vh;
+	width: 100%;
+	position: relative;
+}
+.v-align {
+	display: table;
+}
+.v-align .inner {
+	display: table-cell;
+	vertical-align: middle;
+}
+.center {
+	text-align: center;
+}
+h1.main-title {
+	color: #E5E2D9;
+	font-size: 3rem;
+	font-weight: 300;
+	letter-spacing: .25rem;
+}
+.bg-dark {
+	background-color: #333;
+	/*background: linear-gradient(#333 0%, #E5E2D9 100%);*/
+	/*height: 200vh;*/
+}
+.bg-gradient {
+	background: linear-gradient(#fff 0%, #E5E2D9 50%);
 }
 h1 {
 	font-weight: 700;
@@ -175,10 +205,10 @@ rect.label--box {
 }
 
 
-.pic .fill {
+.peak .fill {
 	fill: url(#base-gradient);
 }
-.pic {
+.peak {
 	stroke: rgba(255,255,255,.25);
 	cursor: ew-resize;
 	/*stroke-linecap: round;
@@ -190,9 +220,9 @@ g.node circle {
 	cursor: ew-resize;
 }
 
-.mont {
+/*.ridge {
 	stroke: rgba(255,255,255,.25);
-}
+}*/
 .carte path {
 	cursor: pointer;
 	fill-rule: nonzero;
@@ -220,7 +250,7 @@ g.node circle {
 }
 
 
-.mont path.highlight, .carte path.highlight {
+.ridge path.highlight, .carte path.highlight {
 	fill: indianred !important;
 }
 
