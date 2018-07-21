@@ -304,3 +304,8 @@ line {
 .node.highlight-fill circle {
 	fill: indianred !important;
 }
+
+.tooltip .bg {
+	fill: #fff;
+	stroke: none;
+}

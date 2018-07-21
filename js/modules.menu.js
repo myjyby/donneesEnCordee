@@ -43,9 +43,6 @@ Menu.init = _data => {
 
 			Mountains.init()
 			Reasoning.init()
-
-			console.log(Mountains.rangeValues)
-			console.log(Mountains.rangeRelations())
 		})
 }
 Menu.data = _data => {

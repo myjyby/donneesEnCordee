@@ -62,8 +62,7 @@ Mountains.init = function (_data) {
 		.range([0, -(horizon - horizon * .33)]) // CHANGE THIS FOR MOUNT HEIGHT
 
 	if (!Mountains.position.domain().length) {
-		Mountains.position
-			.domain(Mountains.data.map(d => d['Commune']).shuffle())
+		Mountains.position.domain(Mountains.data.map(d => d['Commune']).shuffle())
 	}
 
 	const svg = d3.select('svg')
@@ -188,9 +187,6 @@ Mountains.paths = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 				
 				path.enter.push(`L${[obj.x, 0]}`)
 				path.transition.push(`L${[obj.x, 0]}`)
-				// RESET THE PATH
-				// path.color = Menu.colors(d.path.split('_')[0])
-				// path.parent = d.path.split('_')[0]
 				obj.paths.push(path)
 				
 				path = {}
@@ -254,6 +250,7 @@ Mountains.draw = function (_d, _i) {
 	const paths = Mountains.paths(_d)
 
 	// if (_d.Commune_court === 'Massif du Vercors') console.log(paths)
+	// console.log(paths)
 
 	const ridges = sel.addElems('g', 'ridge', [paths])
 	ridges.transition()

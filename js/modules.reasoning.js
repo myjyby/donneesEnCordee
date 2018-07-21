@@ -1,6 +1,9 @@
 if (!Reasoning) { var Reasoning = {} }
 Reasoning.scale = d3.scaleLinear()
 	.rangeRound(Mountains.position.range())
+Reasoning.hitpadding = 25
+Reasoning.yLimit = 50
+Reasoning.nodeSize = 10
 
 Reasoning.drag = d3.drag()
 	.on('start', function () { d3.select(this).moveToFront() })
@@ -16,9 +19,23 @@ Reasoning.drag = d3.drag()
 		d.x += evt.dx
 		d.x <= d3.min(Reasoning.scale.range()) ? d.x = d3.min(Reasoning.scale.range()) : null
 		d.x >= d3.max(Reasoning.scale.range()) ? d.x = d3.max(Reasoning.scale.range()) : null
-		sel.attr('transform', `translate(${[d.x, 0]})`)
+		
+		d.y += evt.dy
+		if (Math.abs(d.y) >= Reasoning.yLimit) {
+			sel.attr('transform', `translate(${[d.x, d.y]})`)
+				.call(Reasoning.tooltip, ['Supprimer'])
+			.select('circle')
+				.style('opacity', .5)
+			// NEED TO ADD LABEL HERE: REMOVE NODE?
+		}
+		else {
+			sel.attr('transform', `translate(${[d.x, 0]})`)
+				.select('circle')
+				.style('opacity', 1)
+			sel.selectAll('.tooltip').remove()
+		}
 
-		const hitTest = positions.map((c, j) => (c - 25 <= d.x && c + 25 >= d.x) ? j : null)
+		const hitTest = positions.map((c, j) => ((c - Reasoning.hitpadding <= d.x && c + Reasoning.hitpadding >= d.x) && (-Reasoning.yLimit <= d.y && Reasoning.yLimit >= d.y)) ? j : null)
 			.filter(d => d !== null)
 		
 		if (hitTest.length) {
@@ -26,44 +43,35 @@ Reasoning.drag = d3.drag()
 			// ANIMATE THE SIZE OF THE TARGET NODE
 			if (!target.classed('transitionning')) {
 				target.classed('transitionning', true)
+					.call(Reasoning.tooltip, ['+', '÷'])
 					.select('circle')
 				.transition()
 					.duration(150)
-					.attr('r', 25)
+					.attr('r', Reasoning.hitpadding)
 			}
 		}
 		else {
-			const target = otherNodes.filter(function () { return d3.select(this).classed('transitionning') })
-			target
+			otherNodes.filter(function () { return d3.select(this).classed('transitionning') })
 				.classed('transitionning', false)
 				.select('circle')
 			.transition()
 				.duration(150)
-				.attr('r', 10)
+				.attr('r', Reasoning.nodeSize)
+			otherNodes.selectAll('.tooltip').remove()
 		}
-
-		// const target = evt.sourceEvent.target
-		// if (target !== sel.select('circle').node())
-		// 	if (target.tagName.toLowerCase() === 'circle' && !d3.select(target).classed('transitionning'))
-		// 		d3.select(target)
-		// 			.classed('transitionning', true)
-		// 		.transition()
-		// 			.attr('r', 25)
-		// else 
-		// 	if (d3.set(d3.selectAll('g.node > circle').nodes().map(d => d.classList.contains('transitionning'))).values().indexOf('true') !== -1)
-		// 		d3.selectAll('g.node > circle')
-		// 			.classed('transitionning', false)
-		// 			.transition()
-		// 			.attr('r', 10)
-
 	})
-	.on('end', function (d) {
+	.on('end', function (d, i) {
 		const node = this
 		const sel = d3.select(this)
 		const otherNodes = d3.selectAll('g.node').filter(function () { return this != node })
 		const positions = otherNodes.data().map(c => c.x)
 
-		const hitTest = positions.map((c, j) => (c - 25 <= d.x && c + 25 >= d.x) ? j : null)
+		sel.selectAll('.tooltip').remove()
+
+		// CHECK IF NODE SHOULD BE REMOVED
+		if (Math.abs(d.y) >= Reasoning.yLimit) Mountains.rangeValues.splice(i, 1)
+
+		const hitTest = positions.map((c, j) => ((c - Reasoning.hitpadding <= d.x && c + Reasoning.hitpadding >= d.x) && (-Reasoning.yLimit <= d.y && Reasoning.yLimit >= d.y)) ? j : null)
 			.filter(c => c !== null)
 		
 		if (hitTest.length) {
@@ -128,15 +136,7 @@ Reasoning.drag = d3.drag()
 			}
 		}
 
-		const order = d3.select(this.parentNode).selectAll('g.node').data()
-			.sort((a, b) => a.x - b.x)
-			.map((d, i) => {
-				const obj = {}
-				obj[d.path] = i
-				return obj
-			})
 		Mountains.rangeValues.sort((a, b) => a.x - b.x)
-		// console.log(Mountains.rangeValues, order)
 
 		Mountains.init()
 		Reasoning.init()
@@ -144,12 +144,26 @@ Reasoning.drag = d3.drag()
 
 Reasoning.init = _data => {
 	const data = _data ? Mountains.parseData(_data) : d3.selectAll('g.range').data()
+	
+	const relations = Mountains.rangeRelations().map((d, i) => { return { type: d, index: i } })
+	const nodeGroups = []
+	while (relations.length) {
+		let cut = relations.filter((d, i) => i > 0).map(d => d.type).indexOf('discrete')
+		if (cut !== -1) cut ++ // WE NEED TO ADD 1 BECAUSE WE FILTERED THE FIRST RELATION OUT BEFORE
+		else cut = relations.length
+		nodeGroups.push(relations.splice(0, cut))
+	}
+	nodeGroups.forEach((d, i) => d.forEach((c, j) => {
+		c.groupIndex = i
+		c.offsetFactor = j - ((d.length / 2) - .5)
+	}))
 
 	// Reasoning.scale.domain([0, Mountains.rangeValues.length + 1])
-	Reasoning.scale.domain([0, Mountains.rangeRelations().filter(d => d === 'discrete').length + 1])
+	// Reasoning.scale.domain([0, Mountains.rangeRelations().filter(d => d === 'discrete').length + 1])
+	Reasoning.scale.domain([0, nodeGroups.length + 1])
 
 	const svg = d3.select('svg')
-	const chain = svg.addElems('g', 'raisonnement', [Mountains.rangeValues])
+	const chain = svg.addElems('g', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
 		.attr('transform', `translate(${[0, horizon + (height() - horizon) * .5]})`)
 		.each(Reasoning.draw)
 	chain.addElems('line')
@@ -162,27 +176,33 @@ Reasoning.init = _data => {
 }
 
 Reasoning.draw = function (_d, _i) {
+
 	const sel = d3.select(this)
 	const relations = Mountains.rangeRelations()
-
+	let iterator = 0
+	const nodeoffset = Reasoning.nodeSize * 1.5
+	
 	let g = sel.selectAll('g.node')
-		.data(_d, d => d.path)
+		.data(_d.values, d => d.path)
 	g.exit()
 		.remove()
 	g = g.enter()
 		.append('g')
 		.attrs({
 			'class': 'node',
-			'transform': (d, i) => `translate(${[d.x = Reasoning.scale(i + 1), 0]})`
+			'transform': (d, i) => {
+				const ref = _d.ref[i]
+				return `translate(${[d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.y = 0]})`
+			}
 		})
-	.call(Reasoning.drag)
-		.merge(g)
+	.merge(g)
+		.call(Reasoning.drag)
 	g.transition()
 		.attr('transform', (d, i) => {
-			if (relations[i] === 'discrete') return `translate(${[d.x = Reasoning.scale(i + 1), 0]})`
-			else return `translate(${[d.x = Reasoning.scale(i) + 10, 0]})`
+			const ref = _d.ref[i]
+			return `translate(${[d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.y = 0]})`
 		})
-
+	
 	let circle = g.selectAll('circle')
 		.data(d => [d], d => d.path)
 	circle = circle.enter()
@@ -191,7 +211,7 @@ Reasoning.draw = function (_d, _i) {
 		.attr('r', 0)
 		.merge(circle)
 	circle.transition()
-		.attr('r', 10)
+		.attr('r', Reasoning.nodeSize)
 
 	const label = g.addElems('text', 'label--value')
 		.attrs({
@@ -200,6 +220,46 @@ Reasoning.draw = function (_d, _i) {
 			'transform': 'rotate(-45)'
 		})
 		.style('text-anchor', 'end')
+		// .text(d => Mountains.rangeValues[d.index].value)
 		.text(d => d.value)
 
+}
+
+Reasoning.tooltip = (_sel, _labels) => {
+	let tooltip = _sel.selectAll('g.tooltip')
+		.data(_labels)
+	tooltip.exit().remove()
+	tooltip = tooltip.enter()
+		.append('g')
+		.attr('class', 'tooltip')
+		.style('opacity', 0)
+		// ('g', 'tooltip', _labels)
+		// .style('opacity', 0)
+
+	tooltip.addElems('text', 'label')
+		.text(d => d)
+
+	tooltip.insertElems('text.label', 'path', 'bg')
+		.attrs({ 'd': function () { 
+					const bbox = d3.select(this.parentNode).select('text.label').node().getBBox()
+					const x1 = -15, x2 = x1 + (bbox.width + 30)
+					const y1 = -(bbox.height + 4), y2 = y1 + (bbox.height + 15)
+					return `M${[x1, y1]} L${[x2, y1]} L${[x2, y2]} L${[(x2 + x1) / 2 + 7.5, y2]} L${[(x2 + x1) / 2, y2 + 10]} L${[(x2 + x1) / 2 - 7.5, y2]} L${[x1, y2]} Z`
+				 } })
+	tooltip.attr('transform', function () {
+			const bbox = d3.select(this).select('text.label').node().getBBox()
+			return `translate(${[-bbox.width / 2, -(bbox.height + 7.5)]})`
+		})
+	.merge(tooltip)
+	
+	const sizes = []
+	tooltip.selectAll('path.bg').each(function () { sizes.push(this.getBBox().width + 10) })
+
+	tooltip.transition()
+		.attr('transform', function (d, i) {
+			const bbox = d3.select(this).select('text.label').node().getBBox()
+			const offset = i - (sizes.length / 2 - .5)
+			return `translate(${[-(bbox.width / 2) + offset * d3.max(sizes), -(bbox.height + 7.5) - Reasoning.nodeSize]})`
+		})
+		.style('opacity', 1)
 }
