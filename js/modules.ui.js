@@ -14,6 +14,7 @@ UI.drag = d3.drag()
 				d.y - evt.dy * i / 25 > horizon ? d.y -= evt.dy * i / 25 : d.y = horizon
 				return `translate(${[d.x, d.y]})`
 			})
+			.each(function () { d3.select(this).call(Mountains.placeLabels) })
 	})
 	.on('end', () => d3.select('svg').classed('dragging', false))
 UI.svg = () => {
@@ -40,6 +41,8 @@ UI.svg = () => {
 	// 	})
 	svg.addElem('g', 'mountain')
 	// svg.addElem('g', 'axis axis--y')
+
+	svg.addElem('g', 'map')
 }
 
 UI.setGradient = _color => {

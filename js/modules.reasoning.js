@@ -1,4 +1,5 @@
 if (!Reasoning) { var Reasoning = {} }
+
 Reasoning.scale = d3.scaleLinear()
 	.rangeRound(Mountains.position.range())
 Reasoning.hitpadding = 25
@@ -164,7 +165,7 @@ Reasoning.init = _data => {
 
 	const svg = d3.select('svg')
 	const chain = svg.addElems('g', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
-		.attr('transform', `translate(${[0, horizon + (height() - horizon) * .5]})`)
+		.attr('transform', `translate(${[0, horizon + (height() - horizon) * .75]})`)
 		.each(Reasoning.draw)
 	chain.addElems('line')
 		.attrs({

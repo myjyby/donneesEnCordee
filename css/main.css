@@ -59,6 +59,7 @@ h3 {
 div.menu--indicators {
 	position: absolute;
 	top: 7.25rem;
+	/*top: calc(7.25rem + 350px);*/
 	left: 2rem;
 	max-height: calc(100vh - 14.5rem - 5px);
 	overflow: auto;
@@ -157,7 +158,10 @@ g.axis {
 	pointer-events: none;
 }
 line.basis {
-	stroke: rgba(0,0,0,.33);
+	/*stroke: rgba(0,0,0,.33);*/
+	stroke: #fff;
+	/*stroke-dasharray: 2, 5;*/
+	/*stroke-width: 2;*/
 }
 line.axis--link {
 	/*stroke-dasharray: 1, 5;*/
@@ -165,6 +169,9 @@ line.axis--link {
 	stroke-linejoin: round;
 	pointer-events: none;
 	stroke: #333;
+}
+text.axis--label {
+	fill: #333;
 }
 line.light {
 	stroke: rgba(102,102,102,.75);
@@ -201,7 +208,7 @@ g.label {
 rect.label--box {
 	fill: rgba(255,255,255,.9);
 	/*stroke: rgba(102,102,102,.75);*/
-	stroke: #333;
+	/*stroke: #333;*/
 }
 
 
@@ -308,4 +315,29 @@ line {
 .tooltip .bg {
 	fill: #fff;
 	stroke: none;
+}
+
+g.btn path.bg {
+	pointer-events: all;
+	cursor: pointer;
+	fill: transparent;
+}
+g.btn path.bg.hover {
+	stroke: #fff;
+}
+g.btn path.bg.active {
+	fill: #fff;
+}
+
+text.btn--label {
+	text-anchor: middle;
+	fill: #333;
+	pointer-events: none;
+}
+path.community {
+	fill: #fff;
+	stroke: #999;
+}
+path.community:hover {
+	fill: purple;
 }
