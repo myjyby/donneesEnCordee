@@ -13,6 +13,7 @@
 	<script type='text/javascript' src='./js/modules.ui.js'></script>
 	<script type='text/javascript' src='./js/modules.menu.js'></script>
 	<script type='text/javascript' src='./js/modules.mountains.js'></script>
+	<script type='text/javascript' src='./js/modules.map.js'></script>
 	<script type='text/javascript' src='./js/modules.reasoning.js'></script>
 
 	<link rel='stylesheet' type='text/css' href='css/main.css'>
@@ -39,7 +40,8 @@
 	d3.queue()
 		.defer(d3.csv, './data/data.csv')
 		.defer(d3.csv, './data/indicators.csv')
-		.await((err, data, indicators) => {
+		.defer(d3.json, './data/lc.topojson')
+		.await((err, data, indicators, topo) => {
 			if (err) throw err
 
 			const communes = d3.set(data.map(d => d.Commune_court)).values()
@@ -51,11 +53,14 @@
 
 			maxHeight = height() / data.length
 
+			const geojson = topojson.feature(topo, topo.objects.lc_EPSG2154)
+
 			// // INITIALIZE THE USER INTERFACE
 			UI.init()
 			Menu.init(indicators)
 
 			Mountains.init(data)
+			Map.init(geojson)
 			Reasoning.init(data)
 			// new Mountains(data)
 		})
