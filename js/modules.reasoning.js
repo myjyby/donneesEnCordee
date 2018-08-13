@@ -38,12 +38,13 @@ Reasoning.drag = d3.drag()
 
 		const hitTest = positions.map((c, j) => ((c - Reasoning.hitpadding <= d.x && c + Reasoning.hitpadding >= d.x) && (-Reasoning.yLimit <= d.y && Reasoning.yLimit >= d.y)) ? j : null)
 			.filter(d => d !== null)
+		const target = d3.select(d3.event.sourceEvent.target)
 		
-		if (hitTest.length) {
-			const target = otherNodes.filter((c, j) => j === hitTest[0])
+		if (hitTest.length || (target.findAncestor('tooltip') && target.findAncestor('node') && target.findAncestor('raisonnement'))) {
+			const targetNode = hitTest.length ? otherNodes.filter((c, j) => j === hitTest[0]) : target.findAncestor('node')
 			// ANIMATE THE SIZE OF THE TARGET NODE
-			if (!target.classed('transitionning')) {
-				target.classed('transitionning', true)
+			if (!targetNode.classed('transitionning')) {
+				targetNode.classed('transitionning', true)
 					.call(UI.tooltip, [{ label: '+', y: Reasoning.nodeSize }, { label: '÷', y: Reasoning.nodeSize }])
 					.select('circle')
 				.transition()
@@ -74,9 +75,12 @@ Reasoning.drag = d3.drag()
 		const hitTest = positions.map((c, j) => ((c - Reasoning.hitpadding <= d.x && c + Reasoning.hitpadding >= d.x) && (-Reasoning.yLimit <= d.y && Reasoning.yLimit >= d.y)) ? j : null)
 			.filter(c => c !== null)
 		const target = d3.select(d3.event.sourceEvent.target)
-		console.log(target.node(), hitTest, target.datum())
+		// console.log(target.node(), hitTest, target.datum())
 
-		if (hitTest.length && target.findAncestor('label') && target.findAncestor('node') && target.findAncestor('raisonnement')) {
+		// console.log(target.node(), target.node().parentNode, target.node().parentNode.parentNode)
+
+		// if (hitTest.length || target.findAncestor('tooltip') && target.findAncestor('node') && target.findAncestor('raisonnement')) {
+		if (target.findAncestor('tooltip') && target.findAncestor('node') && target.findAncestor('raisonnement')) {
 
 			const d1 = target.findAncestor('node').datum()
 			let scale 
@@ -96,20 +100,34 @@ Reasoning.drag = d3.drag()
 				// 02.a - REMOVE THE TARGET INDICATOR
 				Mountains.rangeValues.splice(idx, 1)
 				// 03 - ADD A COMPISITE INDICATOR FOR THE SUM
-				Mountains.rangeValues.splice(idx, 0, { 
-					type: target.datum().label === '+' ? 'sum' : 'div', 
-					// key: `${d1.key}+${d.key}`, 
-					path: `${d1.path}+${d.path}`, 
-					// value: `${d1.value} + ${d.value}`, 
-					// x: d1.x + d.x,
-					// PUT THE TARGET FIRST, SINCE THE USER TECHNICALLY PLACES THE NODE ON TOP OF THE TARGET
-					sources: d.type === 'value' && d1.type === 'value' ? [Object.assign({}, d1), Object.assign({}, d)]
-							 : d.type === 'value' && d1.type !== 'value' ? d1.sources.concat([Object.assign({}, d)])
-							 : d.type !== 'value' && d1.type === 'value' ? ([Object.assign({}, d1)]).concat(d.sources)
-							 : d1.sources.concat(d)
-				})
+				// Mountains.rangeValues.splice(idx, 0, { 
+				// 	type: target.datum().label === '+' ? 'sum' : 'div', 
+				// 	// key: `${d1.key}+${d.key}`, 
+				// 	path: `${d1.path}+${d.path}`, 
+				// 	// value: `${d1.value} + ${d.value}`, 
+				// 	// x: d1.x + d.x,
+				// 	// PUT THE TARGET FIRST, SINCE THE USER TECHNICALLY PLACES THE NODE ON TOP OF THE TARGET
+				// 	sources: d.type === 'value' && d1.type === 'value' ? [Object.assign({}, d1), Object.assign({}, d)]
+				// 			 : d.type === 'value' && d1.type !== 'value' ? d1.sources.concat([Object.assign({}, d)])
+				// 			 : d.type !== 'value' && d1.type === 'value' ? ([Object.assign({}, d1)]).concat(d.sources)
+				// 			 : d1.sources.concat(d)
+				// })
+				const obj = {}
+				if (target.datum().label === '+') {
+					obj.type = 'sum'
+					if (d.type === 'value' && d1.type === 'value') obj.sources = [Object.assign({}, d1), Object.assign({}, d)]
+					if (d.type === 'value' && d1.type !== 'value') obj.sources = d1.sources.concat([Object.assign({}, d)])
+					if (d.type !== 'value' && d1.type === 'value') obj.sources = ([Object.assign({}, d1)]).concat(d.sources)
+				}
+				else if (target.datum().label === '÷') {
+					obj.type = 'division'
+					if (d.type === 'value' && d1.type === 'value') obj.sources = [Object.assign({ division: 'divisor' }, d1), Object.assign({ division: 'dividend' }, d)]
+				}
+				obj.path = `${d1.path}+${d.path}`
+
+				Mountains.rangeValues.splice(idx, 0, obj)
 			}
-			console.log(Mountains.rangeValues)
+			// console.log(Mountains.rangeValues)
 
 
 		}
@@ -237,7 +255,7 @@ Reasoning.draw = function (_d, _i) {
 	g = g.enter()
 		.append('g')
 		.attrs({
-			'class': 'node',
+			'class': 'node', //d => `node ${d.type}`,
 			'transform': (d, i) => {
 				const ref = _d.ref[i]
 				return `translate(${[d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.y = 0]})`
@@ -252,14 +270,42 @@ Reasoning.draw = function (_d, _i) {
 		})
 	
 	let circle = g.selectAll('circle')
-		.data(d => [d], d => d.path)
+		.data(d => d.type === 'value' ? [d] : d.sources, d => d.path)
 	circle = circle.enter()
 		.append('circle')
 		.each(function (d, i) { d3.select(this).classed(`c-${i}`, true) })
 		.attr('r', 0)
+		.style('stroke', function (d, i) {
+			const datum = this.parentNode['__data__']
+			if (datum.type === 'value') return null
+			else if (datum.type === 'sum' && i > 0) return 'rgba(255,255,255,.5)'
+			else if (datum.type === 'division' && i === 0) return 'rgba(51,51,51,.33)'
+			else return null
+		})
+		// .style('stroke-width', function (d, i) {
+		// 	const datum = this.parentNode['__data__']
+		// 	if (datum.type === 'value') return null
+		// 	else if (datum.type === 'sum' && i > 0) return null
+		// 	else if (datum.type === 'division' && i === 0) return 1.25
+		// 	else return null
+		// })
+		.style('fill', function (d, i) {
+			const datum = this.parentNode['__data__']
+			if (datum.type === 'value') return null
+			else if (datum.type === 'sum' && i > 0) return null
+			else if (datum.type === 'division' && i === 0) return 'transparent'
+			else return null
+		})
 		.merge(circle)
 	circle.transition()
-		.attr('r', Reasoning.nodeSize)
+		.attr('r', function (d, i) {
+			const datum = this.parentNode['__data__']
+			// console.log(datum)
+			if (datum.type === 'value') return Reasoning.nodeSize
+			else if (datum.type === 'sum') return ((datum.sources.length - i) / datum.sources.length) * Reasoning.hitpadding / 2 //* datum.sources.length / 2
+			else if (datum.type === 'division') return ((datum.sources.length - i) / datum.sources.length) * Reasoning.nodeSize
+			else return Reasoning.nodeSize
+		})
 
 	const label = g.addElems('text', 'label--value')
 		.attrs({

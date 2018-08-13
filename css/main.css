@@ -219,12 +219,21 @@ g.label,
 g.nameLabel {
 	cursor: ew-resize;
 }
-g.peak--label {
+g.peak--label,
+g.ridge--rate {
 	pointer-events: none;
 }
-g.peak--label line {
+g.peak--label line,
+g.ridge--rate line {
 	stroke: #fff;
 	/*stroke-width: 2;*/
+}
+g.ridge--rate circle {
+	fill: #fff;
+}
+g.ridge--rate text {
+	text-anchor: middle;
+	fill: #333;
 }
 text {
 	font-size: 12px;
@@ -260,6 +269,8 @@ rect.label--box {
 .peak {
 	stroke: rgba(255,255,255,.25);
 	cursor: ew-resize;
+	stroke-linecap: round;
+	stroke-linejoin: round;
 	/*stroke-linecap: round;
 	stroke-linejoin: round;*/
 }
@@ -346,6 +357,7 @@ line {
 	stroke: rgba(255,255,255,.25);
 	cursor: pointer;	
 }
+
 .node.highlight-parent circle {
 	stroke: firebrick;
 	fill: transparent !important;
@@ -354,6 +366,9 @@ line {
 	fill: indianred !important;
 }
 
+.tooltip {
+	cursor: pointer;
+}
 .tooltip .bg {
 	fill: #fff;
 	stroke: none;
