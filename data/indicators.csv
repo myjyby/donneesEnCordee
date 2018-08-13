@@ -1,119 +1,110 @@
-Structure,Indicateur,Type,Type_JB,
-Enfance_Population,Population,Nombre,nombre,
-Enfance_Naissances_2015,Naissances 2015,Nombre,nombre,
-Enfance_Naissances_2010,Naissances 2010,Nombre,nombre,
-Enfance_Naissances_variation_annuelle,Taux de variation annuel moyen des naissances (2010-2015),Pourcentage,taux,
-Enfance_Taux_de_natalite_2015,Taux de natalité (pour 1000 habitants)2015,Pour mille,taux,
-Enfance_Menages_2013,Nb ménages 2013,Nombre,nombre,
-Enfance_Menages_2008,Nb ménages 2008,Nombre,nombre,
-Enfance_Menages_variation_annuelle,Taux de variation annuel moyen du nb de ménages,Pourcentage,taux,
-Enfance_Age_0-2_2016,0-2 ans 2016,Nombre,nombre,JB a ajoute 2016: est-ce la bonne annee?
-Enfance_Age_0-2_2008,0-2 ans 2008,Nombre,nombre,
-Enfance_Age_0-2_variation_annuelle,Taux de variation annuel moyen des 0-2 ans,Pourcentage,taux,
-Enfance_Age_3-5_2016,3-5 ans 2016,Nombre,nombre,
-Enfance_Age_3-5_2008,3-5 ans 2008,Nombre,nombre,
-Enfance_Age_3-5_variation_annuelle,Taux de variation annuel moyen des 3-5 ans,Pourcentage,taux,
-Enfance_Age_6-11_2016,6 - 11 ans 2016,Nombre,nombre,
-Enfance_Age_6-11_2008,6 – 11 ans 2008,Nombre,nombre,
-Enfance_Age_6-11_variation_annuelle,Taux de variation annuel moyen des 6-11 ans,Pourcentage,taux,
-Enfance_Age_12-15_2016,12 - 15 ans 2016,Nombre,nombre,
-Enfance_Age_12-15_2008,12-15 ans 2008,Nombre,nombre,
-Enfance_Age_12-15_variation_annuelle,Taux de variation annuel moyen des 12-15 ans,Pourcentage,taux,
-Enfance_Age_16-19_2016,16-19 ans 2016,Nombre,nombre,
-Enfance_Age_16-19_2008,16-19 ans 2008,Nombre,nombre,
-Enfance_Age_16-19_variation_annuelle,Taux de variation annuel moyen des 16-19 ans,Pourcentage,taux,
-Enfance_Age_20-24_2016,20 -24 ans 2016,Nombre,nombre,
-Enfance_Age_20-24_2008,20-24 ans 2008,Nombre,nombre,
-Enfance_Age_20-24_variation_annuelle,Taux de variation annuel moyen des 20-24 ans,Pourcentage,taux,
-Enfance_-6ans_Menage_bas-revenus,- 6 ans vivant dans un ménage à bas revenus,Nombre,nombre,
-Enfance_-6ans_Menage_monoparental,-6 ans vivant dans un ménage monop,Nombre,nombre,
-Enfance_ASSMAT_places,ASSMAT places,Nombre,nombre,
-Enfance_ASSMAT_nb,ASSMAT nb,Nombre,nombre,
-Enfance_ASSMAT_taux100_Age_6,Places pour 100 enf de moins de 6 ans,Nombre,taux,
-Enfance_EAJE_nb,Nb EAJE 2016,Nombre,nombre,
-Enfance_EAJE_places,Nb places EAJE 2016,Nombre,nombre,
-Enfance_EAJE_taux100_Age_6,Nb places en EAJE pour 100 enfants (-6ans),Nombre,taux,
-Enfance_Allocataires PAJE,Nb allocataires complément activité PAJE taux plein versable,Nombre,nombre,
-Enfance_AEEH versable_Allocataires,Nb allocataires avec AEEH versable,Nombre,nombre,
-Enfance_AEEH versable_Enfants bénéficiaires,Nb enfants bénéficiaires AEEH versable,Nombre,nombre,
-Enfance_Aides_AM,Nb aides accordées AM,Nombre,nombre,
-Enfance_Aides_SU,Nb aides accordées SU,Nombre,nombre,
-Enfance_Aides_FAJ,Nb aides accordées FAJ,Nombre,nombre,
-Enfance_Aides_FAJU,Nb aides accordées FAJU,Nombre,nombre,
-Enfance_Ecoles_nb,Nb écoles 1er degré,Nombre,nombre,
-Enfance_Ecoles_Maternelle,Effectif maternelle,Nombre,nombre,
-Enfance_Ecoles_Elementaire,Effectif élémentaire,Nombre,nombre,
-Enfance_Colleges_nb,Nb etablissements collèges,Nombre,nombre,
-Enfance_Colleges_Eleves,Nombre d'élèves,Nombre,nombre,
-Enfance_Eleves transportes,Nombre d'enfants transportés,Nombre,nombre,
-Insertion_Foyers_fiscaux,Foyers fiscaux,Nombre,nombre,
-Insertion_Foyers_fiscaux_imposables,Foyers fiscaux imposables,Nombre,nombre,
-Insertion_Part_foyers_fiscaux_imposables,Part des foyers fiscaux imposables,Pourcentage,taux,
-Insertion_Revenu_fiscal_moyen,Revenu fiscal moyen,Nombre,nombre,
-Insertion_BR_2015,Pop couv alloc BR,Nombre,nombre,
-Insertion_BR_Age_0_65,0-65,Nombre,nombre,
-Insertion_Age_0_65,Part dans les 0-65 ans,Pourcentage,taux,
-Insertion_RSA_2015,Alloc RSA 2015,Nombre,nombre,
-Insertion_RSA_2014,Alloc RSA 2014,Nombre,nombre,
-Insertion_RSA_evolution,Evol,Pourcentage,taux,
-Insertion_Population_couverte,Pop couv,Nombre,nombre,
-Insertion_DEFM_ABC_2015,DEFM ABC 2015,Nombre,nombre,
-Insertion_DEFM_ABC_2014,DEFM ABC 2014,Nombre,nombre,
-Insertion_DEFEM_ABC_evolution,Evol,Pourcentage,taux,
-Insertion_Age_25,-25 ans,Nombre,nombre,
-Insertion_Age_50,+50 ans,Nombre,nombre,
-Insertion_Tres_longue_duree,Très longue durée,Nombre,nombre,
-Insertion_Hommes,Hommes,Nombre,nombre,
-Insertion_Femmes,Femmes,Nombre,nombre,
-Insertion_Emplois,Nombre d'emplois présents,Nombre,nombre,
-Insertion_Emplois_secteur_agricole,dans le secteur agricole,Nombre,nombre,
-Insertion_Emplois_secteur_industriel,dans le secteur industriel,Nombre,nombre,
-Insertion_Emplois_construction,dans la construction,Nombre,nombre,
-Insertion_Emplois_commerce,"dans le commerce, les transports et services",Nombre,nombre,
-Insertion_Emplois_publique,"dans l'administration publique, l'enseignement, la santé et l'action sociale",Nombre,nombre,
-Insertion_Residences_principales, Nombre de résidences principales,Nombre,nombre,
-Insertion_Residences_proprietaires,Dont propriétaires,Nombre,nombre,
-Insertion_Residences_locataires,Dont locataires,Nombre,nombre,
-Insertion_Residences_locataires_publique,Dont locataires  du parc public ,Nombre,nombre,
-Insertion_Beneficiares_FSL,Nombre de bénéficiaires du FSL charges courantes,Nombre,nombre,
-Autonomie_APA_domicile_Annee_2016,Bénéficaires de l'APA à domicile en 2016,Nombre,nombre,
-Autonomie_APA_domicile_Annee_2011,Bénéficiaires de l'APA à domicile en 2011,Nombre,nombre,
-Autonomie_APA_domicile_variation_annuelle,Taux de variation annuel moyen des bénéficiaires de l'APA à domicile (2011-2016),Pourcentage,taux,
-Autonomie_APA_domicile_Sexe_hommes,Dont hommes,Nombre,nombre,
-Autonomie_APA_domicile_Sexe_femmes,Dont femmes,Nombre,nombre,
-Autonomie_APA_domicile_GIR_1-2,Dont GIR 1 et 2,Nombre,nombre,
-Autonomie_APA_domicile_GIR_3-4,Dont GIR 3 et 4,Nombre,nombre,
-Autonomie_APA_domicile_Age_60-79,Dont 60-79 ans,Nombre,nombre,
-Autonomie_APA_domicile_Age_80-84,Dont 80-84 ans,Nombre,nombre,
-Autonomie_APA_domicile_Age_85,Dont plus de 85 ans,Nombre,nombre,
-Autonomie_APA_etablissement_Annee_2016,Bénéficiaires de l'APA en établissement en 2016,Nombre,nombre,
-Autonomie_APA_etablissement_Annee_2011,Bénéficiaires de l'APA en établissement en 2011,Nombre,nombre,
-Autonomie_APA_etablissement_variation_annuelle,Taux de variation annuel moyen des bénéficiaires de l'APA en établissement (2011-2016),Pourcentage,taux,
-Autonomie_APA_etablissement_Sexe_hommes,Dont hommes,Nombre,nombre,
-Autonomie_APA_etablissement_Sexe_femmes,Dont femmes,Nombre,nombre,
-Autonomie_APA_etablissement_GIR_1-2,Dont GIR 1 et 2,Nombre,nombre,
-Autonomie_APA_etablissement_GIR_3-4,Dont GIR 3 et 4,Nombre,nombre,
-Autonomie_APA_etablissement_Age_60-79,Dont 60-79 ans,Nombre,nombre,
-Autonomie_APA_etablissement_Age_80-84,Dont 80-84 ans,Nombre,nombre,
-Autonomie_APA_etablissement_Age_85,Dont plus de 85 ans,Nombre,nombre,
-Autonomie_Demographie_2013_Age_60-79,60-79 ans 2013,Nombre,nombre,
-Autonomie_Demographie_2008_Age_60-79,60-79 ans 2008,Nombre,nombre,
-Autonomie_Demographie_pourcentage_Age_60-79,Part des 60-79 ans dans la pop,Pourcentage,taux,
-Autonomie_Demographie_variation_annuelle_Age_60-79,Taux variation annuel moyen 60-79 ans,Pourcentage,taux,
-Autonomie_Demographie_2013_Age_80-84,80-84 ans 2013,Nombre,nombre,
-Autonomie_Demographie_2008_Age_80-84,80-84 ans 2008,Nombre,nombre,
-Autonomie_Demographie_pourcentage_Age_80-84,Part des 80-84 ans dans la pop,Pourcentage,taux,
-Autonomie_Demographie_variation_annuelle_Age_80-84,Taux variation annuel moyen 80-84 ans,Pourcentage,taux,
-Autonomie_Demographie_2013_Age_85,85 ans ou plus 2013,Nombre,nombre,
-Autonomie_Demographie_2008_Age_85,85 ans ou plus 2008,Nombre,nombre,
-Autonomie_Demographie_pourcentage_Age_85,Part des 85 ans ou plus dans la pop,Pourcentage,taux,
-Autonomie_Demographie_variation_annuelle_Age_85,Taux variation annuel moyen 85 ans ou plus,Pourcentage,taux,
-Autonomie_Population totale,Pop,Nombre,nombre,
-Autonomie_PCH_2016,PCH 2016,Nombre,nombre,
-Autonomie_EHPAD,EHPAD,Nombre,nombre,
-Autonomie_EHPAD_places,EHPAD places,Nombre,nombre,
-Autonomie_EHPAD_places_pour_100_personnes_Age_80,Places EHPAD pour 100 personnes de 80 ans ou plus,Nombre,taux,
-Autonomie_Minimum_vieillesse_RG_2016,Nb retraités bénéficiaires du minimum vieillesse du RG 2016,Nombre,nombre,
-Autonomie_Logement_ordinaire_Age_80,80 ans ou plus logement ordinaire,Nombre,nombre,
-Autonomie_Logement_etablissement_Age_80,80 ans ou plus étab,Nombre,nombre,
-Autonomie_Logement_autre_Age_80,80 ans ou plus autres,Nombre,nombre,
+Structure,Indicateur,Index_Echelle,Label_Echelle,Type,Type_JB
+Général_Population_Total,Population Municipale 2013,personnes,personnes,Nombre,nombre
+Général_Ménages_2013,Nbre de ménages 2013,menages,ménages,Nombre,nombre
+Général_Ménages_2008,Nbre de ménages 2008,menages,ménages,Nombre,nombre
+Général_Menages_variation_annuelle,Taux de variation annuel moyen du nb de ménages,,,Pourcentage,taux
+Général_Foyers fiscaux_tous,Nbre de foyers fiscaux,foyers,foyers,Nombre,nombre
+Général_Foyers fiscaux_imposables,Nbre de foyers fiscaux imposables,foyers,foyers,Nombre,nombre
+Général_Revenu Fiscal Moyen,Revenu fiscal moyen,montant,montant (euros),Nombre,nombre
+Général_Population_Tranches d'âge_0-2 ans_2013,Nbre d'enfants entre 0-2 ans 2013,personnes,personnes,Nombre,nombre
+Général_Population_Tranches d'âge_0-2 ans_2008,Nbre d'enfants entre 0-2 ans 2008,personnes,personnes,Nombre,nombre
+Général_Population par tranches d'âge_0-2_variation_annuelle,Taux de variation annuel moyen des 0-2 ans,,,Pourcentage,taux
+Général_Population_Tranches d'âge_3-5 ans_2013,Nbre d'enfants entre 3-5 ans 2013,personnes,personnes,Nombre,nombre
+Général_Population_Tranches d'âge_3-5 ans_2008,Nbre d'enfants entre 3-5 ans 2008,personnes,personnes,Nombre,nombre
+Général_Population par tranches d'âge_3-5_variation_annuelle,Taux de variation annuel moyen des 3-5 ans,,,Pourcentage,taux
+Général_Population_Tranches d'âge_6-11 ans_2013,Nbre d'enfants entre 6 - 11 ans 2013,personnes,personnes,Nombre,nombre
+Général_Population_Tranches d'âge_6-11 ans_2008,Nbre d'enfants entre 6 – 11 ans 2008,personnes,personnes,Nombre,nombre
+Général_Population par tranches d'âge_6-11_variation_annuelle,Taux de variation annuel moyen des 6-11 ans,,,Pourcentage,taux
+Général_Population_Tranches d'âge_12-15 ans_2013,Nbre de jeunes entre 12 - 15 ans 2013,personnes,personnes,Nombre,nombre
+Général_Population_Tranches d'âge_12-15 ans_2008,Nbre de jeunes entre 12-15 ans 2008,personnes,personnes,Nombre,nombre
+Général_Population par tranches d'âge_12-15_variation_annuelle,Taux de variation annuel moyen des 12-15 ans,,,Pourcentage,taux
+Général_Population_Tranches d'âge_16-19 ans_2013,Nbre de jeunes 16-19 ans 2013,personnes,personnes,Nombre,nombre
+Général_Population_Tranches d'âge_16-19 ans_2008,Nbre de jeunes 16-19 ans 2008,personnes,personnes,Nombre,nombre
+Général_Population par tranches d'âge_16-19_variation_annuelle,Taux de variation annuel moyen des 16-19 ans,,,Pourcentage,taux
+Général_Population_Tranches d'âge_20-24 ans_2013,Nbre de jeunes 20 -24 ans 2013,personnes,personnes,Nombre,nombre
+Général_Population_Tranches d'âge_20-24 ans_2008,Nbre de jeunes 20-24 ans 2008,personnes,personnes,Nombre,nombre
+Général_Population par tranches d'âge_20-24_variation_annuelle,Taux de variation annuel moyen des 20-24 ans,,,Pourcentage,taux
+Enfance_Naissances_2015,Nbre d'enfants nés en 2015,personnes,personnes,Nombre,nombre
+Enfance_Naissances_2010,Nbre d'enfants nés en 2010,personnes,personnes,Nombre,nombre
+Enfance_Naissances_variation_annuelle,Taux de variation annuel moyen des naissances (2010-2015),,,Pourcentage,taux
+Enfance_Taux_de_natalite_2015,Taux de natalité (pour 1000 habitants)2015,,,Pour mille,taux
+Enfance_Enfants < 6ans_Ménage_bas-revenus,Nbre d'enfants < 6 ans dans un ménage à bas revenu,personnes,personnes,Nombre,nombre
+Enfance_Enfants < 6ans_Ménage_monoparental,Nbre d'enfants < 6 ans dans un ménage monoparental,personnes,personnes,Nombre,nombre
+Enfance_Ass. Maternelles_places,Places disponibles auprès d'Assistantes Maternelles,places,places,Nombre,nombre
+Enfance_Ass. Maternelles_nombre,Nbre d'Assistantes Maternelles,personnes,personnes,Nombre,nombre
+Enfance_ASSMAT_taux100_Age_6,Places pour 100 enf de moins de 6 ans,,,Nombre,taux
+Enfance_Étab. Acc. Jeune Enfant_nombre,Nbre d'Établissements d'Accueil du Jeune Enfant 2016,batiments,bâtiments,Nombre,nombre
+Enfance_Étab. Acc. Jeune Enfant_places,Places disponibles en Établissement d'Accueil du Jeune Enfant 2016,personnes,personnes,Nombre,nombre
+Enfance_EAJE_taux100_Age_6,Nb places en EAJE pour 100 enfants (-6ans),,,Nombre,taux
+Enfance_Prestations Acc. Jeune Enfant,Nbre d'allocataires des Prestations d'Accueil du Jeune Enfant,personnes,personnes,Nombre,nombre
+Enfance_All. Edu. Enf. Handicapé_Allocataires,Nbre d'allocataires de l'Allocation d'Éducation de l'Enfant Handicapé,personnes,personnes,Nombre,nombre
+Enfance_All. Edu. Enf. Handicapé_Enfants bénéficiaires,Nbre d'enfants bénéficiaires de l'Allocation d'Éducation de l'Enfant Handicapé,personnes,personnes,Nombre,nombre
+Enfance_Aides_AM,Nbre d'Allocations Mensuelles accordées,aides,aides,Nombre,nombre
+Enfance_Aides_SU,Nbre d'aides de Secours d'Urgence accordées,aides,aides,Nombre,nombre
+Enfance_Aides_FAJ,Nbre d'aides accordées sur le Fond d'Aide aux Jeunes,aides,aides,Nombre,nombre
+Enfance_Aides_FAJU,Nbre d'aides accordées sur le Fond d'Aide aux Jeunes d'Urgence,aides,aides,Nombre,nombre
+Enfance_Écoles_établissements,Nbre d'écoles du 1er degré,batiments,bâtiments,Nombre,nombre
+Enfance_Écoles_Effectif_Maternelle,Effectif total à l'école maternelle,personnes,personnes,Nombre,nombre
+Enfance_Écoles_Effectif_Elémentaire,Effectif total à l'école élémentaire,personnes,personnes,Nombre,nombre
+Enfance_Collèges_établiss.,Nbre de collèges,batiments,bâtiments,Nombre,nombre
+Enfance_Collèges_effectif,Effectif total au collège,personnes,personnes,Nombre,nombre
+Enfance_Elèves transportés,Nbre d'élèves transportés,personnes,personnes,Nombre,nombre
+Insertion_Alloc. Bas Revenu_2015,Nbre d'allocataires Bas Revenu (0-65 ans),personnes,personnes,Nombre,nombre
+Insertion_BR_Age_0_65,Part dans les 0-65 ans,,,Pourcentage,taux
+Insertion_Foyers Alloc. RSA_2015,Nbre de foyers allocataires RSA 2015,foyers,foyers,Nombre,nombre
+Insertion_Foyers Alloc. RSA_2014,Nbre de foyers allocataires RSA 2014,foyers,foyers,Nombre,nombre
+Insertion_RSA_evolution,Evol,,,Pourcentage,taux
+Insertion_Population Couverte RSA,Population couverte par le RSA,personnes,personnes,Nombre,nombre
+Insertion_Demandeurs d'emploi_2015,Nbre de demandeurs d'emploi (DEFM ABC) en 2015,personnes,personnes,Nombre,nombre
+Insertion_Demandeurs d'emploi_2014,Nbre de demandeurs d'emploi (DEFM ABD) en 2014,personnes,personnes,Nombre,nombre
+Insertion_DEFEM_ABC_evolution,Evol,,,Pourcentage,taux
+Insertion_Demandeurs d'emploi_Types_Age_< 25 ans,Nbre de demandeurs d'emploi de moins de 25 ans,personnes,personnes,Nombre,nombre
+Insertion_Demandeurs d'emploi_Types_Age_> 50 ans,Nbre de demandeurs d'emploi de plus de 50 ans,personnes,personnes,Nombre,nombre
+Insertion_Demandeurs d'emploi_Types_Très longue durée,Nbre de demandeurs d'emploi de très longue durée,personnes,personnes,Nombre,nombre
+Insertion_Demandeurs d'emploi_Types_Genre_Hommes,Nbre d'hommes demandeurs d'emploi,personnes,personnes,Nombre,nombre
+Insertion_Demandeurs d'emploi_Types_Genre_Femmes,Nbre de femmes demandeurs d'emploi,personnes,personnes,Nombre,nombre
+Insertion_Emplois_Total,Nbre d'emplois disponibles,emplois,emplois,Nombre,nombre
+Insertion_Emplois_Secteurs_agricole,Nbre d'emplois disponibles dans le secteur agricole,emplois,emplois,Nombre,nombre
+Insertion_Emplois_Secteurs_industriel,Nbre d'emplois disponibles dans le secteur industriel,emplois,emplois,Nombre,nombre
+Insertion_Emplois_Secteurs_construction,Nbre d'emplois disponibles dans la construction,emplois,emplois,Nombre,nombre
+Insertion_Emplois_Secteurs_service,Nbre d'emplois disponibles dans le service,emplois,emplois,Nombre,nombre
+Insertion_Emplois_Secteurs_publique,Nbre d'emplois disponibles dans le secteur public,emplois,emplois,Nombre,nombre
+Insertion_Résidences Principales,Nbre de résidences principales,batiments,bâtiments,Nombre,nombre
+Insertion_Résidences_Types_propriétaires,Nbre de résidences pcpales avec propriétaires,batiments,bâtiments,Nombre,nombre
+Insertion_Résidences_Types_locataires,Nbre de résidences pcpales avec locataires,batiments,bâtiments,Nombre,nombre
+Insertion_Résidences_Types_locataires du parc public,Nbre de résidences pcpales avec locataires du parc public,batiments,bâtiments,Nombre,nombre
+Insertion_Ménages Alloc. FSL,Nbre de ménages allocataires FSL charges courantes,menages,ménages,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_domicile_Annee_2016,Nbre de bénéficaires de l'APA à domicile en 2016,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_domicile_Annee_2011,Nbre de bénéficiaires de l'APA à domicile en 2011,personnes,personnes,Nombre,nombre
+Autonomie_APA_domicile_variation_annuelle,Taux de variation annuel moyen des bénéficiaires de l'APA à domicile (2011-2016),,,Pourcentage,taux
+Autonomie_Alloc. Personnalisée d'Autonomie_domicile_Sexe_hommes,Nbre d'hommes bénéficaires de l'APA à domicile,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_domicile_Sexe_femmes,Nbre de femmes bénéficaires de l'APA à domicile,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_domicile_GIR_1-2,Nbre de GIR 1 et 2 bénéficaires de l'APA à domicile,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_domicile_GIR_3-4,Nbre de GIR 3 et 4 bénéficaires de l'APA à domicile,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_domicile_Age_60-79 ans,Nbre de bénéficaires de l'APA à domicile entre 60 et 79 ans,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_domicile_Age_80-84 ans,Nbre de bénéficaires de l'APA à domicile entre 80 et 85 ans,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_domicile_Age_85 ans et +,Nbre de bénéficaires de l'APA à domicile de 85 ans et +,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_établissement_Annee_2016,Nbre de bénéficaires de l'APA en établissement en 2016,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_établissement_Annee_2011,Nbre de bénéficaires de l'APA en établissement en 2011,personnes,personnes,Nombre,nombre
+Autonomie_APA_etablissement_variation_annuelle,Taux de variation annuel moyen des bénéficiaires de l'APA en établissement (2011-2016),,,Pourcentage,taux
+Autonomie_Alloc. Personnalisée d'Autonomie_établissement_Sexe_hommes,Nbre d'hommes bénéficaires de l'APA en établissement,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_établissement_Sexe_femmes,Nbre de femmes bénéficaires de l'APA en établissement,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_établissement_GIR_1-2,Nbre de GIR 1 et 2 bénéficaires de l'APA en établissement,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_établissement_GIR_3-4,Nbre de GIR 3 et 4 bénéficaires de l'APA à domicile en 2016,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_établissement_Age_60-79 ans,Nbre de bénéficaires de l'APA en établissement entre 60 et 79 ans,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_établissement_Age_80-84 ans,Nbre de bénéficaires de l'APA en établissement entre 80 et 85 ans,personnes,personnes,Nombre,nombre
+Autonomie_Alloc. Personnalisée d'Autonomie_établissement_Age_85 ans et +,Nbre de bénéficaires de l'APA en établissement de 85 ans et +,personnes,personnes,Nombre,nombre
+Autonomie_Demographie_pourcentage_Age_60-79,Part des 60-79 ans dans la pop,,,Pourcentage,taux
+Autonomie_Demographie_variation_annuelle_Age_60-79,Taux variation annuel moyen 60-79 ans,,,Pourcentage,taux
+Autonomie_Demographie_pourcentage_Age_80-84,Part des 80-84 ans dans la pop,,,Pourcentage,taux
+Autonomie_Demographie_variation_annuelle_Age_80-84,Taux variation annuel moyen 80-84 ans,,,Pourcentage,taux
+Autonomie_Demographie_pourcentage_Age_85,Part des 85 ans ou plus dans la pop,,,Pourcentage,taux
+Autonomie_Demographie_variation_annuelle_Age_85,Taux variation annuel moyen 85 ans ou plus,,,Pourcentage,taux
+Autonomie_Bénéficiaires de Presta. de Comp. du Handicap,Nbre de bénéficiares de la Prestation de Compensation du Handicap en 2016,personnes,personnes,Nombre,nombre
+Autonomie_EHPAD_établissements,Nbre d'EHPAD en 2016,batiments,bâtiments,Nombre,nombre
+Autonomie_EHPAD_places,Nbre de places disponibles en EHPAD en 2016,places,places,Nombre,nombre
+Autonomie_EHPAD_places_pour_100_personnes_Age_80,Places EHPAD pour 100 personnes de 80 ans ou plus,,,Nombre,taux
+Autonomie_Bénéficiaires du Minimum vieillesse en 2016,Nbre de retraités bénéficiaires du minimum vieillesse en 2016,personnes,personnes,Nombre,nombre
+Autonomie_Logement des 80 ans et +_ordinaire,Nbre de 80 ans et + habitant un logement ordinaire,personnes,personnes,Nombre,nombre
+Autonomie_Logement des 80 ans et +_établissement,Nbre de 80 ans et + résidents d'un établissement,personnes,personnes,Nombre,nombre
+Autonomie_Logement des 80 ans et +_autres,Nbre de 80 ans et + habitant un autre type de logement,personnes,personnes,Nombre,nombre

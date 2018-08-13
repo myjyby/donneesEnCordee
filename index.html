@@ -41,8 +41,8 @@
 	var montagnes
 
 	d3.queue()
-		.defer(d3.csv, './data/dataPo.csv')
-		.defer(d3.csv, './data/indicatorsPo.csv')
+		.defer(d3.csv, './data/data.csv')
+		.defer(d3.csv, './data/indicators.csv')
 		.defer(d3.json, './data/lc.topojson')
 		.await((err, data, indicators, topo) => {
 			if (err) throw err
