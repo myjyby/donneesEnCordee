@@ -39,13 +39,13 @@ Menu.init = _data => {
 			d3.event.stopPropagation()
 			d3.select(this).classed('selected', !d3.select(this).classed('selected'))
 
-			Mountains.rangeValues.push(Object.assign({ type: 'value' }, d))
+			Mountains.rangeValues.push(Object.assign({ type: 'value' }, d)) // CHANGE TYPE HERE
 
 			Mountains.init()
 			Reasoning.init()
 		})
 }
-Menu.data = _data => {
+Menu.data = _data => { 
 	indicateurs_nombres = _data.filter(d => d['Type'].toLowerCase() === 'nombre')
 	const indicateurs_uniques = indicateurs_nombres.map(d => d['Structure'])
 	// const rgx = /([A-Za-z]+)_/g

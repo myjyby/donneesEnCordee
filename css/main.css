@@ -1,14 +1,18 @@
-@import url('https://fonts.googleapis.com/css?family=Encode+Sans+Condensed:200,400,700');
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:200,400,700');
 
 * {
 	padding: 0;
 	margin: 0;
 }
 body {
-	font-family: 'Encode Sans Condensed', Helvetica, Arial, sans-serif;
+	/*font-family: 'Fira Sans', Helvetica, Arial, sans-serif;*/
 	/*background-color: #E5E2D9;*/
 	background-color: #333;
 	font-size: 14px;
+}
+body, 
+text {
+	font-family: 'Fira Sans', Helvetica, Arial, sans-serif;
 }
 div.title {
 	position: absolute;
@@ -44,6 +48,32 @@ h1.main-title {
 }
 .bg-gradient {
 	background: linear-gradient(#fff 0%, #E5E2D9 50%);
+}
+div.header {
+	padding: 0 .5rem;
+	height: 3rem;
+	text-align: center;
+}
+div.header div.btn {
+	line-height: 3rem;
+	display: inline-block;
+	height: calc(3rem - 2px);
+	min-width: 6rem;
+	/*margin: 0 .25rem;*/
+	/*border: 1px solid transparent;*/
+	color: #333;
+	cursor: pointer;
+	transition: background-color .1s;
+	-webkit-transition: background-color .1s;
+	-moz-transition: background-color .1s;
+	-o-transition: background-color .1s;
+	-ms-transition: background-color .1s;
+	margin: 0;
+}
+div.header div.btn.active {
+	background-color: #333;
+	/*border-color: #333;*/
+	color: #fff;
 }
 h1 {
 	font-weight: 700;
@@ -157,9 +187,13 @@ svg rect.bg {
 g.axis {
 	pointer-events: none;
 }
+g.axis--y .domain {
+	/*display: none;*/
+}
 line.basis {
 	/*stroke: rgba(0,0,0,.33);*/
 	stroke: #fff;
+	pointer-events: none;
 	/*stroke-dasharray: 2, 5;*/
 	/*stroke-width: 2;*/
 }
@@ -185,6 +219,13 @@ g.label,
 g.nameLabel {
 	cursor: ew-resize;
 }
+g.peak--label {
+	pointer-events: none;
+}
+g.peak--label line {
+	stroke: #fff;
+	/*stroke-width: 2;*/
+}
 text {
 	font-size: 12px;
 }
@@ -192,6 +233,7 @@ text.label--value {
 	fill: #333;
 	font-weight: 600;
 	letter-spacing: .05em;
+	cursor: default;
 }
 text.light {
 	stroke: rgba(255,255,255,.75);
@@ -336,8 +378,19 @@ text.btn--label {
 }
 path.community {
 	fill: #fff;
-	stroke: #999;
+	stroke: #333;
+	cursor: pointer;
 }
 path.community:hover {
-	fill: purple;
+	fill: #333;
+}
+path.community.inactive {
+	fill: transparent;
+}
+line.rm-btn {
+	pointer-events: none;
+}
+rect.bg--transparent {
+	opacity: 0;
+	cursor: pointer;
 }

@@ -7,7 +7,7 @@ Reasoning.yLimit = 50
 Reasoning.nodeSize = 10
 
 Reasoning.drag = d3.drag()
-	.on('start', function () { d3.select(this).moveToFront() })
+	.on('start', function () { d3.select(this).moveToFront().classed('no-events', true) })
 	.on('drag', function (d) {
 		const node = this
 		const sel = d3.select(this)
@@ -24,7 +24,7 @@ Reasoning.drag = d3.drag()
 		d.y += evt.dy
 		if (Math.abs(d.y) >= Reasoning.yLimit) {
 			sel.attr('transform', `translate(${[d.x, d.y]})`)
-				.call(Reasoning.tooltip, ['Supprimer'])
+				.call(UI.tooltip, [{ label: 'Supprimer', y: Reasoning.nodeSize }])
 			.select('circle')
 				.style('opacity', .5)
 			// NEED TO ADD LABEL HERE: REMOVE NODE?
@@ -44,7 +44,7 @@ Reasoning.drag = d3.drag()
 			// ANIMATE THE SIZE OF THE TARGET NODE
 			if (!target.classed('transitionning')) {
 				target.classed('transitionning', true)
-					.call(Reasoning.tooltip, ['+', '÷'])
+					.call(UI.tooltip, [{ label: '+', y: Reasoning.nodeSize }, { label: '÷', y: Reasoning.nodeSize }])
 					.select('circle')
 				.transition()
 					.duration(150)
@@ -65,16 +65,60 @@ Reasoning.drag = d3.drag()
 		const node = this
 		const sel = d3.select(this)
 		const otherNodes = d3.selectAll('g.node').filter(function () { return this != node })
+		const indicators = d3.select('div.menu--indicators').datum()
 		const positions = otherNodes.data().map(c => c.x)
-
-		sel.selectAll('.tooltip').remove()
 
 		// CHECK IF NODE SHOULD BE REMOVED
 		if (Math.abs(d.y) >= Reasoning.yLimit) Mountains.rangeValues.splice(i, 1)
 
 		const hitTest = positions.map((c, j) => ((c - Reasoning.hitpadding <= d.x && c + Reasoning.hitpadding >= d.x) && (-Reasoning.yLimit <= d.y && Reasoning.yLimit >= d.y)) ? j : null)
 			.filter(c => c !== null)
+		const target = d3.select(d3.event.sourceEvent.target)
+		console.log(target.node(), hitTest, target.datum())
+
+		if (hitTest.length && target.findAncestor('label') && target.findAncestor('node') && target.findAncestor('raisonnement')) {
+
+			const d1 = target.findAncestor('node').datum()
+			let scale 
+			if (d.type === 'value') scale = indicators.filter(c => c['Structure'] === d.path)[0]['Index_Echelle']
+			else scale = d3.set(indicators.filter(c => d.sources.map(b => b.path).indexOf(c['Structure']) !== -1).map(c => c['Index_Echelle'])).values()[0]
+
+			let targetScale 
+			if (d1.type === 'value') targetScale = indicators.filter(c => c['Structure'] === d1.path)[0]['Index_Echelle']
+			else targetScale = d3.set(indicators.filter(c => d1.sources.map(b => b.path).indexOf(c['Structure']) !== -1).map(c => c['Index_Echelle'])).values()[0]
+
+			// ADDITIVE OPERATIONS ARE ONLY POSSIBLE ON INDICATORS THAT SHARE THE SAME SCALE (e.g. menages, personnes, etc.)
+			if (scale === targetScale) {
+				// 01 - REMOVE THE DRAGGED INDICATOR
+				Mountains.rangeValues.splice(Mountains.rangeValues.map(c => c.path).indexOf(d.path), 1)
+				// 02 - GET THE INDEX (POSITION) OF THE TARGET INDICATOR IN THE REASONING CHAIN
+				const idx = Mountains.rangeValues.map(c => c.path).indexOf(d1.path)
+				// 02.a - REMOVE THE TARGET INDICATOR
+				Mountains.rangeValues.splice(idx, 1)
+				// 03 - ADD A COMPISITE INDICATOR FOR THE SUM
+				Mountains.rangeValues.splice(idx, 0, { 
+					type: target.datum().label === '+' ? 'sum' : 'div', 
+					// key: `${d1.key}+${d.key}`, 
+					path: `${d1.path}+${d.path}`, 
+					// value: `${d1.value} + ${d.value}`, 
+					// x: d1.x + d.x,
+					// PUT THE TARGET FIRST, SINCE THE USER TECHNICALLY PLACES THE NODE ON TOP OF THE TARGET
+					sources: d.type === 'value' && d1.type === 'value' ? [Object.assign({}, d1), Object.assign({}, d)]
+							 : d.type === 'value' && d1.type !== 'value' ? d1.sources.concat([Object.assign({}, d)])
+							 : d.type !== 'value' && d1.type === 'value' ? ([Object.assign({}, d1)]).concat(d.sources)
+							 : d1.sources.concat(d)
+				})
+			}
+			console.log(Mountains.rangeValues)
+
+
+		}
+		// console.log(d3.event.sourceEvent.target.classList)
+		//console.log(hitTest)
+		//console.log(Mountains.rangeValues)
+		//console.log(Mountains.rangeRelations())
 		
+		/* THIS IS TEMP SO THAT NO OPERATIONS COME AND BREAK THE CODE
 		if (hitTest.length) {
 			const target = otherNodes.filter((c, j) => j === hitTest[0])
 			
@@ -136,11 +180,14 @@ Reasoning.drag = d3.drag()
 
 			}
 		}
+		*/
 
 		Mountains.rangeValues.sort((a, b) => a.x - b.x)
 
-		Mountains.init()
-		Reasoning.init()
+		d3.select(this).classed('no-events', false) 
+		d3.selectAll('.tooltip').remove()
+
+		UI.redraw()
 	})
 
 Reasoning.init = _data => {
@@ -165,7 +212,7 @@ Reasoning.init = _data => {
 
 	const svg = d3.select('svg')
 	const chain = svg.addElems('g', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
-		.attr('transform', `translate(${[0, horizon + (height() - horizon) * .75]})`)
+		.attr('transform', `translate(${[0, Mountains.horizon + (UI.height - Mountains.horizon) * .75]})`)
 		.each(Reasoning.draw)
 	chain.addElems('line')
 		.attrs({
@@ -226,41 +273,3 @@ Reasoning.draw = function (_d, _i) {
 
 }
 
-Reasoning.tooltip = (_sel, _labels) => {
-	let tooltip = _sel.selectAll('g.tooltip')
-		.data(_labels)
-	tooltip.exit().remove()
-	tooltip = tooltip.enter()
-		.append('g')
-		.attr('class', 'tooltip')
-		.style('opacity', 0)
-		// ('g', 'tooltip', _labels)
-		// .style('opacity', 0)
-
-	tooltip.addElems('text', 'label')
-		.text(d => d)
-
-	tooltip.insertElems('text.label', 'path', 'bg')
-		.attrs({ 'd': function () { 
-					const bbox = d3.select(this.parentNode).select('text.label').node().getBBox()
-					const x1 = -15, x2 = x1 + (bbox.width + 30)
-					const y1 = -(bbox.height + 4), y2 = y1 + (bbox.height + 15)
-					return `M${[x1, y1]} L${[x2, y1]} L${[x2, y2]} L${[(x2 + x1) / 2 + 7.5, y2]} L${[(x2 + x1) / 2, y2 + 10]} L${[(x2 + x1) / 2 - 7.5, y2]} L${[x1, y2]} Z`
-				 } })
-	tooltip.attr('transform', function () {
-			const bbox = d3.select(this).select('text.label').node().getBBox()
-			return `translate(${[-bbox.width / 2, -(bbox.height + 7.5)]})`
-		})
-	.merge(tooltip)
-	
-	const sizes = []
-	tooltip.selectAll('path.bg').each(function () { sizes.push(this.getBBox().width + 10) })
-
-	tooltip.transition()
-		.attr('transform', function (d, i) {
-			const bbox = d3.select(this).select('text.label').node().getBBox()
-			const offset = i - (sizes.length / 2 - .5)
-			return `translate(${[-(bbox.width / 2) + offset * d3.max(sizes), -(bbox.height + 7.5) - Reasoning.nodeSize]})`
-		})
-		.style('opacity', 1)
-}
