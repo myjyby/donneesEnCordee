@@ -28,18 +28,21 @@
 	</div>
 
 	<div class='slide vis bg-gradient'>
+		<div class='header'>
+			<div class='btn abs-scale active'>Absolue</div>
+			<div class='btn norm-scale'>Normalisée</div>
+		</div>
 	</div>
 
 <script type='text/javascript'>
 	let maxHeight
 	const debug = false
-	const horizon = UI.height - UI.height * .5
 
 	var montagnes
-	
+
 	d3.queue()
-		.defer(d3.csv, './data/data.csv')
-		.defer(d3.csv, './data/indicators.csv')
+		.defer(d3.csv, './data/dataPo.csv')
+		.defer(d3.csv, './data/indicatorsPo.csv')
 		.defer(d3.json, './data/lc.topojson')
 		.await((err, data, indicators, topo) => {
 			if (err) throw err
@@ -62,13 +65,9 @@
 			Mountains.init(data)
 			Map.init(geojson)
 			Reasoning.init(data)
-			// new Mountains(data)
+
+			// montagnes = new Mountains(data)
 		})
-
-
-
-	
-
 
 </script>
 
