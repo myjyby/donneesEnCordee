@@ -271,6 +271,7 @@ Reasoning.draw = function (_d, _i) {
 	
 	let circle = g.selectAll('circle')
 		.data(d => d.type === 'value' ? [d] : d.sources, d => d.path)
+	circle.exit().remove()
 	circle = circle.enter()
 		.append('circle')
 		.each(function (d, i) { d3.select(this).classed(`c-${i}`, true) })
