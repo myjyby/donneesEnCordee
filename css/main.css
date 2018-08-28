@@ -93,6 +93,7 @@ div.menu--indicators {
 	left: 2rem;
 	max-height: calc(100vh - 14.5rem - 5px);
 	overflow: auto;
+	/*max-width: 25%;*/
 }
 ul.menu-list {
 	border-top: 5px solid #333;
@@ -408,4 +409,8 @@ line.rm-btn {
 rect.bg--transparent {
 	opacity: 0;
 	cursor: pointer;
+}
+
+rect.ground {
+	fill: #333;
 }

@@ -126,6 +126,7 @@ Reasoning.drag = d3.drag()
 				obj.path = `${d1.path}+${d.path}`
 
 				Mountains.rangeValues.splice(idx, 0, obj)
+				// console.log(Mountains.rangeValues)
 			}
 			// console.log(Mountains.rangeValues)
 

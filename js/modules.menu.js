@@ -46,7 +46,7 @@ Menu.init = _data => {
 		})
 }
 Menu.data = _data => { 
-	indicateurs_nombres = _data.filter(d => d['Type'].toLowerCase() === 'nombre')
+	indicateurs_nombres = _data.filter(d => d['Type_JB'].toLowerCase() === 'nombre')
 	const indicateurs_uniques = indicateurs_nombres.map(d => d['Structure'])
 	// const rgx = /([A-Za-z]+)_/g
 	const rgx = /_/g

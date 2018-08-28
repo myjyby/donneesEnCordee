@@ -8,16 +8,19 @@ UI.drag = d3.drag()
 
 		// const n = d3.selectAll('g.range').size()
 		
-		d3.selectAll('g.range')
-			.attr('transform', (d, i) => {
-				d.x -= evt.dx * (i + 1) / 25
-				d.y - evt.dy * i / 25 > Mountains.horizon ? d.y -= evt.dy * i / 25 : d.y = Mountains.horizon
-				return `translate(${[d.x, d.y]})`
-			})
-			.each(function () { d3.select(this).call(Mountains.placeLabels) })
+		if (!normalize) {
+			d3.selectAll('g.range')
+				.attr('transform', (d, i) => {
+					d.x -= evt.dx * (i + 1) / 25
+					d.y - evt.dy * i / 25 > Mountains.horizon ? d.y -= evt.dy * i / 25 : d.y = Mountains.horizon
+					return `translate(${[d.x, d.y]})`
+				})
+				.each(function () { d3.select(this).call(Mountains.placeLabels) })
+		}
 	})
 	.on('end', () => d3.select('svg').classed('dragging', false))
 
+UI.width = width()
 UI.height = height()
 UI.svg = () => {
 	const header = d3.select('div.slide.vis').select('div.header')
@@ -25,7 +28,7 @@ UI.svg = () => {
 
 	const svg = d3.select('div.slide.vis').addElem('svg', 'canvas')
 		.attrs({
-			'width': width(),
+			'width': UI.width,
 			'height': UI.height
 		})
 
@@ -33,10 +36,17 @@ UI.svg = () => {
 
 	svg.addElem('rect', 'bg')
 		.attrs({
-			'width': width(),
+			'width': UI.width,
 			'height': UI.height
 		})
 	.call(UI.drag)
+
+	// svg.addElems('rect', 'ground')
+	// 	.attrs({ 'width': UI.width,
+	// 			 'height': UI.height - Mountains.horizon,
+	// 			 'x': 0,
+	// 			 'y': Mountains.horizon })
+
 	// svg.addElem('line', 'Mountains.horizon')
 	// 	.attrs({
 	// 		'x1': 0,

@@ -22,14 +22,14 @@ Mountains.parseData = _data => {
 		return obj
 	})
 }
-Mountains.calculateAnnualRate = (_vi, _vf) => ((_vf - _vi) / _vi) * 100
+Mountains.calculateAnnualRate = (_vi, _vf, _years) => Math.pow((_vf / _vi), (1 / _years)) - 1 //((_vf - _vi) / _vi) * 100
 
 Mountains.scale = d3.scaleLinear()
 // Mountains.horizon = 0
-Mountains.horizon = height() - height() * .6
+Mountains.horizon = UI.height - UI.height * .6
 
 Mountains.position = d3.scaleBand()
-	.rangeRound([width() * .25, width() - width() * .25])
+	.rangeRound([UI.width * .25, UI.width - UI.width * .25])
 	.padding(.1)
 
 Mountains.rangeValues = []
@@ -90,6 +90,7 @@ Mountains.init = _data => {
 	}
 
 	const svg = d3.select('svg')
+
 	const mountain = svg.select('g.mountain')
 		.datum(Mountains.data)
 
@@ -328,7 +329,7 @@ Mountains.renderings = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 				path.enter.push(`L${[obj.x, 0]}`)
 				path.transition.push(`L${[obj.x, p1]}`)
 
-				obj.labelPos.push({ x: obj.x, y: p1, value: _commune[d.path] / normalizingValue, curves: Math.max(3, Math.round(Math.random() * 5)) })
+				obj.labelPos.push({ x: obj.x, y: p1, value: _commune[d.path] / normalizingValue, label: printNumber(Math.round((_commune[d.path] / normalizingValue) * 100) / 100), curves: Math.max(3, Math.round(Math.random() * 5)) })
 			}
 			else if (relations[i] === 'ordinal') {
 				const p1 = Mountains.scale(_commune[d.path] / normalizingValue)
@@ -345,7 +346,7 @@ Mountains.renderings = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 					path.enter.push(`L${[obj.x, 0]}`)
 					path.transition.push(`L${[obj.x, p1]}`)
 
-					obj.labelPos.push({ x: obj.x, y: p1, value: _commune[d.path] / normalizingValue, curves: Math.max(3, Math.round(Math.random() * 5)) })
+					obj.labelPos.push({ x: obj.x, y: p1, value: _commune[d.path] / normalizingValue, label: printNumber(Math.round((_commune[d.path] / normalizingValue) * 100) / 100), curves: Math.max(3, Math.round(Math.random() * 5)) })
 				}
 				else {
 					obj.x -= (p0 * .5 - p1 * .25)
@@ -356,7 +357,7 @@ Mountains.renderings = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 					path.enter.push(`L${[obj.x, 0]}`)
 					path.transition.push(`L${[obj.x, p1]}`)
 
-					obj.labelPos.push({ x: obj.x, y: p1, value: _commune[d.path] / normalizingValue, curves: Math.max(3, Math.round(Math.random() * 5)) })
+					obj.labelPos.push({ x: obj.x, y: p1, value: _commune[d.path] / normalizingValue, label: printNumber(Math.round((_commune[d.path] / normalizingValue) * 100) / 100), curves: Math.max(3, Math.round(Math.random() * 5)) })
 				}
 			}
 			else if (relations[i] === 'series') {
@@ -368,8 +369,8 @@ Mountains.renderings = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 				path.enter.push(`L${[obj.x, 0]}`)
 				path.transition.push(`L${[obj.x, p1]}`)
 
-				obj.labelPos.push({ x: obj.x, y: p1, value: _commune[d.path] / normalizingValue, curves: Math.max(3, Math.round(Math.random() * 5)) })
-				obj.rate.push({ x1: obj.x + p1 * .5, x2: obj.x, y1: p0 * .5, y2: p1 * .5, value: Mountains.calculateAnnualRate(_commune[Mountains.rangeValues[i - 1].path], _commune[d.path]), years: Math.abs(+d.key - +Mountains.rangeValues[i - 1].key) })
+				obj.labelPos.push({ x: obj.x, y: p1, value: _commune[d.path] / normalizingValue, label: printNumber(Math.round((_commune[d.path] / normalizingValue) * 100) / 100), curves: Math.max(3, Math.round(Math.random() * 5)) })
+				obj.rate.push({ x1: obj.x + p1 * .5, x2: obj.x, y1: p0 * .5, y2: p1 * .5, value: Mountains.calculateAnnualRate(_commune[Mountains.rangeValues[i - 1].path], _commune[d.path], Math.abs(+d.key - +Mountains.rangeValues[i - 1].key)), years: Math.abs(+d.key - +Mountains.rangeValues[i - 1].key) })
 			}
 
 			if (i === Mountains.rangeValues.length - 1) {
@@ -435,16 +436,23 @@ Mountains.renderings = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 			
 			if (d.type === 'sum') base = d3.sum(d.sources, c => Mountains.scale(_commune[c.path] / normalizingValue))
 			else if (d.type === 'division') {
-				base = d3.min(d.sources, c => Mountains.scale(_commune[c.path] / normalizingValue)) // THIS IS d3.min SINCE IT IS A NEGATIVE VALUE
-				d.sources.sort((a, b) => Mountains.scale(_commune[a.path] / normalizingValue) - Mountains.scale(_commune[b.path] / normalizingValue))
-				// console.log(d.sources)
+				// base = d3.min(d.sources, c => Mountains.scale(_commune[c.path] / normalizingValue)) // THIS IS d3.min SINCE IT IS A NEGATIVE VALUE
+				base = Mountains.scale(100)
+				// d.sources.sort((a, b) => Mountains.scale(_commune[a.path] / normalizingValue) - Mountains.scale(_commune[b.path] / normalizingValue))
+				d.sources.sort((a, b) => Mountains.scale((_commune[a.path] / d3.max(d.sources, c => _commune[c.path])) * 100) - Mountains.scale((_commune[b.path] / d3.max(d.sources, c => _commune[c.path])) * 100))
 			}
 			
 			d.sources.forEach((c, j) => {
 				let x = obj.x
 				if (d.type !== 'sum') yOffset = 0
 				// SET THE HEIGHT (AND WIDTH) OF THE NEW PEAK
-				const p1 = Mountains.scale(_commune[c.path] / normalizingValue)
+				let value = _commune[c.path] / normalizingValue
+				if (d.type === 'division') {
+					value = (_commune[c.path] / d3.max(d.sources, b => _commune[b.path])) * 100
+					console.log(value, Mountains.scale(value))
+					if (isNaN(value)) value = 0
+				}
+				const p1 = Mountains.scale(value)
 
 				// if (j === 0) base = p1
 				// DETERMINE THE COLOR OF THE NEW PEAK
@@ -484,13 +492,13 @@ Mountains.renderings = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 				yOffset += p1
 			})
 			// ADD ONLY ONE LABEL FOR THE SUM
-			if (d.type === 'sum') obj.labelPos.push({ x: obj.x - base * .5, y: yOffset, value: d3.sum(d.sources, c => _commune[c.path] / normalizingValue), curves: Math.max(3, Math.round(Math.random() * 5)) })
+			if (d.type === 'sum') obj.labelPos.push({ x: obj.x - base * .5, y: yOffset, value: d3.sum(d.sources, c => _commune[c.path] / normalizingValue), label: printNumber(Math.round(d3.sum(d.sources, c => _commune[c.path] / normalizingValue) * 100) / 100), curves: Math.max(3, Math.round(Math.random() * 5)) })
 			else if (d.type === 'division') {
-				const percentage = (d.sources.filter(c => c.division === 'dividend').map(c => _commune[c.path] / normalizingValue)[0] / d.sources.filter(c => c.division === 'divisor').map(c => _commune[c.path] / normalizingValue)[0]) * 100
+				const percentage = (d.sources.filter(c => c.division === 'dividend').map(c => _commune[c.path])[0] / d.sources.filter(c => c.division === 'divisor').map(c => _commune[c.path])[0]) * 100
 				// console.log(d.sources.filter(c => c.division === 'dividend').map(c => _commune[c.path] / normalizingValue)[0])
 				// console.log(d.sources.filter(c => c.division === 'divisor').map(c => _commune[c.path] / normalizingValue)[0])
 				// console.log(!isNaN(percentage) ? percentage : 0)
-				obj.labelPos.push({ x: obj.x - base * .5, y: yOffset, value: !isNaN(percentage) ? percentage : 0, curves: Math.max(3, Math.round(Math.random() * 5)) })
+				obj.labelPos.push({ x: obj.x - base * .5, y: yOffset, value: !isNaN(percentage) ? percentage : 0, label: !isNaN(percentage) ? `${printNumber(Math.round(percentage * 100) / 100)}%` : `${0}%`, curves: Math.max(3, Math.round(Math.random() * 5)) })
 			}
 			
 			obj.x -= base
@@ -728,7 +736,8 @@ Mountains.labels = _sel => {
 				 'y1': 0,
 				 'y2': d => d.y })
 
-	labels.call(UI.tooltip, d => [{ label: printNumber(Math.round(d.value * 100) / 100), y: -d.y }])
+
+	labels.call(UI.tooltip, d => [{ label: d.label, y: -d.y }])
 }
 Mountains.rates = _sel => {
 	const labels = _sel.addElems('g', 'ridge--rate', d => d.rate)
@@ -746,7 +755,8 @@ Mountains.rates = _sel => {
 		.attrs({ 'transform': d => `translate(${[d.x1 + (d.x2 - d.x1) / 2, d.y1 + (d.y2 - d.y1) / 2]})`,
 				 'dy': '.3rem' })
 		.text(d => {
-			return `${d.value >= 0 ? '+' : '-'}${Math.round((Math.abs(d.value) / d.years) * 100) / 100}%`
+			// return `${d.value >= 0 ? '+' : '-'}${Math.round((Math.abs(d.value) / d.years) * 100) / 100}% / an`
+			return `${d.value >= 0 ? '+' : '-'}${Math.round(Math.abs(d.value) * 10000) / 100}% / an`
 		})
 	labels.insertElems('text', 'circle')
 		.attrs({ 'transform': d => `translate(${[d.x1 + (d.x2 - d.x1) / 2, d.y1 + (d.y2 - d.y1) / 2]})`,
@@ -774,7 +784,8 @@ Mountains.setScale = _i => {
 		const obj = {}
 		obj.index = i
 		if (d.type === 'value') obj.type = indicators.filter(c => c['Structure'] === d.path)[0]['Index_Echelle']
-		else obj.type = d3.set(indicators.filter(c => d.sources.map(b => b.path).indexOf(c['Structure']) !== -1).map(c => c['Index_Echelle'])).values()[0]
+		else if (d.type === 'sum') obj.type = d3.set(indicators.filter(c => d.sources.map(b => b.path).indexOf(c['Structure']) !== -1).map(c => c['Index_Echelle'])).values()[0]
+		else if (d.type === 'division') obj.type = 'percentage'
 		return obj
 	})
 	scaleTypes = d3.nest()
@@ -782,7 +793,6 @@ Mountains.setScale = _i => {
 		.entries(scaleTypes)
 
 	const thisType = scaleTypes.filter(d => d.values.map(c => c.index).indexOf(_i) !== -1)[0].values
-	
 	// const normalizingValue = normalize ? d3.max(Mountains.data, d => d['Enfance_Population']) : 1
 
 	// 	const sums = d3.max(Mountains.rangeValues.filter((d, i) => thisType.map(c => c.index).indexOf(i) !== -1)
@@ -790,6 +800,7 @@ Mountains.setScale = _i => {
 	// 	Mountains.scale.domain([0, sums / normalizingValue])
 	// }
 	// else {
+		// console.log(thisType)
 		const sums = Mountains.data.filter(d => d.display)
 			.map(d => {
 				return d3.max(Mountains.rangeValues.filter((c, j) => thisType.map(c => c.index).indexOf(j) !== -1)
@@ -803,16 +814,26 @@ Mountains.setScale = _i => {
 							else return d3.sum(c.sources, b => Mountains.height(d, b.path) / d[normalizingCol])
 						}
 						else if (c.type === 'division') {
-							if (!normalize) return d3.max(c.sources, b => Mountains.height(d, b.path))
-							else return d3.max(c.sources, b => Mountains.height(d, b.path) / d[normalizingCol])
+							// if (!normalize) return d3.max(c.sources, b => Mountains.height(d, b.path)) 
+							// else return d3.max(c.sources, b => Mountains.height(d, b.path) / d[normalizingCol])
+							
+							if (!normalize) return 100
+							else {
+								// console.log(normalizingCol)
+								// console.log(d[normalizingCol])
+								return 100 /// d[normalizingCol]
+							}
 						}
 					}))
 			})
-		// console.log(sums)
+
 		// console.log(d3.max(sums))
-		const scaleRangeMax = !normalize ? -(Mountains.horizon - Mountains.horizon * .33) : -((UI.height - Mountains.horizon * .25) / (Mountains.data.length + 2))
+
+		// !normalize ? Mountains.horizon + i * ((UI.height - Mountains.horizon) * .75) / Mountains.data.length : (i + 2) * (UI.height - Mountains.horizon * .25) / (Mountains.data.length + 3)
+
+		const scaleRangeMax = !normalize ? -(Mountains.horizon - Mountains.horizon * .33) : -((UI.height - Mountains.horizon * .25) / (Mountains.data.length + 3))
 		// console.log(scaleRangeMax)
-		Mountains.scale.range([0, scaleRangeMax]) // CHANGE THIS FOR MOUNT HEIGHT
+		Mountains.scale.rangeRound([0, scaleRangeMax]) // CHANGE THIS FOR MOUNT HEIGHT
 			.domain([0, d3.max(sums)])
 		// console.log(Mountains.scale.domain())
 	// }
