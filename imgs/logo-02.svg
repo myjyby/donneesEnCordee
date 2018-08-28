@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 250 175" style="enable-background:new 0 0 250 175;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{display:inline;}
+	.st2{fill:#EFEDED;stroke:#FCFCFC;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st3{fill:none;stroke:#FCFCFC;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;}
+	.st4{fill:#FCFCFC;}
+	.st5{font-family:'WorkSans-Light';}
+	.st6{font-size:16px;}
+	.st7{letter-spacing:5;}
+	.st8{letter-spacing:2;}
+	.st9{font-size:14px;}
+	.st10{letter-spacing:1;}
+	.st11{font-size:23px;}
+	.st12{letter-spacing:14;}
+	.st13{font-family:'Yesteryear-Regular';}
+	.st14{font-size:24px;}
+</style>
+<g id="Layer_2" class="st0">
+	<rect class="st1" width="250" height="175"/>
+</g>
+<g id="Calque_1">
+	<title>logo</title>
+	<polygon class="st2" points="109.2,36 123.5,10.8 138.3,35.9 129.1,31.6 121.6,34.4 118.8,26.9 	"/>
+	<line class="st3" x1="233.5" y1="172" x2="203" y2="125"/>
+	<line class="st3" x1="46.5" y1="125" x2="16.5" y2="173"/>
+	<polyline class="st3" points="164.2,65 123.5,2 84,65 	"/>
+	<text transform="matrix(1 0 0 1 51.0472 86.29)" class="st4 st5 st6 st7">DONNÉES</text>
+	<text transform="matrix(1 0 0 1 165.5872 86.29)" class="st4 st5 st6 st8"> </text>
+	<text transform="matrix(1 0 0 1 172.6772 86.29)" class="st4 st5 st9 st10">EN</text>
+	<text transform="matrix(1 0 0 1 39.9872 113.89)" class="st4 st5 st11 st12">CORDÉE</text>
+	<line class="st3" x1="247" y1="146.5" x2="153.5" y2="146.5"/>
+	<line class="st3" x1="89.5" y1="146.5" x2="3" y2="146.5"/>
+	<text transform="matrix(1 0 0 1 101.8472 149.4)" class="st4 st13 st14">I</text>
+	<text transform="matrix(1 0 0 1 113.0572 149.4)" class="st4 st13 st14">sère</text>
+</g>
+</svg>

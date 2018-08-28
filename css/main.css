@@ -25,6 +25,12 @@ div.slide {
 	width: 100%;
 	position: relative;
 }
+div.slide.intro {
+	background-image: url('../imgs/dec_logo.svg');
+	background-size: 33%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
 .v-align {
 	display: table;
 }
