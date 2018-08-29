@@ -289,7 +289,8 @@ rect.label--box {
 }
 
 g.node circle {
-	fill: #344758;
+	/*fill: #344758;*/
+	fill: #333;
 	cursor: ew-resize;
 }
 
