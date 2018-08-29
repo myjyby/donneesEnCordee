@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+	<title>Détails des Indicateurs</title>
+
+	<script type='text/javascript' src='https://d3js.org/d3.v4.min.js'></script>
+	<script type='text/javascript' src='https://d3js.org/d3-selection-multi.v1.min.js'></script>
+	
+	<script type='text/javascript' src='./js/content.indicateurs.js'></script>
+
+	<link rel='stylesheet' type='text/css' href='./css/main-dark.css'>
+
+
+</head>
+
+<body>
+
+<script>
+
+let index = +getUrlParameter('i')
+if (index === null || index === undefined || index === '') index = 0
+
+const svgw = 150
+const svgh = 80
+
+var x = d3.scaleBand()
+	.paddingInner(0.25)
+	.align(0.1)
+
+var y = d3.scaleLinear()
+	.rangeRound([svgh, 0])
+
+d3.csv("data/data.csv", function (error, data) {
+	if (error) throw error
+
+	data = data.filter(function (d) {return d.Commune_court != "Total"})
+
+	data.forEach(function (d) {
+		d.Insertion_Population =(+d["Général_Population_Total"]) - (+d["Général_Population_Tranches d'âge_0-2 ans_2013"]) + (+d["Général_Population_Tranches d'âge_3-5 ans_2013"]) + (+d["Général_Population_Tranches d'âge_6-11 ans_2013"]) + (+d["Général_Population_Tranches d'âge_12-15 ans_2013"]) + (+d["Général_Population_Tranches d'âge_16-19 ans_2013"]) + (+d["Général_Population_Tranches d'âge_20-24 ans_2013"]) + (+d["Général_Population_Tranches d'âge_60-79 ans_2013"]) + (+d["Général_Population_Tranches d'âge_80-84 ans_2013"]) + (+d["Général_Population_Tranches d'âge_85 ans ou +_2013"])
+	});
+
+	displayMenu(data)
+	displayPage(pages[index], data)
+})
+
+const displayMenu = function (_data) {
+	const body = d3.select('body')
+
+	const nav = body.append('div')
+		.attr('class', 'nav')
+
+	const ul = nav.append('ul')
+
+	ul.append('li')
+		.append('h3')
+		.html('Les Indicateurs')
+
+	let links = ul.selectAll('li.link')
+		.data(pages)
+	links.exit().remove()
+	links = links.enter()
+		.append('li')
+		.attr('class', 'link')
+		.classed('active', function (d, i) { 
+			if (i === index) return true
+			else return false 
+		})
+	.merge(links)
+
+	links.append('a')
+		.attr('href', function (d, i) { 
+			let url = window.location.href
+			if (url.indexOf('?') !== -1) url = url.split('?')[0]
+			return `${url}?i=${i}` 
+		})
+		.html(function (d, i) { return pages[i].titre })
+}
+
+const displayPage = function (_page, _data) {
+	const body = d3.select('body')
+
+	const content = body.append("div")
+		.datum(_page)
+		.attr("class", "indicateur")
+
+	// ON CREE LE TITRE
+	content.append("h1")
+		.html(function (d) { return d.titre })
+
+	const info = content.append("div")
+		.attr("class", "info")
+	
+	const methodo = info.append("div")
+		.attr("class", "methodo")
+
+	
+	let contenuTexte = methodo.selectAll("div.methodo")
+		.data(function (d) { return d.span })
+	contenuTexte = contenuTexte.enter()
+		.append("div")
+
+	contenuTexte.append("h2")
+		.html(function (d){ return d.soustitre})
+	contenuTexte.append("div")
+		.attr("class", "span1")
+		.html(function (d){ return d.contenu})
+
+	const metadata = info.append("div")
+		.attr("class", "meta-data") 
+	
+	metadata.append("h2")
+		.html(function (d) { return "Sources"})
+
+	let donnees = metadata.selectAll("div")
+		.data(function (d) { return d.sources })
+	donnees = donnees.enter()
+		.append("div")
+		.attr("class", "span2")
+		.html(function (d){ return "<a href=" + d.lien +" "+ "target='_blank' >" + d.nom + "</a> <br>" + d.annee})
+
+	let charts = metadata.selectAll("div.display")
+		.data(function (d) { return d.charts })
+	charts = charts.enter()
+		.append("div")
+		.attr("class", "display")
+		.merge(charts)
+
+	charts.append("h3")
+		.html(function (d) {return d.titre})
+
+	const buttons = charts.append("div")
+		.attr("class", "buttons")
+		// .html(function (d) {return d.buttons.label})
+
+	buttons.selectAll("button")
+		.data(function (d) { return d.buttons })
+	.enter()
+		.append("button")
+		.classed('focus', function (d, i) { return i === 0 })
+		.html(function (d) { return d.label })
+		.on("click", function (d) {
+			const sel = d3.select(this)
+			const parent = d3.select(this.parentNode)
+			parent.selectAll('button').classed('focus', false)
+			sel.classed('focus', true)
+			
+			const display = d3.select(this.parentNode.parentNode)
+			const g = display.select('.visu').select('svg').select('g')
+
+			console.log(d.value)
+			drawChart(g, _data, d.value)
+		})
+
+	charts.append("h4")
+
+	let svg = charts.append("div")
+		.attr("class", "visu")
+	.append("svg")
+		.attr("width", svgw)
+	 	.attr("height", svgh)
+	 	.append("g")
+	 	.each(function (d) {
+	 		const g = d3.select(this)
+	 		drawChart(g, _data, d.valeur_init)
+	 		
+	 	})
+
+	 
+}
+
+const drawChart = function (_chart, _data, _indicateur) {
+	// "Général_Population"
+	console.log(_indicateur)
+	_data.sort(function (a, b) { return +b[_indicateur] - +a[_indicateur] })
+
+	let xpadding = 0
+	
+	x.rangeRound([xpadding, svgw])
+		.domain(_data.map(function (d) { return d.Commune_court }))
+	y.domain([0, d3.max(_data, function (d) { return +d[_indicateur] })])
+
+	let bars = _chart.selectAll(".bar")
+		.data(_data, function (d) { return d.Commune_court })
+
+	console.log(_chart)
+	console.log(_chart.node())
+
+	// const tooltips = d3.select(_chart.node().parentNode.parentNode)	
+	// 	.append("div")
+	//  	.attr("class", "tooltip")
+
+	bars.exit().remove()
+	
+	bars = bars.enter()
+		.append("g")
+		.attr("class", "bar")
+	.merge(bars)
+		
+	let visible_rects = bars.selectAll('rect.visible')
+		.data(function (d) { return [d] })
+	visible_rects.exit().remove()
+	visible_rects = visible_rects.enter()
+		.append('rect')
+		.attr('class', 'visible')
+		.attr("x", function (d) { return x(d.Commune_court) })
+		.attr("y", function (d) { return y(+d[_indicateur]) })
+		.attr("width", x.bandwidth())
+		.attr("height", function (d) { return svgh - y(+d[_indicateur]) })
+	.merge(visible_rects)
+	
+	visible_rects.transition()
+		.attr("y", function (d) { return y(+d[_indicateur]) })
+		.attr("width", x.bandwidth())
+		.attr("height", function (d) { return svgh - y(+d[_indicateur]) })
+	.transition()
+		.attr("x", function (d) { return x(d.Commune_court) })
+
+	let invisible_rects = bars.selectAll('rect.invisible')
+		.data(function (d) { return [d] })
+	invisible_rects.exit().remove()
+	invisible_rects = invisible_rects.enter()
+		.append('rect')
+		.attr('class', 'invisible')
+		.attr("x", function (d) { return x(d.Commune_court) })
+		.attr("y", 0)
+		.attr("width", x.bandwidth())
+		.attr("height", svgh)
+	.merge(invisible_rects)
+
+	bars.on("mouseover", function (d) {
+		console.log(d3.selectAll('div.visu').data())
+
+		const tooltips = d3.selectAll('div.visu')
+			.append('div')
+			.attr('class', 'tooltip')
+			.style("top", svgh + 3 + "px")
+			.each(function (c) { 
+				const sel = d3.select(this)
+				const parent = d3.select(this.parentNode)
+				const bar = parent.selectAll('.bar').filter(function (b) { return b.Commune_court === d.Commune_court })
+				const datum = bar.datum()
+				let barX = parseInt(bar.select('rect.visible').attr('x'))
+				
+				sel.html(datum.Commune_court + "<br/>" + +datum[c.valeur_init])
+					// .style('left', barX + 'px')
+					.style("left", function () {
+						if (barX <= svgw / 2) return barX  + 'px'
+						else return null
+					})
+					.style("right", function () {
+						if (barX > svgw / 2) return 0 + 'px'
+						else return null
+					})
+				bar.classed('hover', true)
+			})
+	})
+	.on("mouseout", function (d) {
+		d3.selectAll('div.tooltip').remove()
+		d3.selectAll('.bar').classed('hover', false)
+	})
+
+	const tickAxis = d3.scaleLinear()
+		.rangeRound([svgh, 0])
+		.domain([0, d3.max(_data, function (d) { return +d[_indicateur] })])
+	
+	const yAxis = d3.axisRight(tickAxis)
+		.ticks(5)
+		.tickFormat(function (d){ return d / 1000000 })
+
+}
+
+function getUrlParameter (name) {
+	name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]')
+	var regex = new RegExp('[\\?&]' + name + '=([^&#]*)')
+	var results = regex.exec(location.search)
+	return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '))
+}
+
+</script>
+
+
+</body>
+</html>

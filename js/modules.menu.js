@@ -44,6 +44,10 @@ Menu.init = _data => {
 			Mountains.init()
 			Reasoning.init()
 		})
+
+	menu.addElems('a')
+		.attr('href', 'indicateurs.html')
+		.html('Voir le détail des indicateurs.')
 }
 Menu.data = _data => { 
 	indicateurs_nombres = _data.filter(d => d['Type_JB'].toLowerCase() === 'nombre')
