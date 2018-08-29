@@ -101,7 +101,7 @@ h2{
 }
 
 h1::before{
-	content: url(/imgs/picto.png);
+	content: url(../imgs/picto.png);
 	position:relative;
 	margin-right:15px;
 	top:8px;
