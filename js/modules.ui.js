@@ -1,4 +1,7 @@
-const bgColor = '#E5E2D9'
+const bgColor = '#FFF'
+// const bgColor = '#E5E2D9'
+const usePattern = true
+const useHighlights = false
 
 if (!UI) { var UI = {} }
 UI.drag = d3.drag()
@@ -33,6 +36,7 @@ UI.svg = () => {
 		})
 
 	svg.addElem('defs')
+	if (usePattern) UI.setPattern()
 
 	svg.addElem('rect', 'bg')
 		.attrs({
@@ -89,16 +93,80 @@ UI.setGradient = _color => {
 			'offset': '33%',
 			'style': d => {
 				const rgb = d3.rgb(Menu.colors(d))
-				// console.log(`rgb(${[255 - rgb.r, 255 - rgb.g, 255 - rgb.b]})`)
-				return `stop-color:rgb(${[255 - rgb.r, 255 - rgb.g, 255 - rgb.b]});stop-opacity:1`
+				return `stop-color:#FFF;stop-opacity:1`
+				// return `stop-color:#E5E2D9;stop-opacity:1`
+				// return `stop-color:rgb(${[255 - rgb.r, 255 - rgb.g, 255 - rgb.b]});stop-opacity:1`
 			}
 		})
 	gradient.addElems('stop', 'out')
 		.attrs({
 			'offset': '100%',
-			'style': d => `stop-color:${d3.rgb(Menu.colors(d))};stop-opacity:1`
+			'style': d => {
+				return `stop-color:#333;stop-opacity:1`
+				// return `stop-color:${d3.rgb(Menu.colors(d))};stop-opacity:1`
+			}
 		})
 }
+// UI.setPattern = _ => {
+// 	const defs = d3.select('defs')
+// 	const options = { bbox: [0, 0, 1000, 1000] }
+// 	const points = turf.randomPoint(100, options)
+// 	points.features.sort((a, b) => a.geometry.coordinates[1] - b.geometry.coordinates[0])
+// 	const tin = turf.voronoi(points, options)
+// 	console.log(points)
+
+// 	const pattern = defs.addElems('pattern')
+// 		.attrs({ 'id': 'pattern-triangles',
+// 				 'x': 0,
+// 				 'y': 0,
+// 				 // 'patternUnits': 'objectBoundingBox',
+// 				 'width': 1,
+// 				 'height': 1 })
+// 	const g = pattern.addElems('g')
+// 	g.addElems('rect')
+// 		.attrs({ 'width': 900,
+// 				 'height': 900 })
+// 		.style('fill', '#333')
+// 	g.addElems('path', 'triangle', tin.features)
+// 		.attr('d', d => d.geometry.coordinates.map(c => `M${c.join(' L')} Z`))
+// 		.style('fill', '#fff')
+// 		.style('opacity', (d, i) => {
+// 			console.log(i / points.features.length)
+// 			return (points.features.length - i) / points.features.length / 5
+// 		})
+// }
+UI.setPattern = _ => {
+	const defs = d3.select('defs')
+	const options = { bbox: [0, 0, 1000, 1000] }
+	const points = turf.randomPoint(100, options)
+	points.features.sort((a, b) => a.geometry.coordinates[1] - b.geometry.coordinates[0])
+	const tin = turf.voronoi(points, options)
+	console.log(points)
+
+	const pattern = defs.addElems('pattern')
+		.attrs({ 'id': 'pattern-triangles',
+				 'x': 0,
+				 'y': 0,
+				 // 'patternUnits': 'userSpaceOnUse',
+				 'width': 1,
+				 'height': 1 })
+	/*const g = pattern.addElems('g')
+	g.addElems('rect')
+		.attrs({ 'width': 900,
+				 'height': 900 })
+		.style('fill', '#333')
+	g.addElems('path', 'triangle', tin.features)
+		.attr('d', d => d.geometry.coordinates.map(c => `M${c.join(' L')} Z`))
+		.style('fill', '#fff')
+		.style('opacity', (d, i) => {
+			console.log(i / points.features.length)
+			return (points.features.length - i) / points.features.length / 5
+		})*/
+
+	pattern.addElems('image')
+		.attr('xlink:href', '../imgs/texture-v02.png')
+}
+
 UI.tooltip = (_sel, _data) => {
 	let tooltip = _sel.selectAll('g.tooltip')
 		.data(_data)
