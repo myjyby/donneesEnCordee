@@ -61,6 +61,9 @@ h1.main-title {
 .bg-gradient {
 	background: linear-gradient(#fff 0%, #E5E2D9 50%);
 }
+.bg-uniform {
+	background-color: #171715;
+}
 div.header {
 	padding: 0 .5rem;
 	height: 3rem;
@@ -204,11 +207,9 @@ g.axis--y .domain {
 	/*display: none;*/
 }
 line.basis {
-	/*stroke: rgba(0,0,0,.33);*/
-	stroke: #fff;
+	stroke: rgba(255,255,255,.25);
+	/*stroke: #000;*/
 	pointer-events: none;
-	/*stroke-dasharray: 2, 5;*/
-	/*stroke-width: 2;*/
 }
 line.axis--link {
 	/*stroke-dasharray: 1, 5;*/
@@ -280,7 +281,8 @@ rect.label--box {
 	fill: url(#base-gradient);
 }
 .peak {
-	stroke: rgba(255,255,255,.25);
+	/*stroke: rgba(255,255,255,.25);*/
+	/*stroke: #000;*/
 	cursor: ew-resize;
 	stroke-linecap: round;
 	stroke-linejoin: round;
