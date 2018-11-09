@@ -255,7 +255,6 @@ Mountains.renderings = _commune => { // WE STILL HAVE A SORTING PROBLEM HERE
 	Mountains.rangeValues.forEach((d, i) => {
 		if (d.type === 'value') {
 			const scale = indicators.filter(c => c['Structure'] === d.path)[0]['Index_Echelle']
-			// console.log(scale)
 
 			// CHECK WHETHER THE SCALE SHOULD BE NORMALIZED PER CAPITA
 			// let isNormalized = false
@@ -516,6 +515,43 @@ Mountains.draw = function (_d, _i) {
 	const paths = renderings.paths
 	const axes = renderings.axes
 
+	// CREATE THE OUTLINES WITH VARYING THICKNESSES
+	// if (paths.length) {
+		paths.outline = {}
+		paths.outline.dark = paths.paths.map(d => {
+			const obj = {}
+			const max = d3.max(paths.labelPos, c => Math.abs(c.y))
+			obj.color = d.color
+			obj.enter = d.enter.map(c => c).concat(d.enter.filter((c, j) => j !== 0 && j !== d.enter.length - 1).map(c => c).reverse())
+			obj.transition = d.transition
+				.map(c => c)
+				.concat(d.transition
+					.filter((c, j) => j !== 0 && j !== d.enter.length - 1)
+					.map(c => `L${c.substr(1).split(',')
+						.map((b, k) => { if (k === 0) return b; else return +b + Math.max(Math.random() * max / 10, 1) })
+					}`)
+				.reverse())
+			return obj
+		})
+
+		paths.outline.light = paths.paths.map(d => {
+			const obj = {}
+			const max = d3.max(paths.labelPos, c => Math.abs(c.y))
+			obj.color = d.color
+			obj.enter = d.enter.map(c => c).concat(d.enter.filter((c, j) => j !== 0 && j !== d.enter.length - 1).map(c => c).reverse())
+			obj.transition = d.transition
+				.map(c => c)
+				.concat(d.transition
+					.filter((c, j) => j !== 0 && j !== d.enter.length - 1)
+					.map(c => `L${c.substr(1).split(',')
+						.map((b, k) => { if (k === 0) return b; else return +b + Math.max(Math.random() * max / 2, 1) })
+					}`)
+				.reverse())
+			return obj
+		})
+	// }
+	console.log(paths)
+
 	const ridges = sel.addElems('g', 'ridge', [paths])
 		.on('mouseover', function () { 
 			d3.select(this)
@@ -536,81 +572,36 @@ Mountains.draw = function (_d, _i) {
 	
 	peaks.exit()
 		.transition()
-		.attr('d', d => d.enter.join(' '))
+		.attr('d', d => `${d.enter.join(' ')} Z`)
 	.on('end', function () { d3.select(this).remove() })
 	
 	peaks = peaks.enter()
 		.append('path')
 		.attrs({ 'class': 'peak',
-				 'd': d => d.enter.join(' ') })
+				 'd': d => `${d.enter.join(' ')} Z` })
 		.style('fill', (d, i) => {
-			if (d.style !== 'outline') return `url(#gradient-${d.color})`
+			if (d.style !== 'outline') // return `url(#gradient-${d.color})`
+				if (usePattern) return 'url(#pattern-triangles)'
+				else return '#333'
 			else return 'transparent'
 			// return d3.rgb(Menu.colors(d.color)).brighter(((d3.selectAll('g.range').size() - _i) / d3.selectAll('g.range').size()) * 2)
 		})
 		.style('stroke', d => {
 			// if (d.style === 'outline') return Menu.colors(d.color) 
 			// if (d.style === 'outline') return `url(#gradient-${d.color})`
-			if (d.style === 'outline') return '#fff'
+			if (d.style === 'outline') return '#333'
 			else return null
 		})
-		// .style('stroke-dasharray', d => {
-		// 	if (d.style === 'outline') return '1, 5'
-		// 	else return null
-		// })
-		// .on('mouseover', function (d) {
-		// 	if (svg.classed('dragging')) return null
-		// 	const ridge = d3.select(this.parentNode)
-		// 	const peakBBox = this.getBoundingClientRect()
-
-		// 	ridge.addElems('line', 'axis--link', d.peaks)
-		// 		.attrs({
-		// 			'x1': c => c.point[0],
-		// 			'x2': c => c.point[0],
-		// 			'y1': 0,
-		// 			'y2': c => c.point[1] - 16
-		// 		})
-		// 	const labels = ridge.addElems('g', 'label', d.peaks)
-		// 		.attr('transform', c => `translate(${[c.point[0], c.point[1] - (16 + 8)]})`)
-			
-		// 	labels.addElems('text', 'label--value')
-		// 		.attrs({
-		// 			'text-anchor': 'start',
-		// 			'x': 10,
-		// 			'dy': '.07em'
-		// 		})
-		// 		.text(c => printNumber(c.value))
-			
-		// 	labels.insertElems('text.label--value', 'rect', 'label--box')
-		// 		.attrs({
-		// 			'x': 0,
-		// 			'y': function () {
-		// 				const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
-		// 				return -bbox.height
-		// 			},
-		// 			'width': function () {
-		// 				const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
-		// 				return bbox.width + 20
-		// 			},
-		// 			'height': function () {
-		// 				const bbox = d3.select(this.parentNode).select('text.label--value').node().getBBox()
-		// 				return bbox.height + 8
-		// 			}
-		// 		})
-		// })
-		// .on('mouseout', _ => {
-		// 	svg.selectAll('line.axis--link').remove()
-		// 	svg.selectAll('.label').remove()
-		// })
 		.on('dblclick', console.log)
 	.merge(peaks)
 	
 	peaks.transition()
 		// .duration(500)
-		.attr('d', d => d.transition.join(' '))
+		.attr('d', d => `${d.transition.join(' ')} Z`)
 		.style('fill', (d, i) => {
-			// return `url(#gradient-${d.color})`
-			if (d.style !== 'outline') return `url(#gradient-${d.color})`
+			if (d.style !== 'outline') //return `url(#gradient-${d.color})`
+				if (usePattern) return 'url(#pattern-triangles)'
+				else return '#333'
 			else return 'transparent'
 			// return d3.rgb(Menu.colors(d.color)).brighter(((d3.selectAll('g.range').size() - _i) / d3.selectAll('g.range').size()) * 2)
 			// return d3.rgb(Menu.colors(Mountains.rangeValues[i].path.split('_')[0]))
@@ -619,13 +610,56 @@ Mountains.draw = function (_d, _i) {
 		.style('stroke', d => {
 			// if (d.style === 'outline') return Menu.colors(d.color)
 			// if (d.style === 'outline') return `url(#gradient-${d.color})`
-			if (d.style === 'outline') return '#fff'
+			if (d.style === 'outline') return '#333'
 			else return null
 		})
-		// .style('stroke-dasharray', d => {
-		// 	if (d.style === 'outline') return '1, 5'
-		// 	else return null
-		// })
+
+
+	if (useHighlights) {
+		let peakStrokesLight = ridges.selectAll('path.peak-stroke.light')
+			.data(d => d.outline.light)
+
+		peakStrokesLight.exit()
+			.transition()
+			.attr('d', d => `${d.enter.join(' ')} Z`)
+		.on('end', function () { d3.select(this).remove() })
+
+		peakStrokesLight = peakStrokesLight.enter()
+			.append('path')
+			.attrs({ 'class': 'peak-stroke light',
+					 'd': d => `${d.enter.join(' ')} Z` })
+			.style('fill', 'rgba(255,255,255,.1)')
+			.on('dblclick', console.log)
+		.merge(peakStrokesLight)
+
+		peakStrokesLight.transition()
+			.attr('d', d => `${d.transition.join(' ')} Z`)
+			.style('fill', 'rgba(255,255,255,.1)')
+
+
+		let peakStrokesDark = ridges.selectAll('path.peak-stroke.dark')
+			.data(d => d.outline.dark)
+
+		peakStrokesDark.exit()
+			.transition()
+			.attr('d', d => `${d.enter.join(' ')} Z`)
+		.on('end', function () { d3.select(this).remove() })
+
+		peakStrokesDark = peakStrokesDark.enter()
+			.append('path')
+			.attrs({ 'class': 'peak-stroke dark',
+					 'd': d => `${d.enter.join(' ')} Z` })
+			.style('fill', '#333')
+			.on('dblclick', console.log)
+		.merge(peakStrokesDark)
+
+		peakStrokesDark.transition()
+			.attr('d', d => `${d.transition.join(' ')} Z`)
+			.style('fill', '#333')
+	}
+
+
+
 
 	ridges.addElems('line', 'basis')
 		.attrs({ 'x1': d => !normalize ? -50 : -75, // -d.x / 5,
