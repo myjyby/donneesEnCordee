@@ -5,9 +5,13 @@
 	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
 	<title>Données en cordée</title>
 
-	<script type='text/javascript' src='https://d3js.org/d3.v4.min.js'></script>
+	<!-- <script type='text/javascript' src='https://d3js.org/d3.v4.min.js'></script>
 	<script type='text/javascript' src='https://d3js.org/d3-selection-multi.v1.min.js'></script>
-	<script type='text/javascript' src='https://unpkg.com/topojson@3'></script>
+	<script type='text/javascript' src='https://unpkg.com/topojson@3'></script> -->
+	<script type='text/javascript' src='./libs/d3.min.js'></script>
+	<script type='text/javascript' src='./libs/d3-selection-multi.min.js'></script>
+	<script type='text/javascript' src='./libs/topojson.min.js'></script>
+	<script type='text/javascript' src='./libs/turf.min.js'></script>
 
 	<script type='text/javascript' src='./js/base.fn.js'></script>
 	<script type='text/javascript' src='./js/modules.ui.js'></script>
@@ -30,7 +34,8 @@
 		</div> -->
 	</div>
 
-	<div class='slide vis bg-gradient'>
+	<div class='slide vis bg-uniform'>
+	<!-- <div class='slide vis bg-gradient'> -->
 		<div class='header'>
 			<div class='btn abs-scale active'>Absolue</div>
 			<div class='btn norm-scale'>Normalisée</div>
@@ -43,12 +48,21 @@
 
 	var montagnes
 
-	d3.queue()
-		.defer(d3.csv, './data/data.csv')
-		.defer(d3.csv, './data/indicators.csv')
-		.defer(d3.json, './data/lc.topojson')
-		.await((err, data, indicators, topo) => {
-			if (err) throw err
+	// d3.queue()
+	// 	.defer(d3.csv, './data/data.csv')
+	// 	.defer(d3.csv, './data/indicators.csv')
+	// 	.defer(d3.json, './data/lc.topojson')
+	// .await((err, data, indicators, topo) => {
+
+	const promise = []
+	promise.push(d3.csv('./data/data.csv'))
+	promise.push(d3.csv('./data/indicators.csv'))
+	promise.push(d3.json('./data/lc.topojson'))
+	Promise.all(promise).then(res => {
+			// if (err) throw err
+			const data = res[0]
+			const indicators = res[1]
+			const topo = res[2]
 
 			const communes = d3.set(data.map(d => d.Commune_court)).values()
 
