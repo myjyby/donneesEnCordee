@@ -5,23 +5,54 @@ const useHighlights = false
 
 if (!UI) { var UI = {} }
 UI.drag = d3.drag()
-	.on('start', () => d3.select('svg').classed('dragging', true))
+	.on('start', () => {
+		d3.selectAll('div.commune').classed('transition--none', true)
+		d3.selectAll('div.chaine').classed('transition--none', true)
+		d3.select('div.paysage--vis').classed('dragging', true)
+	})
 	.on('drag', function () {
 		const evt = d3.event
-
-		// const n = d3.selectAll('g.range').size()
 		
 		if (!normalize) {
-			d3.selectAll('g.range')
-				.attr('transform', (d, i) => {
-					d.x -= evt.dx * (i + 1) / 25
-					d.y - evt.dy * i / 25 > Mountains.horizon ? d.y -= evt.dy * i / 25 : d.y = Mountains.horizon
-					return `translate(${[d.x, d.y]})`
+			// d3.selectAll('g.range')
+			// 	.attr('transform', (d, i) => {
+			// 		d.x -= evt.dx * (i + 1) / 25
+			// 		d.y - evt.dy * i / 25 > Mountains.horizon ? d.y -= evt.dy * i / 25 : d.y = Mountains.horizon
+			// 		return `translate(${[d.x, d.y]})`
+			// 	})
+			// 	.each(function () { d3.select(this).call(Mountains.placeLabels) })
+			d3.selectAll('div.commune')
+				.style('transform', function (d) {
+					const i = +d3.select(this).style('z-index')
+					if (d.y - evt.dy * i / 25 > Mountains.horizon) {
+						d.y -= evt.dy * i / 25
+						if (d.y >= d.origin) d.y = d.origin
+					}
+					else d.y = Mountains.horizon
+					return `translateY(${d.y}px)`
+					// return `${d.y - evt.dy * i / 25 > Mountains.horizon ? d.y -= evt.dy * i / 25 : d.y = Mountains.horizon}px`
 				})
-				.each(function () { d3.select(this).call(Mountains.placeLabels) })
+				// .style('top', (d, i) => {
+				// 	if (d.y - evt.dy * i / 25 > Mountains.horizon) {
+				// 		d.y -= evt.dy * i / 25
+				// 		if (d.y >= d.origin) d.y = d.origin
+				// 	}
+				// 	else d.y = Mountains.horizon
+				// 	return `${d.y}px`
+				// 	// return `${d.y - evt.dy * i / 25 > Mountains.horizon ? d.y -= evt.dy * i / 25 : d.y = Mountains.horizon}px`
+				// })
+			d3.selectAll('div.chaine')
+				.style('transform', (d, i) => `translateX(${d.x -= evt.dx * (i + 1) / 25}px)`)
+				// .style('left', (d, i) => `${d.x -= evt.dx * (i + 1) / 25}px`)
+			// .each(function () { d3.select(this).call(Mountains.placeLabels) })
 		}
 	})
-	.on('end', () => d3.select('svg').classed('dragging', false))
+	.on('end', () => {
+		d3.selectAll('div.commune').classed('transition--none', false)
+		d3.selectAll('div.chaine').classed('transition--none', false)
+		d3.select('div.paysage--vis').classed('dragging', false)
+	})
+
 
 UI.width = width()
 UI.height = height()
@@ -45,126 +76,9 @@ UI.svg = () => {
 		})
 	.call(UI.drag)
 
-	// svg.addElems('rect', 'ground')
-	// 	.attrs({ 'width': UI.width,
-	// 			 'height': UI.height - Mountains.horizon,
-	// 			 'x': 0,
-	// 			 'y': Mountains.horizon })
-
-	// svg.addElem('line', 'Mountains.horizon')
-	// 	.attrs({
-	// 		'x1': 0,
-	// 		'x2': width(),
-	// 		'y1': Mountains.horizon,
-	// 		'y2': Mountains.horizon
-	// 	})
 	svg.addElem('g', 'mountain')
-	// svg.addElem('g', 'axis axis--y')
 
 	svg.addElem('g', 'map')
-}
-
-UI.setGradient = _color => {
-	const defs = d3.select('defs')
-	// const gradient = defs.addElems('radialGradient', `gradient-${_color}`, [_color])
-	// 	.attrs({
-	// 		'id': `gradient-${_color}`,
-	// 		'cx': '50%',
-	// 		'cy': '100%',
-	// 		'r': '150%',
-	// 		'fx': '50%',
-	// 		'fy': '100%'
-	// 	})
-	const gradient = defs.addElems('linearGradient', `gradient-${_color}`, [_color])
-		.attrs({
-			'id': `gradient-${_color}`,
-			'x1': '0%',
-			'y1': '100%',
-			'x2': '0%',
-			'y2': '0%'
-		})
-	gradient.addElems('stop', 'in')
-		.attrs({
-			'offset': '0%',
-			'style': d => `stop-color:${d3.rgb(bgColor)};stop-opacity:1`
-		})
-	gradient.addElems('stop', 'mid')
-		.attrs({
-			'offset': '33%',
-			'style': d => {
-				const rgb = d3.rgb(Menu.colors(d))
-				return `stop-color:#FFF;stop-opacity:1`
-				// return `stop-color:#E5E2D9;stop-opacity:1`
-				// return `stop-color:rgb(${[255 - rgb.r, 255 - rgb.g, 255 - rgb.b]});stop-opacity:1`
-			}
-		})
-	gradient.addElems('stop', 'out')
-		.attrs({
-			'offset': '100%',
-			'style': d => {
-				return `stop-color:#333;stop-opacity:1`
-				// return `stop-color:${d3.rgb(Menu.colors(d))};stop-opacity:1`
-			}
-		})
-}
-// UI.setPattern = _ => {
-// 	const defs = d3.select('defs')
-// 	const options = { bbox: [0, 0, 1000, 1000] }
-// 	const points = turf.randomPoint(100, options)
-// 	points.features.sort((a, b) => a.geometry.coordinates[1] - b.geometry.coordinates[0])
-// 	const tin = turf.voronoi(points, options)
-// 	console.log(points)
-
-// 	const pattern = defs.addElems('pattern')
-// 		.attrs({ 'id': 'pattern-triangles',
-// 				 'x': 0,
-// 				 'y': 0,
-// 				 // 'patternUnits': 'objectBoundingBox',
-// 				 'width': 1,
-// 				 'height': 1 })
-// 	const g = pattern.addElems('g')
-// 	g.addElems('rect')
-// 		.attrs({ 'width': 900,
-// 				 'height': 900 })
-// 		.style('fill', '#333')
-// 	g.addElems('path', 'triangle', tin.features)
-// 		.attr('d', d => d.geometry.coordinates.map(c => `M${c.join(' L')} Z`))
-// 		.style('fill', '#fff')
-// 		.style('opacity', (d, i) => {
-// 			console.log(i / points.features.length)
-// 			return (points.features.length - i) / points.features.length / 5
-// 		})
-// }
-UI.setPattern = _ => {
-	const defs = d3.select('defs')
-	const options = { bbox: [0, 0, 1000, 1000] }
-	const points = turf.randomPoint(100, options)
-	points.features.sort((a, b) => a.geometry.coordinates[1] - b.geometry.coordinates[0])
-	const tin = turf.voronoi(points, options)
-	console.log(points)
-
-	const pattern = defs.addElems('pattern')
-		.attrs({ 'id': 'pattern-triangles',
-				 'x': 0,
-				 'y': 0,
-				 // 'patternUnits': 'userSpaceOnUse',
-				 'width': 1,
-				 'height': 1 })
-	/*const g = pattern.addElems('g')
-	g.addElems('rect')
-		.attrs({ 'width': 900,
-				 'height': 900 })
-		.style('fill', '#333')
-	g.addElems('path', 'triangle', tin.features)
-		.attr('d', d => d.geometry.coordinates.map(c => `M${c.join(' L')} Z`))
-		.style('fill', '#fff')
-		.style('opacity', (d, i) => {
-			console.log(i / points.features.length)
-			return (points.features.length - i) / points.features.length / 5
-		})*/
-
-	pattern.addElems('image')
-		.attr('xlink:href', '../imgs/texture-v02.png')
 }
 
 UI.tooltip = (_sel, _data) => {
@@ -223,18 +137,34 @@ UI.tooltip = (_sel, _data) => {
 }
 
 UI.init = () => {
-	UI.svg()
+	// UI.svg()
+	setTimeout(_ => {// THIS IS A HACK TO MAKE SURE THE MENU IS PROPERLY DISPLAYED BEFORE CREATING THE CANVAS
+		const menu = d3.select('div.menu--vis').node()
+		d3.select('div.paysage--vis')
+			// .style('width', `calc(100% - ${Math.ceil(menu.clientWidth || menu.offsetWidth)}px)`)
+	}, 100)
+
 	const btns = d3.select('div.header').selectAll('div.btn')
 	btns.on('click', function () {
 		btns.classed('active', false)
 		const sel = d3.select(this)
 		sel.classed('active', true)
-		sel.classed('abs-scale') ? normalize = false : null
-		sel.classed('norm-scale') ? normalize = true : null
+		if (sel.classed('abs-scale')) {
+			normalize = false
+			d3.select('div.montagnes').classed('table', false)
+		}
+		if (sel.classed('norm-scale')) {
+			normalize = true
+			d3.select('div.montagnes').classed('table', true)
+		}
 		UI.redraw()
 	})
 }
 UI.redraw = _ => {
+	// const menu = d3.select('div.menu--vis').node()
+	// d3.select('div.paysage--vis')
+	// 	.style('width', `calc(100% - ${Math.ceil(menu.clientWidth || menu.offsetWidth)}px)`)
+
 	// normalize = !normalize
 	Mountains.init()
 	Reasoning.init()

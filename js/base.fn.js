@@ -75,12 +75,14 @@ UI.staticElement = function (_sel, _method, _element, _class) {
 UI.dynamicElement = function (_sel, _method, _element, _class, _data, _key) { // THIS REPLACES DOMnode
 	const node = _sel.selectAll(_class ? `${_element}.${_class.replace(/\s/g, '.')}` : `${_element}`)
 		.data(	_data ? (typeof _data === 'function' ? d => _data(d) : _data) : d => [d], 
-				function (d, i) { return _key ? d[_key] : i })
+				(c, j) => _key ? (typeof _key === 'function' ? _ => _key(c) : c[_key]) : j)
 	node.exit().remove()
 	return node.enter()
 		[typeof _method === 'object' ? _method[0] : _method](_element, typeof _method === 'object' ? _method[1] : null)
 		.attr('class', _class ? _class : '')
+		.each(_ => { if (_key) console.log(`(re)created div.${_class}`) })
 	.merge(node)
+		.each(_ => { if (_key) console.log(`updated div.${_class}`) })
 }
 
 
@@ -105,6 +107,74 @@ d3.selection.prototype.moveToFront = function() {
 	return this.each(function(){
 		this.parentNode.appendChild(this)
 	})
+}
+d3.selection.prototype.fitText = function (factor) {
+	if (!factor) factor = 9.5
+	this.classed('resized', true)
+		.style('font-size', null)
+	const resizer = _ => {
+		const node = this.node()
+		const parent = node.parentNode
+		let child 
+		if (this.select('span.resized-text').node()) child = this.select('span.resized-text').node()
+		else {
+			const text = this.html()
+			this.html('')
+			const span = this.append('span')
+				.attr('class', 'resized-text')
+				.html(text)
+			child = span.node()
+		}
+		// this.style('font-size', `${Math.min(Math.floor(((node.clientWidth || node.offsetWidth) / (child.clientWidth || child.offsetWidth)) * factor), Math.floor(((parent.clientHeight || parent.offsetHeight) / (child.clientHeight || child.offsetHeight)) / factor))}px`)
+		this.style('font-size', `${(node.getBoundingClientRect().width / child.getBoundingClientRect().width) * factor}px`)
+	}
+	resizer()
+	d3.select(window).on('resize.fittext orientationchange.fittext', _ => {
+		d3.selectAll('.resized').fitText()
+	})
+
+	// http://stackoverflow.com/questions/118241/calculate-text-width-with-javascript
+	// this version here is adjusted to be more dynamic
+
+	/*  ANOTHER NICE EXAMPLE FROM https://codepen.io/Merri/pen/dquki
+	const textMetrics = _sel => {
+		
+		const tm = document.createElement('span')
+		const sel = d3.select(tm)
+		sel.style('border', 0)
+			.style('padding', 0)
+			.style('position', 'absolute')
+			.style('visibility', 'hidden')
+		
+		tm.appendChild(document.createTextNode(_sel.textContent || _sel.innerText))
+		
+		_sel.appendChild(tm)
+		var rect = tm.getClientRects()[0]
+		sel.remove()
+		
+		return {
+			height: rect.bottom - rect.top,
+			width: rect.right - rect.left
+		}
+	}
+
+	// custom implementation
+	$(function(){
+	  $('h1.text').each(function(){
+		var widths = [], maxwidth = 0, width = 0;
+		$(this).children('span').each(function(){
+		  width = $.textMetrics(this)['width'];
+		  widths.push({el: this, width: width});
+		  if(maxwidth < width) maxwidth = width;
+		});
+		widths.forEach(function(w,i){
+		  $(w.el).css({
+			'font-size': (w.width > 0 ? maxwidth / w.width : 0).toFixed(5) + 'em'
+		  });
+		});
+	  });
+	});
+	*/
 }
 
 if (!Actions) { var Actions = {} }
@@ -222,7 +292,7 @@ String.prototype.capitalize = function () {
 	return this.valueOf().replace(/^\w/, c => c.toUpperCase())
 }
 
-const printNumber = (x) => {
+const printNumber = x => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
