@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans:200,400,700');
+@import url('https://fonts.googleapis.com/css?family=Martel:400,900');
 
 * {
 	padding: 0;
@@ -7,7 +8,7 @@
 body {
 	/*font-family: 'Fira Sans', Helvetica, Arial, sans-serif;*/
 	/*background-color: #E5E2D9;*/
-	background-color: #333;
+	background-color: #0a0203;
 	font-size: 14px;
 }
 body, 
@@ -18,13 +19,7 @@ a,
 a:link,
 a:hover,
 a:visited {
-	color: #333;
-}
-div.title {
-	position: absolute;
-	top: 2rem;
-	left: 2rem;
-	color: #333;
+	color: #0a0203;
 }
 div.slide {
 	min-height: 100vh;
@@ -53,30 +48,32 @@ h1.main-title {
 	font-weight: 300;
 	letter-spacing: .25rem;
 }
-.bg-dark {
-	background-color: #333;
-	/*background: linear-gradient(#333 0%, #E5E2D9 100%);*/
-	/*height: 200vh;*/
-}
 .bg-gradient {
 	background: linear-gradient(#fff 0%, #E5E2D9 50%);
 }
 .bg-uniform {
-	background-color: #171715;
+	background: linear-gradient(#fff 0%, #ebe9e9 50%);
+	/*background-color: #ebe9e9;*/
 }
-div.header {
+
+
+
+div.slide.vis {
+	height: 100vh;
+	overflow: hidden;
+}
+
+div.slide.vis div.header {
 	padding: 0 .5rem;
 	height: 3rem;
 	text-align: center;
 }
-div.header div.btn {
+div.slide.vis div.header div.btn {
 	line-height: 3rem;
 	display: inline-block;
 	height: calc(3rem - 2px);
 	min-width: 6rem;
-	/*margin: 0 .25rem;*/
-	/*border: 1px solid transparent;*/
-	color: #333;
+	color: #0a0203;
 	cursor: pointer;
 	transition: background-color .1s;
 	-webkit-transition: background-color .1s;
@@ -85,33 +82,64 @@ div.header div.btn {
 	-ms-transition: background-color .1s;
 	margin: 0;
 }
-div.header div.btn.active {
-	background-color: #333;
-	/*border-color: #333;*/
+div.slide.vis div.header div.btn.active {
+	background-color: #0a0203;
 	color: #fff;
 }
 h1 {
-	font-weight: 700;
-	font-style: italic;
-	font-size: 1.5rem;
-	line-height: 1.75rem;
+	font-weight: 900;
+	/*font-style: italic;*/
+	font-size: 10px;
+	/*line-height: 1.75rem;*/
+	/*font-family: 'Martel', serif;*/
+	text-transform: uppercase;
+	letter-spacing: .25em;
+	white-space: nowrap;
+	text-align: center;
+	vertical-align: middle;
 }
+
 h3 {
-	font-weight: 200;
-	font-size: 1.25rem;
-	line-height: 1.75rem;
+	font-weight: 400;
+	/*font-size: 1.25rem;*/
+	/*font-family: 'Martel', serif;*/
+	font-size: 11.75px;
+	/*line-height: 1.75rem;*/
+	margin: 0 0 2rem 0;
+	white-space: nowrap;
+	text-align: center;
+	vertical-align: middle;
 }
-div.menu--indicators {
-	position: absolute;
-	top: 7.25rem;
-	/*top: calc(7.25rem + 350px);*/
-	left: 2rem;
-	max-height: calc(100vh - 14.5rem - 5px);
+
+
+
+div.slide.vis div.content {
+	font-size: 0;
+	height: calc(100% - 3rem);
+	width: 100%;
+}
+
+/* THIS IS FOR THE MAIN INDICATOR MENU */
+div.slide.vis div.content div.menu--vis {
+	width: 20%;
+	height: 100%;
+	position: relative;
+	font-size: 1rem;
+	float: left;
+}
+div.slide.vis div.content div.menu--vis div.title {
+	color: #0a0203;
+	width: 100%;
+}
+div.slide.vis div.content div.menu--vis div.menu--indicators {
+	position: relative;
+	/*top: 7.25rem;*/
+	/*left: 2rem;*/
+	/*max-height: calc(100vh - 14.5rem - 5px);*/
 	overflow: auto;
-	/*max-width: 25%;*/
 }
-ul.menu-list {
-	border-top: 5px solid #333;
+div.slide.vis div.content div.menu--vis div.menu--indicators ul.menu-list {
+	border-top: 5px solid #0a0203;
 	overflow: auto;
 	padding: 1rem 1rem;
 	background-color: #fff;
@@ -134,7 +162,7 @@ li.list-item.node::before {
 	width: 0;
 	height: 0;
 	border-top: .25rem solid transparent;
-	border-left: .5rem solid #333;
+	border-left: .5rem solid #0a0203;
 	border-bottom: .25rem solid transparent;
 	margin-left: -1.5rem;
 	margin-top: .5rem;
@@ -170,16 +198,10 @@ span.leaf u:hover {
 }
 .expanded > ul > li.sub-item.node::before {
 	content: '';
-	/*width: .5rem;
-	height: .8rem;
-	position: absolute;
-	margin-left: -.75rem;
-	border-left: 1px solid grey;
-	border-bottom: 1px solid grey;*/
 	width: 0;
 	height: 0;
 	border-top: .25rem solid transparent;
-	border-left: .5rem solid #333;
+	border-left: .5rem solid #0a0203;
 	border-bottom: .25rem solid transparent;
 	margin-left: -1.5rem;
 	margin-top: .5rem;
@@ -191,144 +213,39 @@ span.leaf u:hover {
 	transform: rotate(90deg);
 }
 
+/* THIS IS FOR THE VIS */
+
+div.slide.vis div.content div.paysage--vis {
+	overflow: visible;
+	width: 80%;
+	height: 100%;
+	float: left;
+}
+
+.hide {
+	display: none;
+}
+.transition--none {
+	-webkit-transition: none !important;
+	-moz-transition: none !important;
+	-o-transition: none !important;
+	transition: none !important;
+}
+.animation--none {
+	-webkit-animation: none !important;
+	-moz-animation: none !important;
+	-o-animation: none !important;
+	animation: none !important;
+}
+
+
+
 
 .no-events {
 	pointer-events: none;
 }
 
-svg rect.bg {
-	fill: transparent;
-	cursor: move;
-}
-g.axis {
-	pointer-events: none;
-}
-g.axis--y .domain {
-	/*display: none;*/
-}
-line.basis {
-	stroke: rgba(255,255,255,.25);
-	/*stroke: #000;*/
-	pointer-events: none;
-}
-line.axis--link {
-	/*stroke-dasharray: 1, 5;*/
-	stroke-linecap: round;
-	stroke-linejoin: round;
-	pointer-events: none;
-	stroke: #333;
-}
-text.axis--label {
-	fill: #333;
-}
-line.light {
-	stroke: rgba(102,102,102,.75);
-	/*stroke-width: 2;*/
-}
-line.dark {
-	stroke: #333;
-	stroke-width: 1;
-}
-g.label,
-g.nameLabel {
-	cursor: ew-resize;
-}
-g.peak--label,
-g.ridge--rate {
-	pointer-events: none;
-}
-g.peak--label line,
-g.ridge--rate line {
-	stroke: #fff;
-	/*stroke-width: 2;*/
-}
-g.ridge--rate circle {
-	fill: #fff;
-}
-g.ridge--rate text {
-	text-anchor: middle;
-	fill: #333;
-}
-text {
-	font-size: 12px;
-}
-text.label--value {
-	fill: #333;
-	font-weight: 600;
-	letter-spacing: .05em;
-	cursor: default;
-}
-text.light {
-	stroke: rgba(255,255,255,.75);
-	stroke-width: 2;
-	fill: rgba(255,255,255,.75);
-}
-text.dark {
-	stroke: none;
-	fill: #333;
-}
-g.label {
-	pointer-events: none;
-}
-rect.label--box {
-	fill: rgba(255,255,255,.9);
-	/*stroke: rgba(102,102,102,.75);*/
-	/*stroke: #333;*/
-}
 
-
-.peak .fill {
-	fill: url(#base-gradient);
-}
-.peak {
-	/*stroke: rgba(255,255,255,.25);*/
-	/*stroke: #000;*/
-	cursor: ew-resize;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-	/*stroke-linecap: round;
-	stroke-linejoin: round;*/
-}
-
-g.node circle {
-	/*fill: #344758;*/
-	fill: #333;
-	cursor: ew-resize;
-}
-
-/*.ridge {
-	stroke: rgba(255,255,255,.25);
-}*/
-.carte path {
-	cursor: pointer;
-	fill-rule: nonzero;
-	fill: transparent;
-	stroke: rgba(51,51,51,.33);
-}
-.carte path.active {
-	fill: #344758;
-	stroke: rgba(255,255,255,.25);
-}
-
-.label-track-indicateur path {
-	fill: none;
-	stroke: rgba(255,255,255,.25);
-	stroke-linecap: round;
-	stroke-linejoin: round;
-	/*stroke-width: 2;*/
-}
-.label-track-indicateur text {
-	fill: rgba(255,255,255,.25);
-	/*stroke-width: 2;*/
-	stroke: none;
-	letter-spacing: .05em;
-	font-size: .75em;
-}
-
-
-.ridge path.highlight, .carte path.highlight {
-	fill: indianred !important;
-}
 
 .menu {
 	position: absolute;
@@ -404,16 +321,16 @@ g.btn path.bg.active {
 
 text.btn--label {
 	text-anchor: middle;
-	fill: #333;
+	fill: #0a0203;
 	pointer-events: none;
 }
 path.community {
 	fill: #fff;
-	stroke: #333;
+	stroke: #0a0203;
 	cursor: pointer;
 }
 path.community:hover {
-	fill: #333;
+	fill: #0a0203;
 }
 path.community.inactive {
 	fill: transparent;
@@ -427,5 +344,5 @@ rect.bg--transparent {
 }
 
 rect.ground {
-	fill: #333;
+	fill: #0a0203;
 }
