@@ -164,7 +164,7 @@ UI.setPattern = _ => {
 		})*/
 
 	pattern.addElems('image')
-		.attr('xlink:href', '../imgs/texture-v02.png')
+		.attr('xlink:href', '../imgs/texture-v02-square.png')
 }
 
 UI.tooltip = (_sel, _data) => {
