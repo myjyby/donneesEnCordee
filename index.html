@@ -5,13 +5,14 @@
 	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
 	<title>Données en cordée</title>
 
-	<script type='text/javascript' src='https://d3js.org/d3.v5.min.js'></script>
+	<!-- <script type='text/javascript' src='https://d3js.org/d3.v5.min.js'></script>
 	<script type='text/javascript' src='https://d3js.org/d3-selection-multi.v1.min.js'></script>
 	<script type='text/javascript' src='https://unpkg.com/topojson@3'></script>
-	<!-- <script type='text/javascript' src='./libs/d3.min.js'></script>
+	<script type='text/javascript' src='https://npmcdn.com/@turf/turf/turf.min.js'></script> -->
+	<script type='text/javascript' src='./libs/d3.min.js'></script>
 	<script type='text/javascript' src='./libs/d3-selection-multi.min.js'></script>
 	<script type='text/javascript' src='./libs/topojson.min.js'></script>
-	<script type='text/javascript' src='./libs/turf.min.js'></script> -->
+	<script type='text/javascript' src='./libs/turf.min.js'></script>
 
 	<script type='text/javascript' src='./js/base.fn.js'></script>
 	<script type='text/javascript' src='./js/modules.ui.js'></script>
@@ -21,13 +22,13 @@
 	<script type='text/javascript' src='./js/modules.reasoning.js'></script>
 
 	<link rel='stylesheet' type='text/css' href='./css/main.css'>
+	<link rel='stylesheet' type='text/css' href='./css/shapes.css'>
 </head>
 
 <body>
 
 	<div class='slide intro bg-dark v-align'>
 		<div class='inner center'>
-			<!-- <h1 class='main-title'>Données en Cordée</h1> -->
 		</div>
 		<!-- <div class='nav-indicateurs'>
 			<a href='indicateurs.html'>Voir le détail des indicateurs</a>
@@ -40,6 +41,13 @@
 			<div class='btn abs-scale active'>Absolue</div>
 			<div class='btn norm-scale'>Normalisée</div>
 		</div>
+
+		<div class='content'>
+			<div class='menu--vis'>
+			</div>
+			<div class='paysage--vis'>
+			</div>
+		</div>
 	</div>
 
 <script type='text/javascript'>
@@ -47,12 +55,6 @@
 	const debug = false
 
 	var montagnes
-
-	// d3.queue()
-	// 	.defer(d3.csv, './data/data.csv')
-	// 	.defer(d3.csv, './data/indicators.csv')
-	// 	.defer(d3.json, './data/lc.topojson')
-	// .await((err, data, indicators, topo) => {
 
 	const promise = []
 	promise.push(d3.csv('./data/data.csv'))
@@ -76,8 +78,8 @@
 			const geojson = topojson.feature(topo, topo.objects.lc_EPSG2154)
 
 			// // INITIALIZE THE USER INTERFACE
-			UI.init()
 			Menu.init(indicators)
+			UI.init() 
 
 			Mountains.init(data)
 			Map.init(geojson)
