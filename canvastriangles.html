@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type='text/javascript' src='./libs/d3.min.js'></script>
+	<script type='text/javascript' src='./libs/d3-selection-multi.min.js'></script>
+	<style type='text/css'>
+		
+		body {
+			/*background-color: #171715;*/
+			padding: 0;
+			margin: 0;
+		}
+		canvas {
+			width: 100vw;
+			height: 100vh;
+		}
+		img {
+			display: none;
+		}
+
+	</style>
+</head>
+
+
+<body>
+	<img id='texture-01' src='imgs/texture-v02-s.png' />
+
+	<div class='slide'><canvas></canvas></div>
+
+	<script type='text/javascript'>
+
+		
+		const peak=function (x, y, s) {
+			this.x=x||0
+			this.y=y||0
+			this.s=s||0
+			this.fill='#AAA'
+			this.draw=(ctx,render) => {
+				ctx.beginPath()
+				ctx.moveTo(this.x, this.y)
+				ctx.lineTo(this.x+this.s/2, this.y-this.s)
+				ctx.lineTo(this.x+this.s, this.y)
+				ctx.closePath()
+				// ctx.fillStyle = this.fill
+				if (render) {
+					const img=d3.select('#texture-01').node()
+						// .attr('width', `${s}px`).node()
+					const pat=ctx.createPattern(img, 'repeat-x')
+					ctx.fillStyle=pat
+					ctx.fill()
+				}
+			}
+			this.contained=(ctx, mx, my) => ctx.isPointInPath(mx, my)
+			console.log(this)
+		}
+
+		const canvasState = function (canvas) {
+			this.canvas=canvas
+			this.width=canvas.width
+			this.height=canvas.height
+			this.ctx=canvas.getContext('2d')
+
+			let stylePaddingLeft, stylePaddingTop, styleBorderLeft, styleBorderTop
+			if (document.defaultView&&document.defaultView.getComputedStyle) {
+				this.stylePaddingLeft=parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingLeft'], 10)||0
+				this.stylePaddingTop=parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingTop'], 10)||0
+				this.styleBorderLeft=parseInt(document.defaultView.getComputedStyle(canvas, null)['borderLeftWidth'], 10)||0
+				this.styleBorderTop=parseInt(document.defaultView.getComputedStyle(canvas, null)['borderTopWidth'], 10)||0
+			}
+			// Some pages have fixed-position bars (like the stumbleupon bar) at the top or left of the page
+			// They will mess up mouse coordinates and this fixes that
+			const html = document.body.parentNode;
+			this.htmlTop = html.offsetTop;
+			this.htmlLeft = html.offsetLeft;
+			
+
+			this.valid=false
+			this.shapes=[]
+			this.dragging=false
+			this.selection=null
+			this.dx=0
+			this.dy=0
+
+			this.addShape=shape => {
+				this.shapes.push(shape)
+				this.valid=false
+			}
+			this.clear=_ => {
+				this.ctx.clearRect(0, 0, this.width, this.height)
+			}
+			this.draw=_ => {
+				if (!this.valid) {
+					this.clear()
+					this.shapes.forEach(shape => {
+						if (!(shape.x>this.width||shape.y>this.height||shape.x+shape.s<0||shape.y+shape.s<0)) shape.draw(this.ctx, true)
+					})
+				}
+				if (this.selection!==null) {
+					this.ctx.strokeStyle = this.selectionColor
+					this.ctx.lineWidth = this.selectionWidth
+					this.ctx.strokeRect(this.selection.x, this.selection.y, this.selection.w, this.selection.h)
+				}
+				this.valid=true
+			}
+
+			this.mouse=evt => {
+				let el = this.canvas
+				let offsetX=0
+				let offsetY=0
+				let mx
+				let my
+				
+				// Compute the total offset
+				if (el.offsetParent!==undefined) {
+					do {
+						offsetX+=el.clientLeft||el.offsetLeft
+						offsetY+=el.clientTop||el.offsetTop
+					} while ((el=el.offsetParent))
+				}
+
+				// Add padding and border style widths to offset
+				// Also add the <html> offsets in case there's a position:fixed bar
+				offsetX+=this.stylePaddingLeft+this.styleBorderLeft+this.htmlLeft
+				offsetY+=this.stylePaddingTop+this.styleBorderTop+this.htmlTop
+
+				mx=evt.pageX-offsetX
+				my=evt.pageY-offsetY
+				// We return a simple javascript object (a hash) with x and y defined
+				return {x:mx, y:my}
+			}
+
+			const state=this
+			const slide=d3.select(canvas).node()
+			// const slide=d3.select(canvas.parentNode)
+			slide.addEventListener('selectstart',evt => evt.preventDefault(), false)
+			slide.addEventListener('mousedown',evt => {
+				const mouse=state.mouse(evt)
+				const mx=mouse.x
+				const my=mouse.y
+				const shapes=state.shapes
+				for (let i=shapes.length-1; i>=0; i--) { // WE ITERATE BACKWARDS TO ENSURE Z-INDEX IS ACCOUNTED FOR
+					const shape=shapes[i]
+					shape.draw(state.ctx)
+					if (shape.contained(state.ctx, mx, my)) {
+						const sel=shape
+						state.dx=mx-sel.x
+						state.dy=my-sel.y
+						state.dragging=true
+						state.selection=sel
+						state.valid=false
+						return
+					}
+				}
+				if (state.selection) {
+					state.selection=null
+					state.valid=false
+				}
+			}, true)
+			slide.addEventListener('mousemove',evt => {
+				if (state.dragging) {
+					const mouse=state.mouse(evt)
+					state.selection.x=mouse.x-state.dx
+					state.selection.y=mouse.x-state.dy
+					state.valid=false
+				}
+			}, true)
+			slide.addEventListener('mouseup',_ => {
+				state.dragging=false
+			}, true)
+
+			this.selectionColor='blue'
+			this.selectionWidth=2
+			this.interval=30
+			setInterval(_ => { state.draw() }, this.interval)
+		}
+
+		function init() {
+			const canvas = d3.select('canvas')
+				.attrs({ 'width': function () { return this.clientWidth || this.offsetWidth },
+						 'height': function () { return this.clientHeight || this.offsetHeight } })
+				.node()
+			// canvas.width = canvas.height * ((canvas.clientWidth || canvas.offsetWidth) / canvas.clientHeight)
+			// const ctx = canvas.getContext('2d')
+
+			const s = new canvasState(canvas)
+			// s.addShape(new Shape(40,40,50,50))
+			// s.addShape(new Shape(60,140,40,60, 'lightskyblue'));
+			// // Lets make some partially transparent
+			// s.addShape(new Shape(80,150,60,30, 'rgba(127, 255, 212, .5)'));
+			// s.addShape(new Shape(125,80,30,80, 'rgba(245, 222, 179, .7)'));
+
+
+			let line=0
+			const lineheight=50
+			let x=y=0
+			d3.range(420).forEach(d => {
+				const size=Math.round(Math.random()*25)+25
+				if (d%50===0) { line++; x=0 }
+				y=line*lineheight
+				s.addShape(new peak(x, y, size))
+				x+=size
+			})
+		}
+		init()
+
+	</script>
+
+</body>
+</html>
