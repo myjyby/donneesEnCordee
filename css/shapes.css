@@ -9,9 +9,9 @@
 	position: absolute;
 	overflow: visible;
 	/*transition: height .25s ease, margin-top .25s ease, transform .5s .75s ease;*/
-	transition: transform .5s .75s ease;
+	transition: opacity .1s ease, transform .5s .75s ease;
 	/*transform: translateY(0);*/
-	will-change: transform;
+	will-change: opacity, transform;
 }
 /*.commune.animate--top {
 	transition: top .5s ease;
@@ -28,15 +28,15 @@
 	text-align: right;
 }
 .chaine {
-	min-width: 50vw;
+	min-width: 100vw;
 	height: 100%;
 	position: absolute;
 	white-space: nowrap;
 	font-size: 0;
 	pointer-events: none;
 	border-bottom: 1px solid rgba(10,2,3,.33);
-	transition: opacity .25s ease, transform .25s .5s ease;
-	will-change: transform, opacity;
+	transition: transform .25s .5s ease;
+	will-change: transform;
 	overflow: hidden;
 	/*border-bottom: 1px solid rgba(136,129,127,.75);*/
 	/*border-bottom: 1px solid #0a0203;*/
@@ -204,10 +204,12 @@
 	/*transition: height .25s ease;*/
 }
 .chaine:nth-child(odd) .sommet {
-	background-image: url('../imgs/texture-v02-s.png');
+	background-image: url('../imgs/texture-v02-s.png'),
+		linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);
 }
 .chaine:nth-child(even) .sommet {
-	background-image: url('../imgs/texture-v01-s.png');
+	background-image: url('../imgs/texture-v01-s.png'),
+		linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);
 }
 .massif:nth-child(odd) .sommet {
 	background-position: center center;
@@ -225,6 +227,12 @@
 	width: 100%;
 	height: 100%;
 	background: radial-gradient(circle at bottom, rgba(255,255,255,1), orange); 
+}*/
+/*.sommet::after {
+	content: '';
+	width: 100%;
+	height: 100%;
+	background-color: blue;
 }*/
 
 .sommet ~ .sommet {
