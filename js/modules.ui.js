@@ -42,7 +42,13 @@ UI.drag = d3.drag()
 				// 	// return `${d.y - evt.dy * i / 25 > Mountains.horizon ? d.y -= evt.dy * i / 25 : d.y = Mountains.horizon}px`
 				// })
 			d3.selectAll('div.chaine')
-				.style('transform', (d, i) => `translateX(${d.x -= evt.dx * (i + 1) / 25}px)`)
+				.style('transform', function (d) {
+					const i = +d3.select(this.parentNode).style('z-index')
+					return `translateX(${d.x -= evt.dx * (i + 1) / 25}px)`
+				})
+
+
+				
 				// .style('left', (d, i) => `${d.x -= evt.dx * (i + 1) / 25}px`)
 			// .each(function () { d3.select(this).call(Mountains.placeLabels) })
 		}

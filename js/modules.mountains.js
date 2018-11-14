@@ -878,15 +878,15 @@ Mountains.draw = function (_d, _i) {
 		})
 		.on('mouseover', function () {
 			if (!d3.select('.paysage--vis').classed('dragging')) {
-				const chaine = this.parentNode.parentNode
-				d3.selectAll('div.chaine')
+				const commune = this.parentNode.parentNode.parentNode
+				d3.selectAll('div.commune')
 					.classed('semi-transparent', false)
-				.filter(function () { return this !== chaine })
+				.filter(function () { return this !== commune })
 					.classed('semi-transparent', true)
 			}
 		})
 		.on('mouseout', function () {
-			d3.selectAll('div.chaine').classed('semi-transparent', false)
+			d3.selectAll('div.commune').classed('semi-transparent', false)
 		})
 	.merge(sommet)
 		.style('width', function (d) { 
@@ -1066,7 +1066,13 @@ Mountains.draw = function (_d, _i) {
 
 
 
-	const gradient = sommet.addElems('span', 'gradient')
+	// const gradient = sommet.addElems('span', 'gradient')
+	let gradient = sommet.selectAll('span.gradient')
+		.data(d => [d])
+	gradient.exit().remove()
+	gradient = gradient.enter()
+		.append('span')
+		.attr('class', 'gradient')
 		.style('height', function (d) {
 			let height = 0
 			if (!test) height = !normalize ? Math.round(Mountains.horizon * .75) : Mountains.coverage / Mountains.data.length
@@ -1096,6 +1102,7 @@ Mountains.draw = function (_d, _i) {
 	.on('mouseout', _ => {
 		d3.selectAll('div.massif').selectAll('div.tooltip').remove()
 	})
+	.merge(gradient)
 
 
 
