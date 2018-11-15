@@ -214,14 +214,41 @@ span.leaf u:hover {
 }
 
 /* THIS IS FOR THE VIS */
-
 div.slide.vis div.content div.paysage--vis {
 	overflow: visible;
 	width: 80%;
-	height: 100%;
+	height: 80%;
 	float: left;
 }
 
+/* THIS IS FOR THE CORDEE */
+div.slide.vis div.content div.cordee--vis {
+	width: 80%;
+	height: 20%;
+	float: left;
+	position: relative;
+}
+div.cordee--vis div.raisonnement {
+	position: absolute;
+	height: 50%;
+	top: 25%;
+	width: 75%;
+	border-top: 1px solid rgba(10,2,3,.33);
+}
+div.raisonnement div.node {
+	width: 25px;
+	height: 25px;
+	background-color: #0a0203;
+	display: block;
+	position: absolute;
+	border-radius: 50%;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	-o-border-radius: 50%;
+	-ms-border-radius: 50%;
+}
+
+/* THESE ARE GENERIC FUNCTIONS */
 .hide {
 	display: none;
 }
