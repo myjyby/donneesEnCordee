@@ -228,6 +228,8 @@ Reasoning.init = _data => {
 	// Reasoning.scale.domain([0, Mountains.rangeValues.length + 1])
 	// Reasoning.scale.domain([0, Mountains.rangeRelations().filter(d => d === 'discrete').length + 1])
 	Reasoning.scale.domain([0, nodeGroups.length + 1])
+	console.log(nodeGroups)
+	console.log(nodeGroups.flatten())
 
 	const svg = d3.select('svg')
 	const chain = svg.addElems('g', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
