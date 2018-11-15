@@ -29,9 +29,9 @@ Mountains.scale = d3.scaleLinear()
 Mountains.horizon = 0
 Mountains.coverage = 0
 Mountains.horizonP = 40 // PERCENTAGE OF THE SCREEN
-Mountains.coverageP = 50 // PERCENTAGE OF THE SCREEN
+Mountains.coverageP = 60 // PERCENTAGE OF THE SCREEN
 Mountains.normHorizonP = 10
-Mountains.normCoverageP = 80
+Mountains.normCoverageP = 90
 // Mountains.horizon = UI.height - UI.height * .6
 
 Mountains.position = d3.scaleBand()
@@ -97,7 +97,6 @@ Mountains.init = _data => {
 
 
 	const paysage = d3.select('div.paysage--vis')
-		// .classed('dragging', true)
 		.call(UI.drag)
 	const baseHeight = paysage.node().clientHeight || paysage.node().offsetHeight
 

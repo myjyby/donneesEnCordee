@@ -212,116 +212,144 @@ Reasoning.drag = d3.drag()
 Reasoning.init = _data => {
 	const data = _data ? Mountains.parseData(_data) : d3.selectAll('g.range').data()
 	
-	const relations = Mountains.rangeRelations()
-		.map(d => d.values.map(c => c.key)).flatten()
-
-	const nodes = relations.map((d, i) => { return { type: d, index: i }	})
-	const nodeGroups = []
-
-	// THIS IS NEEDED TO CALCULATE THE X POSITION OF THE NODES IN THE REASONING CHAIN
-	// BECAUSE IN SOME CASES THEY OVERLAP, e.g. FOR series AND DO NOT RESPECT A EQUAL DISTANCE
-	while (nodes.length) {
-		let cut = nodes.filter((d, i) => i > 0).map(d => d.type).indexOf('discrete')
-		if (cut !== -1) cut ++ // WE NEED TO ADD 1 BECAUSE WE FILTERED THE FIRST RELATION OUT BEFORE
-		else cut = nodes.length
-		nodeGroups.push(nodes.splice(0, cut))
-	}
-	nodeGroups.forEach((d, i) => d.forEach((c, j) => {
-		c.groupIndex = i
-		c.offsetFactor = j - ((d.length / 2) - .5)
-	}))
+	let idx = 0
+	const nodeGroups = Mountains.rangeRelations().map((d, i) => {
+		return d.values.map((c, j) => {
+			if (c.key === 'discrete') {
+				const obj = {}
+				obj.type = c.key
+				obj.groupIndex = i
+				obj.index = idx
+				obj.offsetFactor = 0
+				idx ++
+				return obj
+			}
+			else if (['ordinal', 'series'].indexOf(c.key !== -1)) {
+				return c.values.map((b, k) => {
+					const obj = {}
+					obj.type = c.key
+					obj.groupIndex = i
+					obj.index = idx
+					obj.offsetFactor = k - ((c.values.length / 2) - .5)
+					idx ++
+					return obj
+				})
+			}
+		})
+	})
 
 	Reasoning.scale.domain([0, nodeGroups.length + 1])
 
-	const svg = d3.select('svg')
-	const chain = svg.addElems('g', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
-		.attr('transform', `translate(${[0, Mountains.horizon + (UI.height - Mountains.horizon) * .75]})`)
+	// const svg = d3.select('svg')
+	// const chain = svg.addElems('g', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
+	// 	.attr('transform', `translate(${[0, Mountains.horizon + (UI.height - Mountains.horizon) * .75]})`)
+	// 	.each(Reasoning.draw)
+	// chain.addElems('line')
+	// 	.attrs({
+	// 		'x1': Reasoning.scale.range()[0],
+	// 		'x2': Reasoning.scale.range()[1],
+	// 		'y1': 0,
+	// 		'y2': 0
+	// 	})
+
+	const paysage = d3.select('div.cordee--vis')
+
+	console.log(nodeGroups.flatten())
+	paysage.addElems('div', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
 		.each(Reasoning.draw)
-	chain.addElems('line')
-		.attrs({
-			'x1': Reasoning.scale.range()[0],
-			'x2': Reasoning.scale.range()[1],
-			'y1': 0,
-			'y2': 0
-		})
 }
 
 Reasoning.draw = function (_d, _i) {
 
 	const sel = d3.select(this)
-	const relations = Mountains.rangeRelations()
-	let iterator = 0
 	const nodeoffset = Reasoning.nodeSize * 1.5
 	
-	let g = sel.selectAll('g.node')
-		.data(_d.values, d => d.path)
-	g.exit()
-		.remove()
-	g = g.enter()
-		.append('g')
-		.attrs({
-			'class': 'node', //d => `node ${d.type}`,
-			'transform': (d, i) => {
-				const ref = _d.ref[i]
-				return `translate(${[d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.y = 0]})`
-			}
-		})
-	.merge(g)
-		.call(Reasoning.drag)
-	g.transition()
-		.attr('transform', (d, i) => {
-			const ref = _d.ref[i]
-			return `translate(${[d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.y = 0]})`
-		})
-	
-	let circle = g.selectAll('circle')
-		.data(d => d.type === 'value' ? [d] : d.sources, d => d.path)
-	circle.exit().remove()
-	circle = circle.enter()
-		.append('circle')
-		.each(function (d, i) { d3.select(this).classed(`c-${i}`, true) })
-		.attr('r', 0)
-		.style('stroke', function (d, i) {
-			const datum = this.parentNode['__data__']
-			if (datum.type === 'value') return null
-			else if (datum.type === 'sum' && i > 0) return 'rgba(255,255,255,.5)'
-			else if (datum.type === 'division' && i === 0) return 'rgba(51,51,51,.33)'
-			else return null
-		})
-		// .style('stroke-width', function (d, i) {
-		// 	const datum = this.parentNode['__data__']
-		// 	if (datum.type === 'value') return null
-		// 	else if (datum.type === 'sum' && i > 0) return null
-		// 	else if (datum.type === 'division' && i === 0) return 1.25
-		// 	else return null
-		// })
-		.style('fill', function (d, i) {
-			const datum = this.parentNode['__data__']
-			if (datum.type === 'value') return null
-			else if (datum.type === 'sum' && i > 0) return null
-			else if (datum.type === 'division' && i === 0) return 'transparent'
-			else return null
-		})
-		.merge(circle)
-	circle.transition()
-		.attr('r', function (d, i) {
-			const datum = this.parentNode['__data__']
-			// console.log(datum)
-			if (datum.type === 'value') return Reasoning.nodeSize
-			else if (datum.type === 'sum') return ((datum.sources.length - i) / datum.sources.length) * Reasoning.hitpadding / 2 //* datum.sources.length / 2
-			else if (datum.type === 'division') return ((datum.sources.length - i) / datum.sources.length) * Reasoning.nodeSize
-			else return Reasoning.nodeSize
-		})
 
-	const label = g.addElems('text', 'label--value')
-		.attrs({
-			'x': -20,
-			'y': 5,
-			'transform': 'rotate(-45)'
+	let node = sel.selectAll('div.node')
+		.data(_d.values, d => d.path)
+	node.exit().remove()
+	node = node.enter()
+		.append('div')
+		.attr('class', 'node')
+		.style('transform', function (d, i) {
+			console.log(_d.ref, i)
+		 	const ref = _d.ref[i]
+		 	const nodeSize = this.clientHeight || this.offsetHeight
+		 	return `translate(${d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeSize * 1.5}px, ${d.y = -nodeSize / 2}px)` 
 		})
-		.style('text-anchor', 'end')
-		// .text(d => Mountains.rangeValues[d.index].value)
-		.text(d => d.value)
+	.merge(node)
+		.call(Reasoning.drag)
+
+	// return
+	// let g = sel.selectAll('g.node')
+	// 	.data(_d.values, d => d.path)
+	// g.exit()
+	// 	.remove()
+	// g = g.enter()
+	// 	.append('g')
+	// 	.attrs({
+	// 		'class': 'node', //d => `node ${d.type}`,
+	// 		'transform': (d, i) => {
+	// 			const ref = _d.ref[i]
+	// 			return `translate(${[d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.y = 0]})`
+	// 		}
+	// 	})
+	// .merge(g)
+	// 	.call(Reasoning.drag)
+	// g.transition()
+	// 	.attr('transform', (d, i) => {
+	// 		const ref = _d.ref[i]
+	// 		return `translate(${[d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.y = 0]})`
+	// 	})
+	
+	// let circle = g.selectAll('circle')
+	// 	.data(d => d.type === 'value' ? [d] : d.sources, d => d.path)
+	// circle.exit().remove()
+	// circle = circle.enter()
+	// 	.append('circle')
+	// 	.each(function (d, i) { d3.select(this).classed(`c-${i}`, true) })
+	// 	.attr('r', 0)
+	// 	.style('stroke', function (d, i) {
+	// 		const datum = this.parentNode['__data__']
+	// 		if (datum.type === 'value') return null
+	// 		else if (datum.type === 'sum' && i > 0) return 'rgba(255,255,255,.5)'
+	// 		else if (datum.type === 'division' && i === 0) return 'rgba(51,51,51,.33)'
+	// 		else return null
+	// 	})
+	// 	// .style('stroke-width', function (d, i) {
+	// 	// 	const datum = this.parentNode['__data__']
+	// 	// 	if (datum.type === 'value') return null
+	// 	// 	else if (datum.type === 'sum' && i > 0) return null
+	// 	// 	else if (datum.type === 'division' && i === 0) return 1.25
+	// 	// 	else return null
+	// 	// })
+	// 	.style('fill', function (d, i) {
+	// 		const datum = this.parentNode['__data__']
+	// 		if (datum.type === 'value') return null
+	// 		else if (datum.type === 'sum' && i > 0) return null
+	// 		else if (datum.type === 'division' && i === 0) return 'transparent'
+	// 		else return null
+	// 	})
+	// 	.merge(circle)
+	// circle.transition()
+	// 	.attr('r', function (d, i) {
+	// 		const datum = this.parentNode['__data__']
+	// 		// console.log(datum)
+	// 		if (datum.type === 'value') return Reasoning.nodeSize
+	// 		else if (datum.type === 'sum') return ((datum.sources.length - i) / datum.sources.length) * Reasoning.hitpadding / 2 //* datum.sources.length / 2
+	// 		else if (datum.type === 'division') return ((datum.sources.length - i) / datum.sources.length) * Reasoning.nodeSize
+	// 		else return Reasoning.nodeSize
+	// 	})
+
+	// const label = g.addElems('text', 'label--value')
+	// 	.attrs({
+	// 		'x': -20,
+	// 		'y': 5,
+	// 		'transform': 'rotate(-45)'
+	// 	})
+	// 	.style('text-anchor', 'end')
+	// 	// .text(d => Mountains.rangeValues[d.index].value)
+	// 	.text(d => d.value)
 
 }
 
