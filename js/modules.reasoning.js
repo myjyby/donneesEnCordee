@@ -212,21 +212,25 @@ Reasoning.drag = d3.drag()
 Reasoning.init = _data => {
 	const data = _data ? Mountains.parseData(_data) : d3.selectAll('g.range').data()
 	
-	const relations = Mountains.rangeRelations().map((d, i) => { return { type: d, index: i } })
+	const relations = Mountains.rangeRelations()
+		.map(d => d.values.map(c => c.key)).flatten()
+
+	const nodes = relations.map((d, i) => { return { type: d, index: i }	})
 	const nodeGroups = []
-	while (relations.length) {
-		let cut = relations.filter((d, i) => i > 0).map(d => d.type).indexOf('discrete')
+
+	// THIS IS NEEDED TO CALCULATE THE X POSITION OF THE NODES IN THE REASONING CHAIN
+	// BECAUSE IN SOME CASES THEY OVERLAP, e.g. FOR series AND DO NOT RESPECT A EQUAL DISTANCE
+	while (nodes.length) {
+		let cut = nodes.filter((d, i) => i > 0).map(d => d.type).indexOf('discrete')
 		if (cut !== -1) cut ++ // WE NEED TO ADD 1 BECAUSE WE FILTERED THE FIRST RELATION OUT BEFORE
-		else cut = relations.length
-		nodeGroups.push(relations.splice(0, cut))
+		else cut = nodes.length
+		nodeGroups.push(nodes.splice(0, cut))
 	}
 	nodeGroups.forEach((d, i) => d.forEach((c, j) => {
 		c.groupIndex = i
 		c.offsetFactor = j - ((d.length / 2) - .5)
 	}))
 
-	// Reasoning.scale.domain([0, Mountains.rangeValues.length + 1])
-	// Reasoning.scale.domain([0, Mountains.rangeRelations().filter(d => d === 'discrete').length + 1])
 	Reasoning.scale.domain([0, nodeGroups.length + 1])
 
 	const svg = d3.select('svg')
