@@ -39,7 +39,7 @@
 	<!-- <div class='slide vis bg-gradient'> -->
 		<div class='header'>
 			<div class='btn abs-scale active'>Absolue</div>
-			<div class='btn norm-scale'>Normalisée</div>
+			<div class='btn norm-scale'>Par habitant</div>
 		</div>
 
 		<div class='content'>
@@ -61,12 +61,12 @@
 	const promise = []
 	promise.push(d3.csv('./data/data.csv'))
 	promise.push(d3.csv('./data/indicators.csv'))
-	promise.push(d3.json('./data/lc.topojson'))
+	promise.push(d3.json('./data/carte-redessinee.json'))
 	Promise.all(promise).then(res => {
 			// if (err) throw err
 			const data = res[0]
 			const indicators = res[1]
-			const topo = res[2]
+			const dessin = res[2]
 
 			const communes = d3.set(data.map(d => d.Commune_court)).values()
 
@@ -77,14 +77,14 @@
 
 			maxHeight = height() / data.length
 
-			const geojson = topojson.feature(topo, topo.objects.lc_EPSG2154)
+			// const geojson = topojson.feature(topo, topo.objects.lc_EPSG2154)
 
 			// // INITIALIZE THE USER INTERFACE
 			Menu.init(indicators)
 			UI.init() 
 
 			Mountains.init(data)
-			Map.init(geojson)
+			Map.init(dessin)
 			Reasoning.init(data)
 			// montagnes = new Mountains(data)
 		})
