@@ -34,9 +34,9 @@ Mountains.normHorizonP = 10
 Mountains.normCoverageP = 90
 // Mountains.horizon = UI.height - UI.height * .6
 
-Mountains.position = d3.scaleBand()
-	.rangeRound([UI.width * .25, UI.width - UI.width * .25])
-	.padding(.1)
+// Mountains.position = d3.scaleBand()
+// 	.rangeRound([UI.width * .25, UI.width - UI.width * .25])
+// 	.padding(.1)
 
 Mountains.rangeValues = []
 
@@ -46,24 +46,33 @@ Mountains.colors = d3.scaleLinear()
 
 Mountains.drag = d3.drag()
 	.on('start', d => {
-		// svg.selectAll('line.axis--link').remove()
-		// console.log(d.x)
-		d3.selectAll('div.sommet').classed('transition--none', true)
-		d3.select('.paysage--vis').classed('dragging', true)
+		if (!normalize) {
+			// svg.selectAll('line.axis--link').remove()
+			d3.selectAll('div.label--value').remove()
+			d3.selectAll('div.sommet, div.axis').classed('transition--none', true)
+			d3.select('.paysage--vis').classed('dragging', true)
+		}
 	})
 	.on('drag', function (d) {
-		const evt = d3.event
-		d.left += evt.dx
-		// console.log(evt.dx,d.x)
-		d3.select(this).selectAll('div.sommet').style('transform', c => `translate(${d.left + c.left}px, ${d.top + c.top}px)`)
-		// d3.select(this).style('transform', `translateX(${d.x}px)`)
-		// d3.select(this).style('left', `${d.x}px`)
-		
-		// .attr('transform', `translate(${[d.x += evt.dx, d.y]})`)
+		if (!normalize) {
+			const evt = d3.event
+			d.originleft += evt.dx
+
+			d3.select(this).selectAll('div.sommet').style('transform', c => `translate(${d.originleft}px, ${d.top}px)`)
+			d3.select(this).selectAll('div.axis').style('transform', c => `translateX(${d.originleft}px)`)
+			// d3.select(this).selectAll('div.axis').style('transform', c => `translate(${d.originleft + c.axisLeft}px, ${d.top - c.maxHeight}px)`)
+			
+			// d3.select(this).style('transform', `translateX(${d.x}px)`)
+			// d3.select(this).style('left', `${d.x}px`)
+			
+			// .attr('transform', `translate(${[d.x += evt.dx, d.y]})`)
+		}
 	})
 	.on('end', _ => {
-		d3.selectAll('div.sommet').classed('transition--none', false)
-		d3.select('.paysage--vis').classed('dragging', false)
+		if (!normalize) {
+			d3.selectAll('div.sommet, div.axis').classed('transition--none', false)
+			d3.select('.paysage--vis').classed('dragging', false)
+		}
 	})
 
 Mountains.init = _data => {
@@ -90,9 +99,9 @@ Mountains.init = _data => {
 		else return a['Commune_court'] - b['Commune_court']
 	}) // MIGHT NEED TO CHANGE THIS TO ACCOUNT FOR SUMS
 
-	if (!Mountains.position.domain().length) {
-		Mountains.position.domain(Mountains.data.map(d => d['Commune']).shuffle())
-	}
+	// if (!Mountains.position.domain().length) {
+	// 	Mountains.position.domain(Mountains.data.map(d => d['Commune']).shuffle())
+	// }
 
 
 
@@ -111,11 +120,8 @@ Mountains.init = _data => {
 
 	
 
-	
-
-
-
-
+	// const baseHeight = paysage.node().clientHeight || paysage.node().offsetHeight
+	// const maxHeight = !normalize ? Math.round(Mountains.horizon * .75) : baseHeight / Mountains.data.length
 
 
 	const montagnes = paysage.addElems('div', 'montagnes', [Mountains.data], d => d['Commune_court'])
@@ -126,54 +132,20 @@ Mountains.init = _data => {
 	commune = commune.enter()
 		.append('div')
 		.attr('class', 'commune')
-		// .style('height', _ => {
-		// 	if (!test) return `${!normalize ? Math.round(Mountains.horizon * .75) : Mountains.coverage / Mountains.data.length}px`
-		// 	else return `${Math.round(Mountains.horizon * .75)}px`
-		// })
-		// .style('margin-top', _ => {
-		// 	if (!test) return `-${!normalize ? Math.round(Mountains.horizon * .75) : Mountains.coverage / Mountains.data.length}px`
-		// 	else return `-${Math.round(Mountains.horizon * .75)}px`
-		// })
-		// .style('transform', (d, i) => {
-		// 	if (!test) return `translateY(${d.origin = d.y = Math.round(Mountains.horizon + i * Mountains.coverage / Mountains.data.length)}px)`
-		// 	else {
-		// 		return `translateY(${d.origin = d.y = Math.round(baseHeight * (Mountains[normalize ? 'normHorizonP' : 'horizonP'] / 100) + i * baseHeight * (Mountains[normalize ? 'normCoverageP' : 'coverageP'] / 100) / Mountains.data.length)}px)`
-		// 	}
-		// })
 	.each(function () {
 		console.log('(re)created div.commune')
 	})
 	.merge(commune)
 		.each(function (d, i) {
-			d.left ? d.left = d.left : d.left = Math.round((Math.random() * .5) * (this.clientWidth || this.offsetWidth))
+			// if (normalize) {
+				!normalize ? d.originleft ? d.left = d.originleft : d.originleft = d.left = Math.round((Math.random() * .5) * (this.clientWidth || this.offsetWidth)) : d.left = 0
+				// console.log(d.left)
+			// }
 			d.origin = d.top = Math.round(baseHeight * (Mountains[normalize ? 'normHorizonP' : 'horizonP'] / 100) + i * baseHeight * (Mountains[normalize ? 'normCoverageP' : 'coverageP'] / 100) / Mountains.data.length)
 		})
-		.style('z-index', (d, i) => i)
+		.style('z-index', (d, i) => d.z = i)
 		.each(Mountains.draw)
 		.call(Mountains.drag)
-		// .style('height', _ => {
-		// 	if (!test) return `${!normalize ? Math.round(Mountains.horizon * .75) : Mountains.coverage / Mountains.data.length}px`
-		// 	else return `${Math.round(Mountains.horizon * .75)}px`
-		// })
-		// .style('margin-top', _ => {
-		// 	if (!test) return `-${!normalize ? Math.round(Mountains.horizon * .75) : Mountains.coverage / Mountains.data.length}px`
-		// 	else return `-${Math.round(Mountains.horizon * .75)}px`
-		// })
-		// .style('transform', function (d, i) {
-		// 	d.x ? d.x = d.x : d.x = Math.round((Math.random() * .5) * (this.clientWidth || this.offsetWidth))
-		// 	if (!test) return `translateY(${d.origin = d.y = Math.round(Mountains.horizon + i * Mountains.coverage / Mountains.data.length)}px)`
-		// 	else {
-		// 		const height = paysage.node().clientHeight || paysage.node().offsetHeight
-		// 		return `translateX(${d.x}px) translateY(${d.origin = d.y = Math.round(baseHeight * (Mountains[normalize ? 'normHorizonP' : 'horizonP'] / 100) + i * baseHeight * (Mountains[normalize ? 'normCoverageP' : 'coverageP'] / 100) / Mountains.data.length)}px)`
-		// 	}
-		// })
-
-	// setTimeout(_ => {
-	// 	commune.style('z-index', (d, i) => i)
-	// }, 1000)
-	
-	// const chaine = commune.addElems('div', 'chaine', d => [d], d => d['Commune_court'])
-		// .each(Mountains.draw)
 }
 
 Mountains.rangeRelations = _ => {
@@ -186,7 +158,8 @@ Mountains.rangeRelations = _ => {
 			
 			// JUMP TO
 			// PROBABLY CHANGE THIS TO d3.selection OF THE DISPLAYED chaines
-			const max_y = d3.max(Mountains.data.filter(d => d.display).map(c => c[d1.path]))
+			const max_y = d3.max(Mountains.data.filter(d => d.display).map(c => !normalize ? c[d1.path] : c[d1.path] / c[normalizingCol]))
+			// console.log(max_y)
 
 			if (i === 0) chaines.push({ index: indexEchelle, max: max_y, values: [{ key: 'discrete', values: [d1] }] })
 			else {
@@ -287,8 +260,14 @@ Mountains.rangeRelations = _ => {
 }
 
 Mountains.renderRelations = (_relations, _commune, _i) => {
-	const maxHeight = Math.round(Mountains.horizon * .75)
+	const paysage = d3.select('div.paysage--vis')
+	const baseHeight = paysage.node().clientHeight || paysage.node().offsetHeight
+	const maxHeight = !normalize ? Math.round(Mountains.horizon * .75) : Math.round(baseHeight * (Mountains['normCoverageP'] / 100) / Mountains.data.length) * .75
+	// const maxHeight = !normalize ? Math.round(Mountains.horizon * .75) : baseHeight / Mountains.data.length
 	
+	// NEED TO FACTOR IN normalizingCol FOR NORMALIZED VIEW
+	// const normalizingValue = normalize ? d3.max(Mountains.data, d => d['Enfance_Population']) : 1
+
 	const scale = d3.scaleLinear()
 		.range([0, maxHeight])
 
@@ -297,26 +276,29 @@ Mountains.renderRelations = (_relations, _commune, _i) => {
 	const psh = d3.scaleLinear() // psh = PATH SCALE HEIGHT
 		.range([100, 0])
 
-	const valley = 25 // THIS IS THE DISTANCE BETWEEN TWO CONSECUTIVE MOUNTAINS
-	let x = y = 0
+	const valley = 50 // THIS IS THE DISTANCE BETWEEN TWO CONSECUTIVE MOUNTAINS
+	let x = !normalize ? 0 : maxHeight // IF THE VIEW IS NORMALIZED, THEN OFFSET THE FIRST PEAK SO THAT THE AXIS IS NOT CLUTTERED WITH THE TITLE
+	let y = 0
 
 	return _relations.map(d => {
 		scale.domain([0, d.max])
 
 		d.left = x
+		d.maxHeight = maxHeight
 		// y = _commune.top
 
 		d.values = d.values.map(c => {
 			// CALCULATE WIDTH AND HEIGHT
-			const widths = c.values.map(b => scale(_commune[b.path]))
+			const widths = c.values.map(b => scale(!normalize ? _commune[b.path] : _commune[b.path] / _commune[normalizingCol]))
 			let w = h = 0
 
 			if (c.key === 'discrete') { 
-				w = h = d3.max(widths)
+				w = d3.max(widths)
+				// w = h = d3.max(widths)
 			}
 			else if (c.key === 'series') {
 				w = d3.max(widths) * (c.values.length * .75)
-				h = d3.max(widths)
+				// h = d3.max(widths)
 			}
 			else if (c.key === 'ordinal') {
 				w = d3.sum(widths, (b, k) => {
@@ -328,83 +310,96 @@ Mountains.renderRelations = (_relations, _commune, _i) => {
 						else return current / 2
 					}
 				})
-				h = d3.max(widths)
+				// h = d3.max(widths)
 			}
-			
+			h = d3.max(widths)
+
 			// CALCULATE THE CLIP PATH
 			psw.domain([0, d3.sum(c.values, (b, k) => {
-				current = _commune[b.path]
+				current = !normalize ? _commune[b.path] : _commune[b.path] / _commune[normalizingCol]
 				if (k === 0) return current
 				else {
-					prev = _commune[c.values[k - 1].path]
+					prev = !normalize ? _commune[c.values[k - 1].path] : _commune[c.values[k - 1].path] / _commune[normalizingCol]
 					if (prev < current) return current - prev / 2
 					else return current / 2
 				}
 			})])
-			psh.domain([0, d3.max(c.values, b => _commune[b.path])]) // THIS SHOULD BE ON THE LOCAL MAX, NOT THE TOTAL MAX
+			psh.domain([0, d3.max(c.values, b => !normalize ? _commune[b.path] : _commune[b.path] / _commune[normalizingCol])]) // THIS SHOULD BE ON THE LOCAL MAX, NOT THE TOTAL MAX
 
-			const values = c.values.map(b => [psw(_commune[b.path]), psh(_commune[b.path])])
+			const values = c.values.map(b => [psw(!normalize ? _commune[b.path] : _commune[b.path] / _commune[normalizingCol]), psh(!normalize ? _commune[b.path] : _commune[b.path] / _commune[normalizingCol]), !normalize ? _commune[b.path] : _commune[b.path] / _commune[normalizingCol]]) // THE LAST VALUE IS THE ACTUAL VALUE
 			let poly = []
+			let points = []
 
 			if (d3.sum(values, b => b[0])) {
 				if (['discrete', 'series'].indexOf(c.key) !== -1) {
-					poly = values.map((b, k) => [`${(k + .5) * 100 / values.length}% ${b[1]}%`])
-					c.values.forEach((b, k) => {
-						b.peak = (k + .5) * 100 / values.length
-					})
+					poly = values.map((b, k) => [(k + .5) * 100 / values.length, b[1]])
+					// poly = values.map((b, k) => [`${(k + .5) * 100 / values.length}% ${b[1]}%`])
+					// c.values.forEach((b, k) => {
+					// 	b.peak = (k + .5) * 100 / values.length
+					// })
+					points = values.map((b, k) => [(k + .5) * 100 / values.length, b[1], b[2]])
 				}
 				else if (c.key === 'ordinal') {
 					let px = 0
 					values.forEach((b, k) => {
 						current = b[0]
 						if (k === 0) {
-							poly.push([`${px += b[0] * .5}% ${b[1]}%`])
-							c.values[k].peak = px
+							poly.push([px += b[0] * .5, b[1]])
+							// poly.push([`${px += b[0] * .5}% ${b[1]}%`])
+							// c.values[k].peak = px
+							points.push([px, b[1], b[2]])
 						}
 						else {
 							const prev = values[k - 1]
 							
 							if ((100 - prev[1]) < (100 - b[1])) {
-								poly.push([`${px += prev[0] * .25}% ${100 - (100 - prev[1]) * .5}%`])
-								poly.push([`${px += b[0] * .5 - prev[0] * .25}% ${b[1]}%`])
-								c.values[k].peak = px
+								poly.push([px += prev[0] * .25, 100 - (100 - prev[1]) * .5])
+								// poly.push([`${px += prev[0] * .25}% ${100 - (100 - prev[1]) * .5}%`])
+								poly.push([px += b[0] * .5 - prev[0] * .25, b[1]])
+								// poly.push([`${px += b[0] * .5 - prev[0] * .25}% ${b[1]}%`])
+								// c.values[k].peak = px
+								points.push([px, b[1], b[2]])
 							}
 							else {
-								poly.push([`${px += prev[0] * .5 - b[0] * .25}% ${100 - (100 - b[1]) * .5}%`])
-								poly.push([`${px += b[0] * .25}% ${b[1]}%`])
-								c.values[k].peak = px
+								poly.push([px += prev[0] * .5 - b[0] * .25, 100 - (100 - b[1]) * .5])
+								// poly.push([`${px += prev[0] * .5 - b[0] * .25}% ${100 - (100 - b[1]) * .5}%`])
+								poly.push([px += b[0] * .25, b[1]])
+								// poly.push([`${px += b[0] * .25}% ${b[1]}%`])
+								// c.values[k].peak = px
+								points.push([px, b[1], b[2]])
 							}
 						}
 					})
 				}
-				poly.unshift(['0% 100%'])
-				poly.push(['100% 100%'])
+				poly.unshift([0, 100])
+				// poly.unshift(['0% 100%'])
+				poly.push([100, 100])
+				// poly.push(['100% 100%'])
 			}
-			else poly = [['0% 100%'], ['100% 100%']]
+			else poly = [[0, 100], [100, 100]]
+			// else poly = [['0% 100%'], ['100% 100%']]
 
 			// ADD THE NEW ATTRIBUTES TO THE RETURNED OBJECT
-			c.width = Math.round(w)
-			c.height = Math.round(h)
-			c.left = x
-			c.top = y - Math.round(h)
+			c.width = Math.round(w) || 0
+			c.height = Math.round(h) || 0
+			c.left = !normalize ? x : x + (maxHeight - Math.round(w)) / 2 || 0 // IF THE VIEW IS NORMALIZED, THEN CENTER THE PEAK
+			c.top = Math.round(h) || 0
+			// console.log(c.height, c.top, maxHeight)
+			// c.top = y - Math.round(h)
 			c.path = poly
+			c.points = points
 
-			x += Math.round(w) + valley
+			x += !normalize ? Math.round(w) + valley : maxHeight + valley
 
 			return c
 		})
 		return d
-	})
-	
+	})	
 }
 
 Mountains.draw = function (_d, _i) {
-	// const svg = d3.select('svg')
 	const renderData = Mountains.renderRelations(Mountains.rangeRelations(), _d, _i)
-	// console.log(renderData)
 	const sel = d3.select(this)
-	// const baseHeight = d3.select('div.paysage--vis').node().clientHeight || d3.select('div.paysage--vis').node().offsetHeight
-
 	
 	// WORKING HERE
 	let label = sel.selectAll('div.label--name')
@@ -420,44 +415,7 @@ Mountains.draw = function (_d, _i) {
 	const relations = Mountains.rangeRelations()
 	
 	const massif = sel.addElems('div', 'massif', renderData) //, (d, i) => `${d.index}-${d.max}`)
-		// .style('width', function (d, i) {
-		// 	// THIS IS TO ENSURE A TABULAR-LIKE VIEW WHEN PEAKS ARE NORMALIZED
-		// 	// SO THAT THEY ARE VERTICALLY ALIGNED
-		// 	if (normalize) {
-		// 		const height = !normalize ? Math.round(Mountains.horizon * .75) : baseHeight * (Mountains[normalize ? 'normCoverageP' : 'coverageP'] / 100) / Mountains.data.length
-
-		// 		const scale = d3.scaleLinear()
-		// 			.domain([0, d.max])
-		// 			.range([0, height])
-				
-		// 		const widths = d.values.map(c => { 
-		// 			const obj = {} 
-		// 			obj.key = c.key 
-		// 			const values = Mountains.data.map(b => c.values.map(a => scale(b[a.path])))
-		// 			obj.values = values.filter(b => d3.sum(b) === d3.max(values.map(a => d3.sum(a)))).flatten()
-		// 			return obj
-		// 		})
-
-		// 		const mx = widths.map(c => {
-		// 			if (c.key === 'discrete') return d3.max(c.values)
-		// 			else if (c.key === 'series') return d3.max(c.values) * c.values.length * .75
-		// 			else if (c.key === 'ordinal') {
-		// 				return d3.sum(c, (c, j) => {
-		// 					current = c
-		// 					if (j === 0) return current
-		// 					else {
-		// 						prev = w[j - 1]
-		// 						if (prev < current) return current - prev / 2
-		// 						else return current / 2
-		// 					}
-		// 				})
-		// 			}
-		// 		})
-		// 		const width = mx.length === 1 ? mx[0] : d3.sum(mx) + (mx.length - 1) * 25
-		// 		return `${width}px`
-		// 	}
-		// })
-	
+		
 	let sommet = massif.selectAll('div.sommet')
 		.data(d => d.values, d => d.values.map(c => c.path).join('-')) // (c, j) => `${c.key}-${j}`)
 	sommet.exit().remove()
@@ -467,115 +425,53 @@ Mountains.draw = function (_d, _i) {
 	.merge(sommet)
 		.style('width', d => `${d.width}px`)
 		.style('height', d => `${d.height}px`)
-		.style('transform', d => `translate(${_d.left + d.left}px, ${_d.top + d.top}px)`)
-		// .style('transform', _ => {
-		// 	// if (!test) return null
-		// 	// else {
-		// 		if (normalize) return `scale(${0.127388535})`
-		// 		else {
+		.style('top', d => `${-d.top}px`) // THE 1.25rem ARE EXTRA FOR THE VALUE LABELS
+		// .style('top', d => `calc(${-d.top}px - 1.25rem)`) // THE 1.25rem ARE EXTRA FOR THE VALUE LABELS
+		.style('left', d => `${d.left}px`)
+		.style('transform', d => `translate(${_d.left}px, ${_d.top}px)`)
 
-		// 		}
-		// 	// }
-		// 	return null
-		// })
-		// .style('clip-path', d => `polygon(${d.path.join(',')})`)
-		// .style('-webkit-clip-path', function (d) {
-		// 	wScale = d3.scaleLinear()
-		// 		.domain([0, d3.sum(d.values, (c, j) => {
-		// 			current = _d[c.path]
-		// 			if (j === 0) return current
-		// 			else {
-		// 				prev = _d[d.values[j - 1].path]
-		// 				if (prev < current) return current - prev / 2
-		// 				else return current / 2
-		// 			}
-		// 		})])
-		// 		.range([0, 100])
-		// 	hScale = d3.scaleLinear()
-		// 		.domain([0, this.parentNode['__data__'].max])
-		// 		.range([100, 0])
+	let shape = sommet.selectAll('div.shape')
+		.data(d => [d])
+	shape.exit().remove()
+	shape = shape.enter()
+		.append('div')
+		.attr('class', 'shape')
+		.on('mouseover', function (d) {
+			if (!d3.select('.paysage--vis').classed('dragging')) {
+				const commune = this.parentNode.parentNode.parentNode
+				const datum = this.parentNode['__data__']
 
-		// 	const values = d.values.map(c => [wScale(_d[c.path]), hScale(_d[c.path])])
-		// 	let poly = []
-			
-		// 	if (d3.sum(values, b => b[0])) {
-		// 		if (['discrete', 'series'].indexOf(d.key) !== -1) {
-		// 			poly = values.map((c, j) => [`${(j + .5) * 100 / values.length}% ${c[1]}%`])
-		// 			d.values.forEach((c, j) => {
-		// 				c.peak = (j + .5) * 100 / values.length
-		// 			})
-		// 		}
-		// 		else if (d.key === 'ordinal') {
-		// 			let px = 0
-		// 			values.forEach((c, j) => {
-		// 				current = c[0]
+				d3.selectAll('div.sommet')
+					.classed('semi-transparent', false)
+				.filter(function () { return this.parentNode.parentNode !== commune })
+					.classed('semi-transparent', true)
 
-		// 				if (j === 0) {
-		// 					poly.push([`${px += c[0] * .5}% ${c[1]}%`])
-		// 					d.values[j].peak = px
-		// 				}
-		// 				else {
-		// 					const prev = values[j - 1]
-							
-		// 					if ((100 - prev[1]) < (100 - c[1])) {
-		// 						poly.push([`${px += prev[0] * .25}% ${100 - (100 - prev[1]) * .5}%`])
-		// 						poly.push([`${px += c[0] * .5 - prev[0] * .25}% ${c[1]}%`])
-		// 						d.values[j].peak = px
-		// 					}
-		// 					else {
-		// 						poly.push([`${px += prev[0] * .5 - c[0] * .25}% ${100 - (100 - c[1]) * .5}%`])
-		// 						poly.push([`${px += c[0] * .25}% ${c[1]}%`])
-		// 						d.values[j].peak = px
-		// 					}
-		// 				}
-		// 			})
-		// 		}
-		// 		poly.unshift(['0% 100%'])
-		// 		poly.push(['100% 100%'])
-		// 	}
-		// 	else poly = [['0% 100%'], ['100% 100%']]
+				d3.selectAll('div.label--name')
+					.classed('semi-transparent', false)
+				.filter(function () { return this.parentNode !== commune })
+					.classed('semi-transparent', true)
 
-		// 	return `polygon(${poly.join(',')})`
-		// })
-
-		let shape = sommet.selectAll('div.shape')
-			.data(d => [d])
-		shape.exit().remove()
-		shape = shape.enter()
-			.append('div')
-			.attr('class', 'shape')
-			.on('mouseover', function () {
-				if (!d3.select('.paysage--vis').classed('dragging')) {
-					const commune = this.parentNode.parentNode.parentNode
-					d3.selectAll('div.sommet')
-						.classed('semi-transparent', false)
-					.filter(function () { return this.parentNode.parentNode !== commune })
-						.classed('semi-transparent', true)
-
-					d3.selectAll('div.label--name')
-						.classed('semi-transparent', false)
-					.filter(function () { return this.parentNode !== commune })
-						.classed('semi-transparent', true)
-				}
-			})
-			.on('mouseout', function () {
-				d3.selectAll('div.sommet').classed('semi-transparent', false)
-				d3.selectAll('div.label--name').classed('semi-transparent', false)
-			})
-		.merge(shape)
-			.style('clip-path', d => `polygon(${d.path.join(',')})`)
-			.style('-webkit-clip-path', d => `polygon(${d.path.join(',')})`)
-			.style('-moz-clip-path', d => `polygon(${d.path.join(',')})`)
-			.style('-o-clip-path', d => `polygon(${d.path.join(',')})`)
-			.style('-ms-clip-path', d => `polygon(${d.path.join(',')})`)
-	
-		// .style('transform', d => `translate(${d.left}px, ${d.top}px)`)
-		// .style('transform', _ => {
-		// 	if (!test) return null
-		// 	else if (normalize) return `scale(${0.127388535})`
-		// 	return null
-		// })
-		
+				// ADD THE LABEL WITH THE VALUE FOR THE PEAK
+				console.log(d.points)
+				d3.select(commune).addElems('div', 'label--value', d.points)
+					.style('transform', (c, j) => {
+						return `translate(${(!normalize ? _d.originleft : _d.left) + datum.left + datum.width * c[0] / 100}px, calc(${_d.top - datum.top * (100 - c[1]) / 100}px - ${1.25 * 2}rem))`
+						// return `translate(${(!normalize ? _d.originleft : _d.left) + datum.left + datum.width * c[0] / 100}px, calc(${_d.top - datum.top * (100 - c[1]) / 100}px - ${1.25 * (j % 2 + 1)}rem))`
+					})
+					.html(c => printNumber(Math.round(c[2] * 100) / 100))
+			}
+		})
+		.on('mouseout', function () {
+			d3.selectAll('div.label--value').remove()
+			d3.selectAll('div.sommet').classed('semi-transparent', false)
+			d3.selectAll('div.label--name').classed('semi-transparent', false)
+		})
+	.merge(shape)
+		.style('clip-path', d => `polygon(${d.path.map(c => c.map(b => `${b}%`).join(' ')).join(',')})`)
+		.style('-webkit-clip-path', d => `polygon(${d.path.map(c => c.map(b => `${b}%`).join(' ')).join(',')})`)
+		.style('-moz-clip-path', d => `polygon(${d.path.map(c => c.map(b => `${b}%`).join(' ')).join(',')})`)
+		.style('-o-clip-path', d => `polygon(${d.path.map(c => c.map(b => `${b}%`).join(' ')).join(',')})`)
+		.style('-ms-clip-path', d => `polygon(${d.path.map(c => c.map(b => `${b}%`).join(' ')).join(',')})`)
 
 
 	// const gradient = sommet.addElems('span', 'gradient')
@@ -623,37 +519,37 @@ Mountains.draw = function (_d, _i) {
 
 
 
-	if (_i === 0) {
+	if (_d.z === 0) {
+		massif.addElems('div', 'axis')
+			.style('height', d => `${d.maxHeight}px`)
+			// .style('height', d => `${d3.max(d.values, c => c.height)}px`)
+			.style('left', d => `${d3.min(d.values, c => c.left)}px`)
+			.style('top', d => `${_d.top - d.maxHeight}px`)
+			.style('transform', d => `translateX(${_d.left}px)`)
+			.each(function (d) {
+				const sel = d3.select(this)
 
-	}
+				const digits = d.max.toString().length
+				const power = Math.pow(10, digits)
 
+				// console.log(Math.floor(d.max * 10 / power) / 10 * power)
+				const step = axisStep(Math.floor(d.max * 10 / power) / 10) * power / 10 // HERE WE OFFSET WITH Math.floor TO MAKE SURE THE SUM INCREMENT <= d.max
+				
+				const tickScale = d3.scaleLinear()
+					.domain([0, d.max])
+					.range([this.clientHeight || this.offsetHeight, 0])
 
-	return
-	if (_i === 0) { // CHANGE THIS TO RIDGE IN FOCUS (THE ONE ON THE BASELINE)
-		// console.log(axes)
-
-		const axis = ridges.addElems('g', 'axis axis--y', axes)
-			.attr('transform', d => `translate(${[!normalize ? d.x : d.x - 20, -1]})`)
-		.each(function(d) { 
-			const axisLeft = d3.axisLeft(d.axis)
-			if (normalize) axisLeft.ticks(2)
-
-			d3.select(this)
-				.transition()
-				.call(axisLeft) 
-		})
+				sel.addElems('div', 'tick', !normalize ? d3.range(Math.ceil(d.max / step)).map(c => c * step) : [0, 5 * step, 10 * step])
+					.style('transform', function (c) { 
+						return `translateY(${tickScale(c) - (this.clientHeight || this.offsetHeight) - 1}px)` 
+					})
+					.html(c => printNumber(c))
+			})
+		.addElems('div', 'axis--label')
+			.html(d => d.index)
 		
-		axis.addElems('text', 'axis--label')
-			.attrs({ 'transform': 'rotate(-90)',
-					 'x': d3.max(Mountains.scale.range().map(d => Math.abs(d))),
-					 'y': 6,
-					 'dy': '0.71em' })
-			.text(d => d.type.capitalize())
 	}
-	else {
-		ridges.selectAll('g.axis--y').remove()
-	}
-
+	else massif.selectAll('div.axis').remove()
 }
 /*Mountains.labels = _sel => {
 	// console.log(_sel.datum())
@@ -677,6 +573,9 @@ Mountains.draw = function (_d, _i) {
 
 	labels.call(UI.tooltip, d => [{ label: d.label, y: -d.y }])
 }*/
+
+
+
 Mountains.rates = _sel => {
 	const labels = _sel.addElems('g', 'ridge--rate', d => d.rate)
 	labels.addElems('line')

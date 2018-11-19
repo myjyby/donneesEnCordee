@@ -1,7 +1,47 @@
 if (!Map) { var Map = {} }
 
-Map.init = _geojson => {
-	const path = d3.geoPath()
+Map.init = _dessin => {
+	let body = d3.select('div.menu--vis')
+		.insertElems('div.menu--indicators', 'div', 'carte')
+	let w = body.node().clientWidth || body.node().offsetWidth
+	let h = w * .5
+	const svg = body.addElems('svg')
+		.attrs({ 'width': w,
+				 'height': h,
+				 'viewBox': '0 0 700 700',
+				 'preserveAspectRatio': 'xMidYMid meet' })
+
+	svg.addElems('path', 'active outline', _dessin)
+		.each(function (d) { d3.select(this).classed(d['commune'] === 'Total' ? 'total' : 'commune', true) })
+		.attr('d', d => d.path)
+		.style('stroke-width', d => d['commune'] !== 'Total' ? 700 / h * .5 : 700 / h)
+	.on('mouseover', function (d) { 
+		if (d['commune'] !== 'Total') {
+			d3.select(this).moveToFront()
+			d3.select(this).style('stroke-width', 700 / h * 2)
+		}
+	})
+	.on('mouseout', function (d) { if (d['commune'] !== 'Total') d3.select(this).style('stroke-width', 700 / h * .5) })
+
+	window.addEventListener('resize', _ => {
+		body = d3.select('div.menu--vis')
+		w = body.node().clientWidth || body.node().offsetWidth
+		h = w * .5
+		const svg = d3.select('svg').attrs({ 'width': w, 'height': h })
+		svg.selectAll('path.outline')
+			.style('stroke-width', d => d['commune'] !== 'Total' ? 700 / h * .5 : 700 / h)
+			.on('mouseover', function (d) { 
+				if (d['commune'] !== 'Total') {
+					d3.select(this).moveToFront()
+					d3.select(this).style('stroke-width', 700 / h * 2)
+				}
+			})
+			.on('mouseout', function (d) { if (d['commune'] !== 'Total') d3.select(this).style('stroke-width', 700 / h * .5) })
+	})
+
+	return null
+
+	/*const path = d3.geoPath()
 		.projection(null)
 	const mapSide = 250
 
@@ -43,11 +83,6 @@ Map.init = _geojson => {
 	.on('click', function (d) {
 		const sel = d3.select(this)
 		console.log(d.properties['NOM'])
-		// let missing = []
-		// Mountains.data.map(c => c['Commune']).forEach(c => {
-		// 	if (_geojson.features.map(b => b.properties['NOM']).indexOf(c) === -1) missing.push(c)
-		// })
-		// console.log(missing)
 
 		// IF THE PLACE IS ACTIVE, THEN DEACTIVATE IT
 		if (!sel.classed('inactive')) {
@@ -62,7 +97,7 @@ Map.init = _geojson => {
 		}
 		sel.classed('inactive', !sel.classed('inactive'))
 		UI.redraw()
-	})
+	})*/
 
 }
 

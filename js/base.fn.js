@@ -295,6 +295,20 @@ String.prototype.capitalize = function () {
 const printNumber = x => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
+const axisStep = function (number) {
+	if (number <= 0.1) return 0.1
+	else if (number <= 0.2) return 0.2
+	else if (number <= 0.25) return 0.25
+	else if (number <= 0.3) return 0.3
+	else if (number <= 0.4) return 0.4
+	else if (number <= 0.5) return 0.5
+	else if (number <= 0.6) return 0.6
+	else if (number <= 0.7) return 0.7
+	else if (number <= 0.75) return 0.75
+	else if (number <= 0.8) return 0.8
+	else if (number <= 0.9) return 0.9
+	else if (number <= 1) return 1
+}
 
 if (!Heuristics) { var Heuristics = {} }
 Heuristics.isDate = _val => {

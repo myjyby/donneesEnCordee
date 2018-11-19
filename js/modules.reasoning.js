@@ -1,10 +1,10 @@
 if (!Reasoning) { var Reasoning = {} }
 
 Reasoning.scale = d3.scaleLinear()
-	.rangeRound(Mountains.position.range())
+
 Reasoning.hitpadding = 25
 Reasoning.yLimit = 50
-Reasoning.nodeSize = 10
+Reasoning.nodeSize = 25
 
 Reasoning.drag = d3.drag()
 	.on('start', function () { d3.select(this).moveToFront().classed('no-events', true) })
@@ -222,7 +222,7 @@ Reasoning.init = _data => {
 				obj.index = idx
 				obj.offsetFactor = 0
 				idx ++
-				return obj
+				return [obj]
 			}
 			else if (['ordinal', 'series'].indexOf(c.key !== -1)) {
 				return c.values.map((b, k) => {
@@ -236,10 +236,12 @@ Reasoning.init = _data => {
 				})
 			}
 		})
-	})
+	}).flatten()
 
-	Reasoning.scale.domain([0, nodeGroups.length + 1])
 
+	Reasoning.scale
+		.domain([0, nodeGroups.length + 1])
+		
 	// const svg = d3.select('svg')
 	// const chain = svg.addElems('g', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
 	// 	.attr('transform', `translate(${[0, Mountains.horizon + (UI.height - Mountains.horizon) * .75]})`)
@@ -252,32 +254,38 @@ Reasoning.init = _data => {
 	// 		'y2': 0
 	// 	})
 
-	const paysage = d3.select('div.cordee--vis')
+	const cordee = d3.select('div.cordee--vis')
 
-	console.log(nodeGroups.flatten())
-	paysage.addElems('div', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
+
+	cordee.addElems('div', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
 		.each(Reasoning.draw)
 }
 
 Reasoning.draw = function (_d, _i) {
-
 	const sel = d3.select(this)
-	const nodeoffset = Reasoning.nodeSize * 1.5
+	const nodeoffset = Reasoning.nodeSize * .75
 	
+	Reasoning.scale.rangeRound([0, this.clientWidth || this.offsetWidth])
 
 	let node = sel.selectAll('div.node')
 		.data(_d.values, d => d.path)
 	node.exit().remove()
 	node = node.enter()
 		.append('div')
-		.attr('class', 'node')
+		.attr('class', (d, i) => `node ${_d.ref[i].type}`)
+		.style('width', `${Reasoning.nodeSize}px`)
+		.style('height', `${Reasoning.nodeSize}px`)
 		.style('transform', function (d, i) {
-			console.log(_d.ref, i)
 		 	const ref = _d.ref[i]
-		 	const nodeSize = this.clientHeight || this.offsetHeight
-		 	return `translate(${d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeSize * 1.5}px, ${d.y = -nodeSize / 2}px)` 
+		 	return `translate(${d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset}px, ${d.y = -Reasoning.nodeSize / 2}px)` 
 		})
 	.merge(node)
+		.attrs({ 'class': (d, i) => `node ${_d.ref[i].type}`,
+				 'data--label': d => d.value })
+		.style('transform', function (d, i) {
+		 	const ref = _d.ref[i]
+		 	return `translate(${d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset}px, ${d.y = -Reasoning.nodeSize / 2}px)` 
+		})
 		.call(Reasoning.drag)
 
 	// return

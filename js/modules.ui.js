@@ -8,7 +8,7 @@ UI.drag = d3.drag()
 	.on('start', () => {
 		// d3.selectAll('div.commune').classed('transition--none', true)
 		// d3.selectAll('div.chaine').classed('transition--none', true)
-		d3.selectAll('div.sommet, div.label--name').classed('transition--none', true)
+		d3.selectAll('div.sommet, div.label--name, div.axis').classed('transition--none', true)
 		d3.select('div.paysage--vis').classed('dragging', true)
 	})
 	.on('drag', function () {
@@ -22,23 +22,50 @@ UI.drag = d3.drag()
 			// 		return `translate(${[d.x, d.y]})`
 			// 	})
 			// 	.each(function () { d3.select(this).call(Mountains.placeLabels) })
-			d3.selectAll('div.commune')
-				.each(function (d) {
-					const sel = d3.select(this)
-					const i = +d3.select(this).style('z-index')
-					if (d.top - evt.dy * i / 25 > Mountains.horizon) {
-						d.top -= evt.dy * i / 25
-						if (d.top >= d.origin) d.top = d.origin
-					}
-					else d.top = Mountains.horizon
-					d.left -= (evt.dx * (i + 1) / 25)
+			
+
+			// d3.selectAll('div.commune')
+			// 	.each(function (d) {
+			// 		const sel = d3.select(this)
+			// 		// const i = +d3.select(this).style('z-index')
+			// 		if (d.top - evt.dy * d.z / 25 > Mountains.horizon) {
+			// 			d.top -= evt.dy * d.z / 25
+			// 			if (d.top >= d.origin) d.top = d.origin
+			// 		}
+			// 		else d.top = Mountains.horizon
+			// 		d.left -= (evt.dx * (d.z + 1) / 25)
 					
-					sel.selectAll('div.sommet')
-						.style('transform', function (c) {
-							return `translate(${d.left + c.left}px, ${d.top + c.top}px)`
-						})
-					sel.selectAll('div.label--name')
-						.style('transform', `translateY(${d.top}px)`)
+			// 		sel.selectAll('div.sommet')
+			// 			.style('transform', function (c) {
+			// 				return `translate(${d.left + c.left}px, ${d.top + c.top}px)`
+			// 			})
+			// 		sel.selectAll('div.label--name')
+			// 			.style('transform', `translateY(${d.top}px)`)
+			// 	})
+
+
+			d3.selectAll('div.sommet')
+				.style('transform', function (d) {
+					const datum = this.parentNode.parentNode['__data__']
+					if (datum.top - evt.dy * datum.z / 25 > Mountains.horizon) {
+						datum.top -= evt.dy * datum.z / 25
+						if (datum.top >= datum.origin) datum.top = datum.origin
+					}
+					else datum.top = Mountains.horizon
+					datum.originleft -= (evt.dx * (datum.z + 1) / 25)
+					
+					return `translate(${datum.originleft}px, ${datum.top}px)`
+				})
+			d3.selectAll('div.axis')
+				.style('transform', function (d) {
+					const datum = this.parentNode.parentNode['__data__']
+					return `translateX(${datum.originleft}px)`
+					// return `translate(${datum.originleft + d.axisLeft}px, ${datum.top - d.maxHeight}px)`
+				})
+			d3.selectAll('div.label--name')
+				.style('transform', function (d) {
+					const datum = this.parentNode['__data__']
+					return `translateY(${datum.top}px)`
 				})
 				
 				// .style('top', (d, i) => {
@@ -67,7 +94,7 @@ UI.drag = d3.drag()
 	.on('end', () => {
 		// d3.selectAll('div.commune').classed('transition--none', false)
 		// d3.selectAll('div.chaine').classed('transition--none', false)
-		d3.selectAll('div.sommet, div.label--name').classed('transition--none', false)
+		d3.selectAll('div.sommet, div.label--name, div.axis').classed('transition--none', false)
 		d3.select('div.paysage--vis').classed('dragging', false)
 	})
 
