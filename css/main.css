@@ -105,7 +105,6 @@ h3 {
 	/*font-family: 'Martel', serif;*/
 	font-size: 11.75px;
 	/*line-height: 1.75rem;*/
-	margin: 0 0 2rem 0;
 	white-space: nowrap;
 	text-align: center;
 	vertical-align: middle;
@@ -126,10 +125,12 @@ div.slide.vis div.content div.menu--vis {
 	position: relative;
 	font-size: 1rem;
 	float: left;
+	margin-top: -1rem;
 }
 div.slide.vis div.content div.menu--vis div.title {
 	color: #0a0203;
 	width: 100%;
+	margin-bottom: 1rem;
 }
 div.slide.vis div.content div.menu--vis div.menu--indicators {
 	position: relative;
@@ -236,8 +237,8 @@ div.cordee--vis div.raisonnement {
 	border-top: 1px solid rgba(10,2,3,.33);
 }
 div.raisonnement div.node {
-	width: 25px;
-	height: 25px;
+	min-width: 10px;
+	min-height: 10px;
 	background-color: #0a0203;
 	display: block;
 	position: absolute;
@@ -246,6 +247,56 @@ div.raisonnement div.node {
 	-moz-border-radius: 50%;
 	-o-border-radius: 50%;
 	-ms-border-radius: 50%;
+	transition: transform .25s ease;
+}
+div.raisonnement div.node::after {
+	content: attr(data--label);
+	position: absolute;
+	width: 80px;
+	top: calc(100% + .25rem);
+	/*background-color: #0a0203;*/
+	/*color: #fff;*/
+	background-color: #ebe9e9;
+	border-bottom: 1px solid #0a0203;
+	color: #0a0203;
+
+	font-size: .75rem;
+	padding: .25rem .5rem;
+	/*padding: .25rem .5rem;*/
+	/*text-align: center;*/
+}
+div.raisonnement div.node.discrete::before {
+	content: '';
+	position: absolute;
+	width: 90%;
+	height: 90%;
+	left: 5%;
+	top: 5%;
+	z-index: 10;
+	background: url('../imgs/node-discrete.svg') no-repeat center center;
+	background-size: contain;
+}
+div.raisonnement div.node.series::before {
+	content: '';
+	position: absolute;
+	width: 90%;
+	height: 90%;
+	left: 5%;
+	top: 5%;
+	z-index: 10;
+	background: url('../imgs/node-series.svg') no-repeat center center;
+	background-size: contain;
+}
+div.raisonnement div.node.ordinal::before {
+	content: '';
+	position: absolute;
+	width: 90%;
+	height: 90%;
+	left: 5%;
+	top: 5%;
+	z-index: 10;
+	background: url('../imgs/node-ordinal.svg') no-repeat center center;
+	background-size: contain;
 }
 
 /* THESE ARE GENERIC FUNCTIONS */
@@ -264,13 +315,51 @@ div.raisonnement div.node {
 	-o-animation: none !important;
 	animation: none !important;
 }
-
-
-
-
 .no-events {
 	pointer-events: none;
 }
+/* THIS IS FOR THE SVG MAP */
+div.menu--vis div.carte {
+	width: 100%;
+	/*border-top: 5px solid #0a0203;*/
+	margin-bottom: 1rem;
+}
+div.menu--vis div.carte svg {
+	/*margin-top: 1rem;*/
+}
+path.commune.active {
+	fill: #0a0203;
+	stroke: #ebe9e9;
+	cursor: pointer;
+	pointer-events: all;
+}
+path.commune:hover {
+	stroke: #ffa355;
+}
+path.commune {
+	fill: #ebe9e9;
+	stroke: rgba(255,255,255,1);
+	cursor: pointer;
+}
+path.total {
+	fill: #fff;
+	stroke: #ffa355;
+	/*stroke-width: 3;*/
+	cursor: pointer;
+	pointer-events: all;
+}
+path.total:hover {
+	/*fill: #ffa355;*/
+	/*stroke: #0a0203;*/
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -351,17 +440,8 @@ text.btn--label {
 	fill: #0a0203;
 	pointer-events: none;
 }
-path.community {
-	fill: #fff;
-	stroke: #0a0203;
-	cursor: pointer;
-}
-path.community:hover {
-	fill: #0a0203;
-}
-path.community.inactive {
-	fill: transparent;
-}
+
+
 line.rm-btn {
 	pointer-events: none;
 }
