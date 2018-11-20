@@ -31,8 +31,22 @@
 
 	transition: transform .25s ease, opacity .25s ease;
 	will-change: transform, opacity;
+
+	pointer-events: all;
+	cursor: pointer;
 }
 
+g.label--name {
+	pointer-events: none;
+}
+g.label--name text {
+	/*text-anchor: middle;*/
+	fill: #fff;
+}
+g.label--name rect.bg {
+	fill: #0a0203;
+	/*stroke: #fff;*/
+}
 
 
 .chaine {
@@ -388,14 +402,15 @@
 
 	/*background-color: #ebe9e9;*/
 }
-.label--value::before {
+.label--connector {
 	content: '';
-	height: calc(1.25rem * 2);
+	/*max-height: calc(1.25rem * 2);*/
 	width: 100%;
 	border-left: 1px solid #0a0203;
 	position: absolute;
 	left: 0;
 	top: 0;
+	z-index: -1;
 }
 
 
