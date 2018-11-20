@@ -75,16 +75,16 @@ Insertion_Demandeurs d'emploi_Types_Age_> 50 ans,Nbre de demandeurs d'emploi de 
 Insertion_Demandeurs d'emploi_Types_Très longue durée,Nbre de demandeurs d'emploi de très longue durée,personnes,personnes,Nombre,nombre
 Insertion_Demandeurs d'emploi_Types_Sexe_homme,Nbre d'hommes demandeurs d'emploi,personnes,personnes,Nombre,nombre
 Insertion_Demandeurs d'emploi_Types_Sexe_femme,Nbre de femmes demandeurs d'emploi,personnes,personnes,Nombre,nombre
-Insertion_Emplois_Total,Nbre d'emplois disponibles,emplois,emplois,Nombre,nombre
-Insertion_Emplois_Secteurs_agricole,Nbre d'emplois disponibles dans le secteur agricole,emplois,emplois,Nombre,nombre
-Insertion_Emplois_Secteurs_industriel,Nbre d'emplois disponibles dans le secteur industriel,emplois,emplois,Nombre,nombre
-Insertion_Emplois_Secteurs_construction,Nbre d'emplois disponibles dans la construction,emplois,emplois,Nombre,nombre
-Insertion_Emplois_Secteurs_service,Nbre d'emplois disponibles dans le service,emplois,emplois,Nombre,nombre
-Insertion_Emplois_Secteurs_publique,Nbre d'emplois disponibles dans le secteur public,emplois,emplois,Nombre,nombre
-Insertion_Résidences_Principales,Nbre de résidences principales,batiments,bâtiments,Nombre,nombre
-Insertion_Résidences_Types_propriétaires,Nbre de résidences pcpales avec propriétaires,batiments,bâtiments,Nombre,nombre
-Insertion_Résidences_Types_locataires,Nbre de résidences pcpales avec locataires,batiments,bâtiments,Nombre,nombre
-Insertion_Résidences_Types_locataires du parc public,Nbre de résidences pcpales avec locataires du parc public,batiments,bâtiments,Nombre,nombre
+Insertion_Emplois_Total,Nbre d'emplois salariés et non-salariés,personnes,personnes,Nombre,nombre
+Insertion_Emplois_Secteurs_agricole,Nbre d'emplois dans le secteur agricole,personnes,personnes,Nombre,nombre
+Insertion_Emplois_Secteurs_industriel,Nbre d'emplois dans le secteur industriel,personnes,personnes,Nombre,nombre
+Insertion_Emplois_Secteurs_construction,Nbre d'emplois dans la construction,personnes,personnes,Nombre,nombre
+Insertion_Emplois_Secteurs_service,Nbre d'emplois dans le service,personnes,personnes,Nombre,nombre
+Insertion_Emplois_Secteurs_publique,Nbre d'emplois dans le secteur public,personnes,personnes,Nombre,nombre
+Général_Résidences_Principales,Nbre de résidences principales,batiments,bâtiments,Nombre,nombre
+Général_Résidences_Types_Propriétaires,Nbre de résidences pcpales avec propriétaires,batiments,bâtiments,Nombre,nombre
+Général_Résidences_Types_Locataires_total,Nbre de résidences pcpales avec locataires,batiments,bâtiments,Nombre,nombre
+Général_Résidences_Types_Locataires_parc public,Nbre de résidences pcpales avec locataires du parc public,batiments,bâtiments,Nombre,nombre
 Insertion_Aides_Alloc. FSL,Nbre de ménages allocataires FSL charges courantes,menages,ménages,Nombre,nombre
 Autonomie_Aides_Alloc. Personnalisée d'Autonomie_Domicile_Année_2016,Nbre de bénéficaires de l'APA à domicile en 2016,personnes,personnes,Nombre,nombre
 Autonomie_Aides_Alloc. Personnalisée d'Autonomie_Domicile_Année_2011,Nbre de bénéficiaires de l'APA à domicile en 2011,personnes,personnes,Nombre,nombre
