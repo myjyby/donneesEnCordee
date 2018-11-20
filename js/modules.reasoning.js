@@ -7,42 +7,57 @@ Reasoning.yLimit = 50
 Reasoning.nodeSize = 25
 
 Reasoning.drag = d3.drag()
-	.on('start', function () { d3.select(this).moveToFront().classed('no-events', true) })
+	.on('start', function () { 
+		d3.select(this).moveToFront()
+			.classed('no-events, transition--none', true) 
+		d3.select('div.paysage--vis').classed('dragging', true)
+	})
 	.on('drag', function (d) {
 		const node = this
 		const sel = d3.select(this)
-		const circle = sel.select('circle')
-		const otherNodes = d3.selectAll('g.node').filter(function () { return this != node })
-		const positions = otherNodes.data().map(d => d.x)
+		const otherNodes = d3.selectAll('div.node').filter(function () { return this != node })
+		const positions = otherNodes.data().map(d => d.left)
+		// return console.log(positions)
+		// return console.log(d)
+
+		// const otherNodes = d3.selectAll('g.node').filter(function () { return this != node })
+		// const positions = otherNodes.data().map(d => d.left)
 
 		const evt = d3.event
 
-		d.x += evt.dx
-		d.x <= d3.min(Reasoning.scale.range()) ? d.x = d3.min(Reasoning.scale.range()) : null
-		d.x >= d3.max(Reasoning.scale.range()) ? d.x = d3.max(Reasoning.scale.range()) : null
+		d.left += evt.dx
+		d.left <= d3.min(Reasoning.scale.range()) ? d.left = d3.min(Reasoning.scale.range()) : null
+		d.left >= d3.max(Reasoning.scale.range()) ? d.left = d3.max(Reasoning.scale.range()) : null
 		
-		d.y += evt.dy
-		if (Math.abs(d.y) >= Reasoning.yLimit) {
-			sel.attr('transform', `translate(${[d.x, d.y]})`)
-				.call(UI.tooltip, [{ label: 'Supprimer', y: Reasoning.nodeSize }])
-			.select('circle')
-				.style('opacity', .5)
+		d.top += evt.dy
+		if (Math.abs(d.top) >= Reasoning.yLimit) {
+			sel.style('transform', `translate(${d.left}px, ${d.top}px)`)
+
+			// sel.attr('transform', `translate(${[d.left, d.top]})`)
+			// 	.call(UI.tooltip, [{ label: 'Supprimer', y: Reasoning.nodeSize }])
+			// .select('circle')
+			// 	.style('opacity', .5)
 			// NEED TO ADD LABEL HERE: REMOVE NODE?
 		}
 		else {
-			sel.attr('transform', `translate(${[d.x, 0]})`)
-				.select('circle')
-				.style('opacity', 1)
-			sel.selectAll('.tooltip').remove()
+			// sel.attr('transform', `translate(${[d.left, 0]})`)
+			// 	.select('circle')
+			// 	.style('opacity', 1)
+			// sel.selectAll('.tooltip').remove()
+			sel.style('transform', `translate(${d.left}px, ${d.origintop}px)`)
 		}
 
-		const hitTest = positions.map((c, j) => ((c - Reasoning.hitpadding <= d.x && c + Reasoning.hitpadding >= d.x) && (-Reasoning.yLimit <= d.y && Reasoning.yLimit >= d.y)) ? j : null)
-			.filter(d => d !== null)
+
+		// THIS IS NOT SHOWING ANYTHING > NEED TO SCALE NODES
+		const hitTest = positions.map((c, j) => {
+			return ((c - Reasoning.hitpadding <= d.left && c + Reasoning.hitpadding >= d.left) && (-Reasoning.yLimit <= d.top && Reasoning.yLimit >= d.top)) ? j : null
+		}).filter(d => d !== null)
 		const target = d3.select(d3.event.sourceEvent.target)
 		
 		if (hitTest.length || (target.findAncestor('tooltip') && target.findAncestor('node') && target.findAncestor('raisonnement'))) {
 			const targetNode = hitTest.length ? otherNodes.filter((c, j) => j === hitTest[0]) : target.findAncestor('node')
 			// ANIMATE THE SIZE OF THE TARGET NODE
+			console.log(targetNode.node())
 			if (!targetNode.classed('transitionning')) {
 				targetNode.classed('transitionning', true)
 					.call(UI.tooltip, [{ label: '+', y: Reasoning.nodeSize }, { label: '÷', y: Reasoning.nodeSize }])
@@ -70,9 +85,9 @@ Reasoning.drag = d3.drag()
 		const positions = otherNodes.data().map(c => c.x)
 
 		// CHECK IF NODE SHOULD BE REMOVED
-		if (Math.abs(d.y) >= Reasoning.yLimit) Mountains.rangeValues.splice(i, 1)
+		if (Math.abs(d.top) >= Reasoning.yLimit) Mountains.rangeValues.splice(i, 1)
 
-		const hitTest = positions.map((c, j) => ((c - Reasoning.hitpadding <= d.x && c + Reasoning.hitpadding >= d.x) && (-Reasoning.yLimit <= d.y && Reasoning.yLimit >= d.y)) ? j : null)
+		const hitTest = positions.map((c, j) => ((c - Reasoning.hitpadding <= d.left && c + Reasoning.hitpadding >= d.left) && (-Reasoning.yLimit <= d.top && Reasoning.yLimit >= d.top)) ? j : null)
 			.filter(c => c !== null)
 		const target = d3.select(d3.event.sourceEvent.target)
 		// console.log(target.node(), hitTest, target.datum())
@@ -105,7 +120,7 @@ Reasoning.drag = d3.drag()
 				// 	// key: `${d1.key}+${d.key}`, 
 				// 	path: `${d1.path}+${d.path}`, 
 				// 	// value: `${d1.value} + ${d.value}`, 
-				// 	// x: d1.x + d.x,
+				// 	// x: d1.x + d.left,
 				// 	// PUT THE TARGET FIRST, SINCE THE USER TECHNICALLY PLACES THE NODE ON TOP OF THE TARGET
 				// 	sources: d.type === 'value' && d1.type === 'value' ? [Object.assign({}, d1), Object.assign({}, d)]
 				// 			 : d.type === 'value' && d1.type !== 'value' ? d1.sources.concat([Object.assign({}, d)])
@@ -165,7 +180,7 @@ Reasoning.drag = d3.drag()
 						key: `${d.key}+${d1.key}`, 
 						path: `${h0.join('_')}+${d1.key}`, 
 						value: `${h0.join('_')}+${d1.key}`, 
-						x: d.x + d1.x,
+						x: d.left + d1.x,
 						sources: [Object.assign({}, d), Object.assign({}, d1)]
 					})
 					Mountains.rangeValues.splice(Mountains.rangeValues.map(c => c.path).indexOf(d.path), 1)
@@ -203,8 +218,12 @@ Reasoning.drag = d3.drag()
 
 		Mountains.rangeValues.sort((a, b) => a.x - b.x)
 
-		d3.select(this).classed('no-events', false) 
+		// d3.select(this).classed('no-events', false) 
 		d3.selectAll('.tooltip').remove()
+
+		d3.select(this).moveToFront()
+			.classed('no-events, transition--none', false) 
+		d3.select('div.paysage--vis').classed('dragging', false)
 
 		UI.redraw()
 	})
@@ -255,10 +274,11 @@ Reasoning.init = _data => {
 	// 	})
 
 	const cordee = d3.select('div.cordee--vis')
-
-
+	
 	cordee.addElems('div', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
 		.each(Reasoning.draw)
+
+	d3.select(window).on('resize.cordee', _ => Reasoning.init(_data))
 }
 
 Reasoning.draw = function (_d, _i) {
@@ -277,16 +297,29 @@ Reasoning.draw = function (_d, _i) {
 		.style('height', `${Reasoning.nodeSize}px`)
 		.style('transform', function (d, i) {
 		 	const ref = _d.ref[i]
-		 	return `translate(${d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset}px, ${d.y = -Reasoning.nodeSize / 2}px)` 
+		 	return `translate(${d.left = Math.round(Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset)}px, ${d.top = d.origintop = -Reasoning.nodeSize / 2}px)` 
 		})
 	.merge(node)
 		.attrs({ 'class': (d, i) => `node ${_d.ref[i].type}`,
 				 'data--label': d => d.value })
 		.style('transform', function (d, i) {
 		 	const ref = _d.ref[i]
-		 	return `translate(${d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset}px, ${d.y = -Reasoning.nodeSize / 2}px)` 
+		 	return `translate(${d.left = Math.round(Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset)}px, ${d.top = d.origintop = -Reasoning.nodeSize / 2}px)` 
 		})
+	.on('mouseover', function (d) {
+		if (!d3.select('div.paysage--vis').classed('dragging')) {
+			d3.selectAll('div.shape').filter(c => c.values.map(b => b.path).indexOf(d.path) !== -1).each(Mountains.labels)
+			d3.selectAll('div.sommet').filter(c => c.values.map(b => b.path).indexOf(d.path) === -1).classed('semi-transparent', true)
+		}
+		// d3.selectAll('div.label--name').filter(c => c.values.map(b => b.path).indexOf(d.path) !== -1).classed('semi-transparent', true)
+	})
+	.on('mouseout', _ => {
+		d3.selectAll('div.label--value').remove()
+		d3.selectAll('div.sommet').classed('semi-transparent', false)
+		// d3.selectAll('div.label--name').filter(c => c.values.map(b => b.path).indexOf(d.path) !== -1).classed('semi-transparent', false)
+	})
 		.call(Reasoning.drag)
+
 
 	// return
 	// let g = sel.selectAll('g.node')
@@ -299,7 +332,7 @@ Reasoning.draw = function (_d, _i) {
 	// 		'class': 'node', //d => `node ${d.type}`,
 	// 		'transform': (d, i) => {
 	// 			const ref = _d.ref[i]
-	// 			return `translate(${[d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.y = 0]})`
+	// 			return `translate(${[d.left = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.top = 0]})`
 	// 		}
 	// 	})
 	// .merge(g)
@@ -307,7 +340,7 @@ Reasoning.draw = function (_d, _i) {
 	// g.transition()
 	// 	.attr('transform', (d, i) => {
 	// 		const ref = _d.ref[i]
-	// 		return `translate(${[d.x = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.y = 0]})`
+	// 		return `translate(${[d.left = Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset, d.top = 0]})`
 	// 	})
 	
 	// let circle = g.selectAll('circle')

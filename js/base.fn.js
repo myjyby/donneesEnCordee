@@ -110,6 +110,7 @@ d3.selection.prototype.moveToFront = function() {
 }
 d3.selection.prototype.fitText = function (factor) {
 	if (!factor) factor = 9.5
+	// console.dir(this.node())
 	this.classed('resized', true)
 		.style('font-size', null)
 	const resizer = _ => {

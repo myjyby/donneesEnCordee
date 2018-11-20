@@ -1,6 +1,6 @@
 if (!Menu) { var Menu = {} }
-Menu.colors = d3.scaleOrdinal()
-	.range(['#34453D', '#344758', '#3F332D'])
+// Menu.colors = d3.scaleOrdinal()
+// 	.range(['#34453D', '#344758', '#3F332D'])
 Menu.init = _data => {
 	const body = d3.select('div.menu--vis')
 
@@ -10,7 +10,7 @@ Menu.init = _data => {
 	title.addElem('h3', 'title-block').html('Un paysage social du département Isère').fitText()
 
 	const hierarchie = Menu.data(_data)
-	Menu.colors.domain(hierarchie.map(d => d.key))
+	// Menu.colors.domain(hierarchie.map(d => d.key))
 	// Menu.colors.domain().forEach(d => UI.setGradient(d))
 	
 	const menu = body.addElems('div', 'menu--indicators', [_data])
@@ -28,9 +28,7 @@ Menu.init = _data => {
 			const node = this
 			const sel = d3.select(this)
 			
-			if (sel.classed('list-item'))
-				d3.selectAll('.list-item.expanded').filter(function () { return this !== node }).call(Menu.expand)
-
+			if (sel.classed('list-item')) d3.selectAll('.list-item.expanded').filter(function () { return this !== node }).call(Menu.expand)
 			sel.call(Menu.expand)
 		})
 	d3.selectAll('.leaf')
@@ -40,8 +38,9 @@ Menu.init = _data => {
 
 			Mountains.rangeValues.push(Object.assign({ type: 'value' }, d)) // CHANGE TYPE HERE
 
-			Mountains.init()
-			Reasoning.init()
+			// Mountains.init()
+			// Reasoning.init()
+			UI.redraw()
 		})
 
 	menu.addElems('a')
@@ -109,7 +108,7 @@ Menu.expand = _sel => {
 	if (!_sel.node()) return null
 	const sublist = _sel.node().children
 	const isExpanded = _sel.classed('expanded')
-	const lineHeight = 1.5
+	const lineHeight = 9
 	
 	if (sublist) {
 		if (!isExpanded) {
@@ -138,6 +137,13 @@ Menu.expand = _sel => {
 				.selectAll('li.sub-item')
 				.classed('expanded', false)
 				.style('max-height', null)
+			
+			// _sel.selectAll('li.sub-item')
+			// 	.classed('expanded', false)
+			// 	.style('max-height', null)
+			// .on('transitionend', function () { 
+			// 	_sel.classed('expanded', false) 
+			// })
 		}
 	}
 }
