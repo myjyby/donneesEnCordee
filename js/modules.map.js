@@ -1,6 +1,6 @@
 if (!Map) { var Map = {} }
 
-Map.init = _dessin => {
+Map.init = _data => {
 	let body = d3.select('div.menu--vis')
 		.insertElems('div.title', 'div', 'carte')
 	let w = body.node().clientWidth || body.node().offsetWidth
@@ -8,20 +8,29 @@ Map.init = _dessin => {
 	const svg = body.addElems('svg')
 		.attrs({ 'width': w,
 				 'height': h,
-				 'viewBox': '0 0 700 700',
+				 'viewBox': '0 0 850 850',
 				 'preserveAspectRatio': 'xMinYMid meet' })
 
-	svg.addElems('g', 'carte--communes', [_dessin])
-		.attr('transform', `translate(${[(w * (700 / h) - 700) / 2, 0]})`)
+	svg.addElems('g', 'carte--communes', [_data])
+		.attr('transform', `translate(${[(w * (850 / h) - 850) / 2, -44]})`) // THE y = -44 IS DEPENDENT ON THE BASE DRAWING
 	.addElems('path', 'active outline', d => d)
-		.each(function (d) { d3.select(this).classed(d['commune'] === 'Total' ? 'total' : 'commune', true) })
+		.each(function (d) { 
+			if (d['commune'] === 'Total') d3.select(this).classed('total', true) 
+			else if (d['commune'] === 'Toutes les communes') d3.select(this).classed('toutes-communes', true)
+			else d3.select(this).classed('commune', true) 
+		})
 		.attr('d', d => d.path)
-		.style('stroke-width', d => d['commune'] !== 'Total' ? 700 / h * .75 : 700 / h)
+		.style('stroke-width', d => {
+			if (d['commune'] === 'Total') return 850 / h * .75
+			else if (d['commune'] === 'Toutes les communes') return 850 / h
+			else return 850 / h * .75
+			// d['commune'] !== 'Toutes les communes' ? 850 / h * .75 : 850 / h
+		})
 	.on('mouseover', function (d) { 
 		const sel = d3.select(this)
-		if (d['commune'] !== 'Total') {
-			d3.select(this).moveToFront()
-			d3.select(this).style('stroke-width', 700 / h * 2)
+		if (d['commune'] !== 'Toutes les communes') {
+			if (d['commune'] !== 'Total') d3.select(this).moveToFront()
+			d3.select(this).style('stroke-width', 850 / h * 2)
 		}
 
 		d3.selectAll('div.sommet, div.label--name')
@@ -33,27 +42,27 @@ Map.init = _dessin => {
 		const bbox = this.getBBox()
 		const label = svg.addElems('g', 'label--name', [d])
 			.attr('transform', c => {
-				// if (c['commune'] === 'Total') return `translate(${[0, bbox.y + (700 / h) * 20]})`
-				// else return `translate(${[bbox.x + bbox.width / 2, bbox.y + bbox.height / 2 <= w / 2 ? bbox.y + bbox.height + (700 / h) * 20 : bbox.y - (700 / h) * 10]})`
-				return `translate(${[0, 700 - 10 * (700 / h)]})`
+				// if (c['commune'] === 'Toutes les communes') return `translate(${[0, bbox.y + (850 / h) * 20]})`
+				// else return `translate(${[bbox.x + bbox.width / 2, bbox.y + bbox.height / 2 <= w / 2 ? bbox.y + bbox.height + (850 / h) * 20 : bbox.y - (850 / h) * 10]})`
+				return `translate(${[0, 850 - 10 * (850 / h)]})`
 			})
 			.moveToFront()
 		const text = label.addElems('text')
-			.style('font-size', `${(700 / h) * .75}rem`)
+			.style('font-size', `${(850 / h) * .75}rem`)
 			.attrs({ 'dy': '.4rem',
-					 'x': 24 * (700 / h) / 2 })
+					 'x': 24 * (850 / h) / 2 })
 			.text(c => `${sel.classed('active') ? 'Masquer' : 'Afficher'}: ${c['commune']}`)
 
 		label.insertElems('text', 'rect', 'bg')
-			.attrs({ 'width': text.node().getBBox().width + 24 * (700 / h),
-					 'height': text.node().getBBox().height + 15 * (700 / h),
+			.attrs({ 'width': text.node().getBBox().width + 24 * (850 / h),
+					 'height': text.node().getBBox().height + 15 * (850 / h),
 					 'x': 0, //-(text.node().getBBox().width + 60) / 2,
-					 'y': -(text.node().getBBox().height + 15 * (700 / h)) / 2 })
-			// .style('stroke-width', 700 / h)
+					 'y': -(text.node().getBBox().height + 15 * (850 / h)) / 2 })
+			// .style('stroke-width', 850 / h)
 
 	})
 	.on('mouseout', function (d) { 
-		if (d['commune'] !== 'Total') d3.select(this).style('stroke-width', 700 / h * .75)
+		if (d['commune'] !== 'Toutes les communes') d3.select(this).style('stroke-width', 850 / h * .75)
 		d3.selectAll('div.sommet, div.label--name').classed('semi-transparent', false)
 		// d3.selectAll('div.label--name').classed('semi-transparent', false)
 
@@ -76,7 +85,9 @@ Map.init = _dessin => {
 		UI.redraw()
 	})
 
-	d3.select(window).on('resize.map', _ => Map.init(_dessin))
+
+
+	d3.select(window).on('resize.map', _ => Map.init(_data))
 
 
 

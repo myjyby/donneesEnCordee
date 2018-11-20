@@ -451,7 +451,7 @@ Mountains.draw = function (_d, _i) {
 	})
 	.on('click', function (d) {
 		Mountains.data.forEach(c => { if (c['Commune_court'] === d['Commune_court']) c.display = false })
-		// d3.selectAll('div.sommet, div.label--name').classed('semi-transparent', false)
+		d3.selectAll('div.sommet, div.label--name').classed('semi-transparent', false)
 		d3.select('g.carte--communes').selectAll('path.outline').filter(c => c['commune'] === d['Commune_court'])
 			.classed('active', false)
 		UI.redraw()

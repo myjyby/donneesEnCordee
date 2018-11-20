@@ -10,6 +10,8 @@ Reasoning.drag = d3.drag()
 	.on('start', function () { 
 		d3.select(this).moveToFront()
 			.classed('no-events, transition--none', true) 
+		d3.selectAll('div.sommet, div.label--name').classed('semi-transparent', false)
+		d3.selectAll('div.label--value').remove()
 		d3.select('div.paysage--vis').classed('dragging', true)
 	})
 	.on('drag', function (d) {
@@ -51,44 +53,56 @@ Reasoning.drag = d3.drag()
 		// THIS IS NOT SHOWING ANYTHING > NEED TO SCALE NODES
 		const hitTest = positions.map((c, j) => {
 			return ((c - Reasoning.hitpadding <= d.left && c + Reasoning.hitpadding >= d.left) && (-Reasoning.yLimit <= d.top && Reasoning.yLimit >= d.top)) ? j : null
-		}).filter(d => d !== null)
+		}).filter(c => c !== null)
 		const target = d3.select(d3.event.sourceEvent.target)
 		
 		if (hitTest.length || (target.findAncestor('tooltip') && target.findAncestor('node') && target.findAncestor('raisonnement'))) {
 			const targetNode = hitTest.length ? otherNodes.filter((c, j) => j === hitTest[0]) : target.findAncestor('node')
 			// ANIMATE THE SIZE OF THE TARGET NODE
-			console.log(targetNode.node())
+			// console.log(targetNode.node())
 			if (!targetNode.classed('transitionning')) {
-				targetNode.classed('transitionning', true)
-					.call(UI.tooltip, [{ label: '+', y: Reasoning.nodeSize }, { label: '÷', y: Reasoning.nodeSize }])
-					.select('circle')
-				.transition()
-					.duration(150)
-					.attr('r', Reasoning.hitpadding)
+				targetNode.select('div.circle').style('transform', 'scale(2)')
+				
+				targetNode.addElems('div', 'operation-options', [{ operation: 'addition', label: 'Ajouter à'}, { operation: 'division', label: 'Diviser par' }])
+				// targetNode.select('div.circle').style('transform', c => `translate(${c.left}px, ${c.origintop}px) scale(2)`)
+				// targetNode.classed('transitionning', true)
+				// 	.call(UI.tooltip, [{ label: '+', y: Reasoning.nodeSize }, { label: '÷', y: Reasoning.nodeSize }])
+				// 	.select('circle')
+				// .transition()
+				// 	.duration(150)
+				// 	.attr('r', Reasoning.hitpadding)
 			}
 		}
 		else {
-			otherNodes.filter(function () { return d3.select(this).classed('transitionning') })
-				.classed('transitionning', false)
-				.select('circle')
-			.transition()
-				.duration(150)
-				.attr('r', Reasoning.nodeSize)
-			otherNodes.selectAll('.tooltip').remove()
+			// otherNodes.filter(function () { return d3.select(this).classed('transitionning') })
+			// 	.classed('transitionning', false)
+			// 	.select('circle')
+			// .transition()
+			// 	.duration(150)
+			// 	.attr('r', Reasoning.nodeSize)
+			// otherNodes.selectAll('.tooltip').remove()
+			// otherNodes.style('transform', c => `translate(${c.left}px, ${c.origintop}px)`)
+			otherNodes.select('div.circle').style('transform', null)
 		}
 	})
 	.on('end', function (d, i) {
+		// const node = this
+		// const sel = d3.select(this)
+		// const otherNodes = d3.selectAll('g.node').filter(function () { return this != node })
+		// const indicators = d3.select('div.menu--indicators').datum()
+		// const positions = otherNodes.data().map(c => c.x)
 		const node = this
 		const sel = d3.select(this)
-		const otherNodes = d3.selectAll('g.node').filter(function () { return this != node })
+		const otherNodes = d3.selectAll('div.node').filter(function () { return this != node })
+		const positions = otherNodes.data().map(d => d.left)
 		const indicators = d3.select('div.menu--indicators').datum()
-		const positions = otherNodes.data().map(c => c.x)
 
 		// CHECK IF NODE SHOULD BE REMOVED
 		if (Math.abs(d.top) >= Reasoning.yLimit) Mountains.rangeValues.splice(i, 1)
 
-		const hitTest = positions.map((c, j) => ((c - Reasoning.hitpadding <= d.left && c + Reasoning.hitpadding >= d.left) && (-Reasoning.yLimit <= d.top && Reasoning.yLimit >= d.top)) ? j : null)
-			.filter(c => c !== null)
+		const hitTest = positions.map((c, j) => {
+			return ((c - Reasoning.hitpadding <= d.left && c + Reasoning.hitpadding >= d.left) && (-Reasoning.yLimit <= d.top && Reasoning.yLimit >= d.top)) ? j : null
+		}).filter(c => c !== null)
 		const target = d3.select(d3.event.sourceEvent.target)
 		// console.log(target.node(), hitTest, target.datum())
 
@@ -216,50 +230,61 @@ Reasoning.drag = d3.drag()
 		}
 		*/
 
-		Mountains.rangeValues.sort((a, b) => a.x - b.x)
+		Mountains.rangeValues.sort((a, b) => a.left - b.left)
 
 		// d3.select(this).classed('no-events', false) 
 		d3.selectAll('.tooltip').remove()
 
-		d3.select(this).moveToFront()
+		d3.select(this)//.moveToFront()
 			.classed('no-events, transition--none', false) 
 		d3.select('div.paysage--vis').classed('dragging', false)
 
 		UI.redraw()
 	})
 
-Reasoning.init = _data => {
-	const data = _data ? Mountains.parseData(_data) : d3.selectAll('g.range').data()
+Reasoning.init = _ => {
+	// const data = _data ? Mountains.parseData(_data) : d3.selectAll('g.range').data()
 	
-	let idx = 0
+	// const data = Mountains.rangeRelations().map(d => {
+	// 	return d.map(c => {
+
+	// 	})
+	// })
+	console.log(Mountains.rangeRelations())
+
+	let idx = groupidx = 0
 	const nodeGroups = Mountains.rangeRelations().map((d, i) => {
 		return d.values.map((c, j) => {
 			if (c.key === 'discrete') {
 				const obj = {}
 				obj.type = c.key
-				obj.groupIndex = i
+				obj.groupIndex = groupidx
 				obj.index = idx
 				obj.offsetFactor = 0
 				idx ++
+				groupidx ++
 				return [obj]
 			}
 			else if (['ordinal', 'series'].indexOf(c.key !== -1)) {
-				return c.values.map((b, k) => {
+				const obj = c.values.map((b, k) => {
 					const obj = {}
 					obj.type = c.key
-					obj.groupIndex = i
+					obj.groupIndex = groupidx
 					obj.index = idx
 					obj.offsetFactor = k - ((c.values.length / 2) - .5)
 					idx ++
 					return obj
 				})
+				groupidx ++
+				return obj
 			}
 		})
 	}).flatten()
 
+	// console.log(nodeGroups)
 
-	Reasoning.scale
-		.domain([0, nodeGroups.length + 1])
+
+	Reasoning.scale.domain([0, nodeGroups.length + 1])
 		
 	// const svg = d3.select('svg')
 	// const chain = svg.addElems('g', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
@@ -278,7 +303,7 @@ Reasoning.init = _data => {
 	cordee.addElems('div', 'raisonnement', [{ values: Mountains.rangeValues, ref: nodeGroups.flatten() }])
 		.each(Reasoning.draw)
 
-	d3.select(window).on('resize.cordee', _ => Reasoning.init(_data))
+	d3.select(window).on('resize.cordee', _ => Reasoning.init())
 }
 
 Reasoning.draw = function (_d, _i) {
@@ -304,6 +329,10 @@ Reasoning.draw = function (_d, _i) {
 				 'data--label': d => d.value })
 		.style('transform', function (d, i) {
 		 	const ref = _d.ref[i]
+		 	console.log(i)
+		 	console.log(d)
+		 	console.log(ref)
+		 	console.log('\n')
 		 	return `translate(${d.left = Math.round(Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset)}px, ${d.top = d.origintop = -Reasoning.nodeSize / 2}px)` 
 		})
 	.on('mouseover', function (d) {
@@ -320,6 +349,8 @@ Reasoning.draw = function (_d, _i) {
 	})
 		.call(Reasoning.drag)
 
+
+	node.addElems('div', 'circle')
 
 	// return
 	// let g = sel.selectAll('g.node')
