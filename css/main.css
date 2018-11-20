@@ -130,7 +130,7 @@ div.slide.vis div.content div.menu--vis {
 div.slide.vis div.content div.menu--vis div.title {
 	color: #0a0203;
 	width: 100%;
-	margin-bottom: 1rem;
+	margin-bottom: 1.75rem;
 }
 div.slide.vis div.content div.menu--vis div.menu--indicators {
 	position: relative;
@@ -138,6 +138,10 @@ div.slide.vis div.content div.menu--vis div.menu--indicators {
 	/*left: 2rem;*/
 	/*max-height: calc(100vh - 14.5rem - 5px);*/
 	overflow: auto;
+}
+div.slide.vis div.content div.menu--vis div.menu--indicators a {
+	font-size: .75rem;
+	padding-left: 1rem;
 }
 div.slide.vis div.content div.menu--vis div.menu--indicators ul.menu-list {
 	border-top: 5px solid #0a0203;
@@ -170,7 +174,7 @@ li.list-item.node::before {
 	position: absolute;
 	right: 1rem;
 	transform: rotate(90deg);
-	transition: transform .2s;
+	transition: transform .2s ease;
 }
 li.list-item.node.expanded::before {
 	transform: rotate(-90deg);
@@ -179,9 +183,12 @@ li.sub-item {
 	font-weight: 200;
 	max-height: 0;
 	overflow: hidden;
-	transition: max-height .2s ease-out;
+	transition: max-height .75s ease;
 	text-transform: none;
 }
+/*li.sub-item.expanded {
+	transition: max-height .25s;
+}*/
 li.sub-item.node {
 	padding-left: 1.5rem;
 	font-style: italic;
@@ -208,7 +215,7 @@ span.leaf u:hover {
 	margin-top: .5rem;
 	position: absolute;
 	transform: rotate(0deg);
-	transition: transform .2s;
+	transition: transform .2s ease;
 }
 .expanded > ul > li.sub-item.node.expanded::before {
 	transform: rotate(90deg);
@@ -248,6 +255,7 @@ div.raisonnement div.node {
 	-o-border-radius: 50%;
 	-ms-border-radius: 50%;
 	transition: transform .25s ease;
+	z-index: 100;
 }
 div.raisonnement div.node::after {
 	content: attr(data--label);
@@ -331,7 +339,6 @@ path.commune.active {
 	fill: #0a0203;
 	stroke: #ebe9e9;
 	cursor: pointer;
-	pointer-events: all;
 }
 path.commune:hover {
 	stroke: #ffa355;
@@ -340,6 +347,7 @@ path.commune {
 	fill: #ebe9e9;
 	stroke: rgba(255,255,255,1);
 	cursor: pointer;
+	pointer-events: all;
 }
 path.total {
 	fill: #fff;
