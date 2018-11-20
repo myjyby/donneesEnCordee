@@ -205,14 +205,14 @@ g.label--name rect.bg {
 	/*padding-top: 1.25rem;*/
 }
 .sommet::after {
-	content: '';
+	/*content: '';
 	width: 100%;
 	height: 1px;
-	background-color: rgba(255,255,255,1);
+	background-color: rgba(255,255,255,1);*/
 	/*background-color: rgba(10,2,3,.33);*/
-	position: absolute;
+	/*position: absolute;
 	top: calc(100% - 1px);
-	left: 0px;
+	left: 0px;*/
 }
 @keyframes scale-in {
 	from { transform: scale(0); }
