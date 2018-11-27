@@ -717,16 +717,16 @@ Mountains.labels = function (d, i) {
 			const defs = trend.addElems('defs')
 			const arrowhead = defs.addElems('marker')
 				.attrs({ 'id': 'arrowhead',
-						 'viewBox': '0 0 20 20',
-						 'refX': 10,
-						 'refY': 10, 
+						 'viewBox': '0 0 10 10',
+						 'refX': 5,
+						 'refY': 5, 
 						 'markerUnits': 'strokeWidth',
-						 'markerWidth': 10,
-						 'markerHeight': 20,
+						 'markerWidth': 5,
+						 'markerHeight': 10,
 						 'orient': 'auto'
 				})
 				.addElems('path')
-					.attr('d', 'M2,2 L10,10 L2,18')
+					.attr('d', 'M2,2 L5,5 L2,8')
 					.style('stroke-width', 2)
 
 			trend.addElems('path', 'trend')

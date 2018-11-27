@@ -4,7 +4,7 @@ Reasoning.scale = d3.scaleLinear()
 
 Reasoning.hitpadding = 25
 Reasoning.yLimit = 50
-Reasoning.nodeSize = 25
+Reasoning.nodeSize = 20
 
 Reasoning.drag = d3.drag()
 	.on('start', function () { 
