@@ -18,7 +18,7 @@
 <body>
 
 <script>
-const working = false
+const working = true
 
 let index = +getUrlParameter('i')
 if (index === null || index === undefined || index === '') index = 0
@@ -57,7 +57,9 @@ const displayMenu = function (_data) {
 	const ul = nav.append('ul')
 
 	ul.append('li')
-		.append('h3')
+		// .append('h3')
+		.append('p')
+		.attr('class', 'lead intertitre')
 		.html('Les Indicateurs')
 
 	let links = ul.selectAll('li.link')
