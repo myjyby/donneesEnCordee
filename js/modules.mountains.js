@@ -550,11 +550,7 @@ Mountains.draw = function (_d, _i) {
 	sommet = sommet.enter()
 		.append('div')
 		.attr('class', 'sommet')
-		// .each(d => {
-		// 	if (_i === 0) console.log(d)
-		// })
 	.merge(sommet)
-		// .attr('class', 'sommet')
 		.each(function (d) { d3.select(this).classed(`${d.key} ${d.key}-${s_i ++}`, true) })
 		.style('width', d => `${isFinite(d.width) ? d.width : 0}px`)
 		.style('height', d => `${isFinite(d.height) ? d.height : 0}px`)
