@@ -1,10 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans:200,400,700');
-@import url('https://fonts.googleapis.com/css?family=Martel:400,900');
+/*@import url('https://fonts.googleapis.com/css?family=Martel:400,900');*/
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:200');
 
 * {
 	padding: 0;
 	margin: 0;
 }
+/*html {
+	font-size: 16px;
+}*/
 body {
 	/*font-family: 'Fira Sans', Helvetica, Arial, sans-serif;*/
 	/*background-color: #E5E2D9;*/
@@ -24,13 +28,13 @@ a:visited {
 div.slide {
 	min-height: 100vh;
 	width: 100%;
-	position: relative;
+	/*position: relative;*/
 }
 div.slide.intro {
-	background-image: url('../imgs/dec_logo.svg');
-	background-size: 33%;
-	background-repeat: no-repeat;
-	background-position: center;
+	/*background-image: url('../imgs/dec_logo.svg');*/
+	/*background-size: 33%;*/
+	/*background-repeat: no-repeat;*/
+	/*background-position: center;*/
 }
 .v-align {
 	display: table;
@@ -56,7 +60,374 @@ h1.main-title {
 	/*background-color: #ebe9e9;*/
 }
 
+div.slide.welcome {
+	position: relative;
+}
+div.main-header {
+	padding-top: 12.5vh;
+}
+div.montagnes-logo {
+	width: 100%;
+	/*position: relative;*/
+}
+div.sticky-content {
+	background-color: #0a0203;
+	margin-bottom: 5vh;
+}
+div.sticky-content.stick {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 100;
+	margin-bottom: 0vh;
+}
+div.sticky-content.stuck {
+	position: absolute;
+	/*top: 0;*/
+	bottom: 0;
+	width: 100%;
+	z-index: 100;
+	margin-bottom: 0vh;
+}
+div.montagnes-logo.main {
+	width: 70vh;
+	height: 35vh;
+	/*border-bottom: 1px solid #fff;*/
+	padding: 2.5vh 5vh 15vh 5vh;
+	margin: 0 auto 5vh auto;
+	transition: width .25s, height .25s, padding .25s;
+}
+div.stick div.montagnes-logo.main,
+div.stuck div.montagnes-logo.main {
+	width: 20vh;
+	height: 10vh;
+	padding: 2.5vh 5vh 0vh 5vh;
+}
+/*div.stick ~ div.main-title {
+	padding-top: 102px;
+}*/
 
+div.montagnes-logo div.logo-sommet-1 {
+	width: 25%;
+	height: 50%;
+	/*margin-top: 50%;*/
+	/*background-color: pink;*/
+	background-image: url('../imgs/texture-v03-s.png');
+	clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-webkit-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-moz-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-o-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-ms-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	display: inline-block;
+	position: relative;
+}
+div.montagnes-logo div.logo-sommet-2 {
+	width: 50%;
+	height: 100%;
+	/*margin-top: 50%;*/
+	/*background-color: pink;*/
+	background-image: url('../imgs/texture-v03-s.png');
+	background-position: center top;
+	clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-webkit-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-moz-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-o-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-ms-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	display: inline-block;
+	margin-left: -12.5%;
+	position: relative;
+}
+div.montagnes-logo div.logo-sommet-3 {
+	width: 33%;
+	height: 66%;
+	/*margin-top: 50%;*/
+	/*background-color: pink;*/
+	background-image: url('../imgs/texture-v03-s.png');
+	clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-webkit-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-moz-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-o-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-ms-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	display: inline-block;
+	margin-left: -12.5%;
+	position: relative;
+}
+div.montagnes-logo div.sommet--logo::after {
+	content: '';
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(rgba(10,2,3,0) 0%, rgba(10,2,3,1) 100%);
+	/*background: linear-gradient(rgba(10,2,3,1) 0%, rgba(136,129,127,.75) 50%, rgba(255,255,255,1) 100%);*/
+	position: absolute;
+	left: 0;
+	top: 1px;
+}
+div.logo-separator {
+	width: 60%;
+	height: 1px;
+	background-color: rgba(255,255,255,.5);
+	/*margin: 0 auto 5vh auto;*/
+	margin: auto;
+	position: relative;
+} 
+div.node--logo {
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	background-color: #fff;
+	position: absolute;
+	top: -12px;
+	cursor: pointer;
+	transition: background-color .25s;
+}
+div.stick div.node--logo:hover {
+	background-color: #27999c;
+}
+div.stick div.node--logo::before {
+	content: attr(data-content);
+	font-size: 1rem;
+	color: #fff;
+	font-weight: 200;
+	white-space: nowrap;
+	position: absolute;
+	bottom: calc(25px + .65rem);
+	text-decoration: underline;
+	/*left: -50%;*/
+	/*width: 10%;*/
+}
+div.node--logo.about {
+	left: 7%;
+}
+div.node--logo.indicators {
+	right: 7%;
+}
+div.main-title {
+	/*font-family: 'Work Sans', sans-serif;*/
+	font-weight: 400;
+	letter-spacing: .5rem;
+	color: #fff;
+	font-size: 1.5rem;
+	line-height: 1.5em;
+	text-transform: uppercase;
+}
+div.main-subtitle {
+	/*font-family: 'Work Sans', sans-serif;*/
+	font-weight: 200;
+	letter-spacing: .05rem;
+	color: #fff;
+	font-size: 1.1rem;
+	line-height: 2em;
+	/*margin-bottom: 20vh;*/
+	/*text-transform: uppercase;*/
+}
+
+div.flex--col {
+	display: flex;
+	align-content: space-around;
+	flex-direction: column;
+}
+p.small {
+	color: #fff;
+	width: 40%;
+	margin: auto;
+	font-size: .75rem;
+	line-height: 1.3em;
+	font-weight: 200;
+	text-align: left;
+	margin-bottom: 2.6em;
+}
+p.lead {
+	color: #fff;
+	width: 40%;
+	margin: auto;
+	font-size: 1.25rem;
+	line-height: 1.3em;
+	font-weight: 200;
+	text-align: left;
+	margin-bottom: 2.6em;
+	/*margin-bottom: 3rem;*/
+}
+p.intertitre {
+	color: #27999c;
+	margin-bottom: 1.3em;
+	/*text-transform: uppercase;*/
+}
+
+
+div.legende {
+	width: 100%;
+	margin-top: 2.6rem;
+	margin-bottom: 25vh;
+	/*height: 75%;*/
+}
+div.ligne-1, 
+div.ligne-2 {
+	height: 7.5vh;
+	width: 100%;
+	/*clear: both;*/
+	margin-bottom: 3.9rem;
+}
+div.legende--label {
+	width: 100%;
+	font-size: .75rem;
+	color: #fff;
+	float: left;
+	font-weight: 200;
+	text-align: center;
+	margin-top: 1.3rem;
+}
+div.legende--flexbox {
+	display: flex;
+	width: 40%;
+	height: 100%;
+	margin: auto;
+	justify-content: space-evenly;
+	/*justify-content: space-around;*/
+}
+div.sommet--legende {
+	/*width: calc(80% / 3);*/
+	height: 100%;
+	/*background-color: #ebe9e9;*/
+	/*background-color: rgba(136,129,127,1);*/
+	background: linear-gradient(rgba(235,233,233,1) 0%, rgba(136,129,127,0) 100%);
+	/*background: linear-gradient(rgba(255,255,255,1) 0%, rgba(235,233,233,1) 100%);*/
+	/*background-image: url('../imgs/texture-v02-s.png');*/
+	position: relative;
+	/*margin-right: 1rem;*/
+}
+/*div.sommet--legende::after {
+	content: '';
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(rgba(10,2,3,0) 0%, rgba(10,2,3,1) 100%);
+	position: absolute;
+	left: 0;
+	top: 1px;
+}*/
+.sommet--legende.discrete {
+	width: 7.5vh;
+	clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-webkit-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-moz-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-o-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-ms-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+}
+.sommet--legende.discrete::before {
+	content: '';
+	width: 25%;
+	height: 25%;
+	position: absolute;
+	left: 37.5%;
+	top: 40%;
+	z-index: 10;
+	background: url('../imgs/node-discrete.svg') no-repeat center center;
+	background-size: contain;
+	transform: scale(0);
+	animation: scale-in .5s .5s ease forwards;
+}
+.sommet--legende.series {
+	width: calc(7.5vh * 2 * .75);
+	clip-path: polygon(0% 100%, 25% 12.5%, 75% 0%, 100% 100%);
+	-webkit-clip-path: polygon(0% 100%, 25% 12.5%, 75% 0%, 100% 100%);
+	-moz-clip-path: polygon(0% 100%, 25% 12.5%, 75% 0%, 100% 100%);
+	-o-clip-path: polygon(0% 100%, 25% 12.5%, 75% 0%, 100% 100%);
+	-ms-clip-path: polygon(0% 100%, 25% 12.5%, 75% 0%, 100% 100%);
+}
+.sommet--legende.series::before {
+	content: '';
+	width: 25%;
+	height: 25%;
+	position: absolute;
+	left: 37.5%;
+	top: 40%;
+	z-index: 10;
+	background: url('../imgs/node-series.svg') no-repeat center center;
+	background-size: contain;
+	transform: scale(0);
+	animation: scale-in .5s .5s ease forwards;
+}
+.sommet--legende.ordinal {
+	width: calc(7.5vh * 2 * .75);
+	clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
+	-webkit-clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
+	-moz-clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
+	-o-clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
+	-ms-clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
+}
+.sommet--legende.ordinal::before {
+	content: '';
+	width: 25%;
+	height: 25%;
+	position: absolute;
+	left: 37.5%;
+	top: 40%;
+	z-index: 10;
+	background: url('../imgs/node-ordinal.svg') no-repeat center center;
+	background-size: contain;
+	transform: scale(0);
+	animation: scale-in .5s .5s ease forwards;
+}
+.sommet--legende.addition {
+	width: 7.5vh;
+	clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-webkit-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-moz-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-o-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+	-ms-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+}
+.sommet--legende.addition::before {
+	content: '';
+	width: 25%;
+	height: 25%;
+	position: absolute;
+	left: 37.5%;
+	top: 40%;
+	z-index: 10;
+	background: url('../imgs/node-addition.svg') no-repeat center center;
+	background-size: contain;
+	transform: scale(0);
+	animation: scale-in .5s .5s ease forwards;
+}
+.s-group {
+	position: relative;
+}
+.s-group svg {
+	width: 7.5vh;
+	height: 7.5vh;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.s-group svg path {
+	stroke: #27999c;
+	fill: none;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+.sommet--legende.division {
+	width: 7.5vh;
+	clip-path: polygon(0% 100%, 50% 50%, 100% 100%);
+	-webkit-clip-path: polygon(0% 100%, 50% 50%, 100% 100%);
+	-moz-clip-path: polygon(0% 100%, 50% 50%, 100% 100%);
+	-o-clip-path: polygon(0% 100%, 50% 50%, 100% 100%);
+	-ms-clip-path: polygon(0% 100%, 50% 50%, 100% 100%);
+}
+.sommet--legende.division::before {
+	content: '';
+	width: 25%;
+	height: 25%;
+	position: absolute;
+	left: 37.5%;
+	top: 40%;
+	z-index: 10;
+	background: url('../imgs/node-division.svg') no-repeat center center;
+	background-size: contain;
+	transform: scale(0);
+	animation: scale-in .5s .5s ease forwards;
+}
+/*div.sommet--legende:last-child {
+	margin-right: 0;
+}*/
 
 div.slide.vis {
 	height: 100vh;
@@ -227,6 +598,14 @@ div.slide.vis div.content div.paysage--vis {
 	width: 80%;
 	height: 80%;
 	float: left;
+	cursor: all-scroll;
+}
+.dragging, .dragging .shape, .dragging .node {
+	cursor: grabbing !important;
+	cursor: -webkit-grabbing !important;
+	cursor: -moz-grabbing !important;
+	cursor: -o-grabbing !important;
+	cursor: -ms-grabbing !important;
 }
 
 /* THIS IS FOR THE CORDEE */
@@ -256,7 +635,8 @@ div.raisonnement div.node {
 	-ms-border-radius: 50%;*/
 	transition: transform .25s ease;
 	z-index: 100;
-	cursor: pointer;
+	cursor: ew-resize;
+	overflow: visible;
 }
 div.raisonnement div.node div.circle {
 	width: 100%;
@@ -288,7 +668,8 @@ div.raisonnement div.node::after {
 	/*text-align: center;*/
 	cursor: pointer;
 }
-div.raisonnement div.node.discrete::before {
+div.raisonnement div.node.discrete::before,
+div.raisonnement div.node.dragging::before {
 	content: '';
 	position: absolute;
 	width: 90%;
@@ -296,7 +677,7 @@ div.raisonnement div.node.discrete::before {
 	left: 5%;
 	top: 5%;
 	z-index: 10;
-	background: url('../imgs/node-discrete.svg') no-repeat center center;
+	background: url('../imgs/node-discrete.svg') no-repeat center center !important;
 	background-size: contain;
 	z-index: 1001;
 }
@@ -324,6 +705,56 @@ div.raisonnement div.node.ordinal::before {
 	background-size: contain;
 	z-index: 1001;
 }
+div.raisonnement div.node.addition::before {
+	content: '';
+	position: absolute;
+	width: 90%;
+	height: 90%;
+	left: 5%;
+	top: 5%;
+	z-index: 10;
+	background: url('../imgs/node-addition.svg') no-repeat center center;
+	background-size: contain;
+	z-index: 1001;
+}
+div.raisonnement div.node.division::before {
+	content: '';
+	position: absolute;
+	width: 90%;
+	height: 90%;
+	left: 5%;
+	top: 5%;
+	z-index: 10;
+	background: url('../imgs/node-division.svg') no-repeat center center;
+	background-size: contain;
+	z-index: 1001;
+}
+
+
+div.operations {
+	position: absolute;
+	/*top: -5rem;*/
+	border-left: 1px solid #0a0203;
+	left: 50%;
+	background-color: #ebe9e9;
+	pointer-events: all;
+	/*height: 5rem;*/
+	padding-top: .25rem;
+}
+div.operation-option {
+	/*font-size: 1rem;*/
+	min-width: 6rem;
+	/*line-height: 1.5rem;*/
+	/*text-align: center;*/
+	height: 1.25rem;
+	font-size: .75rem;
+	padding: .25rem .5rem .25rem 1.75rem;
+	margin-left: -1.25rem;
+	cursor: pointer !important;
+}
+div.operation-option:hover {
+	text-decoration: underline;
+}
 
 /* THESE ARE GENERIC FUNCTIONS */
 .hide {
@@ -343,6 +774,13 @@ div.raisonnement div.node.ordinal::before {
 }
 .no-events {
 	pointer-events: none;
+}
+.overflow--hidden {
+	overflow: hidden;
+	position: relative;
+	top: -1px;
+	/*width: 100%;*/
+	/*height: 100%;*/
 }
 /* THIS IS FOR THE SVG MAP */
 div.menu--vis div.carte {
