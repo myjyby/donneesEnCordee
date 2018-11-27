@@ -233,6 +233,8 @@ Reasoning.init = _ => {
 	}).flatten()
 
 	Reasoning.scale.domain([0, nodeGroups.length + 1])
+	console.log(nodeGroups)
+	console.log(nodeGroups.flatten())
 
 	// console.log(Mountains.rangeValues, nodeGroups)
 		
