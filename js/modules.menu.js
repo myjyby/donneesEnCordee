@@ -23,7 +23,8 @@ Menu.init = _data => {
 	.each(Menu.list)
 
 	d3.selectAll('.node')
-		.on(`${pointerType}up`, function (d) {
+		.on('click', function (d) {
+		// .on(`${pointerType}up`, function (d) {
 			d3.event.stopPropagation()
 			const node = this
 			const sel = d3.select(this)
@@ -32,7 +33,8 @@ Menu.init = _data => {
 			sel.call(Menu.expand)
 		})
 	d3.selectAll('.leaf')
-		.on(`${pointerType}up`, function (d) {
+		.on('click', function (d) {
+		// .on(`${pointerType}up`, function (d) {
 			d3.event.stopPropagation()
 			d3.select(this).classed('selected', !d3.select(this).classed('selected'))
 
@@ -44,9 +46,9 @@ Menu.init = _data => {
 			UI.redraw()
 		})
 
-	menu.addElems('a')
-		.attr('href', 'indicateurs.html')
-		.html('Voir le détail des indicateurs.')
+	// menu.addElems('a')
+	// 	.attr('href', 'indicateurs.html')
+	// 	.html('Voir le détail des indicateurs.')
 }
 Menu.data = _data => { 
 	indicateurs_nombres = _data.filter(d => d['Type_JB'].toLowerCase() === 'nombre')
@@ -87,7 +89,8 @@ Menu.list = function (_d) {
 		if (!d3.sum(grandChildren) && _d.values.length > 1) {
 			sel.classed('node leaf', false)
 				.classed('multi-leaf', true)
-				.on(`${pointerType}up`, () => d3.event.stopPropagation())
+				.on('click', () => d3.event.stopPropagation())
+				// .on(`${pointerType}up`, () => d3.event.stopPropagation())
 			.addElems('span', 'leaf', d => d.values)
 				.html((d, i) => {
 					if (i === 0 && _d.values.length === 1) return ` (<u>${d.key}</u>)`
