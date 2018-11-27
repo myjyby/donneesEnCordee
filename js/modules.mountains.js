@@ -556,8 +556,8 @@ Mountains.draw = function (_d, _i) {
 	.merge(sommet)
 		// .attr('class', 'sommet')
 		.each(function (d) { d3.select(this).classed(`${d.key} ${d.key}-${s_i ++}`, true) })
-		.style('width', d => `${d.width}px`)
-		.style('height', d => `${d.height}px`)
+		.style('width', d => `${isFinite(d.width) ? d.width : 0}px`)
+		.style('height', d => `${isFinite(d.height) ? d.height : 0}px`)
 		.style('top', d => `${-d.top}px`) // THE 1.25rem ARE EXTRA FOR THE VALUE LABELS
 		// .style('top', d => `calc(${-d.top}px - 1.25rem)`) // THE 1.25rem ARE EXTRA FOR THE VALUE LABELS
 		.style('left', d => `${d.left}px`)
@@ -610,21 +610,42 @@ Mountains.draw = function (_d, _i) {
 		// .style('transform', (d, i) => `translateY(${shape.size() - i}px)`)
 		// .style('z-index', (d, i) => shape.size() - i)
 
-	// ADD THE REFERENCES FOR THE DIVISIONS
-	let ref = sommet.filter(d => d.key === 'division')
-	.selectAll('svg.division-ref')
+	
+	// ADD THE REFERENCES FOR THE ADDITIONS
+	let ref_addition = sommet.filter((d, i) => d.key === 'addition' && i > 0) // WE DO NOT WANT THE FIRST ONE AS IT IS THE BACKGROUND (HIGHEST) PEAK
+	.selectAll('svg.operation-ref')
 		.data(d => [d])
-	ref.exit().remove()
-	ref = ref.enter()
+	ref_addition.exit().remove()
+	ref_addition = ref_addition.enter()
 		.append('svg')
-		.attr('class', 'division-ref')
-	.merge(ref)
+		.attr('class', 'operation-ref')
+	.merge(ref_addition)
+		.attrs({ 'width': d => isFinite(d.width) ? d.width : 0,
+				 'height': d => isFinite(d.height) ? d.height : 0,
+				 'viewBox': '0 0 100 100',
+				 'preserveAspectRatio': 'none' })
+		.style('top', d => '0px')
+		// .style('top', d => `${isFinite(d.height) ? -d.height : 0}px`)
+	ref_addition.addElems('path', 'line')
+		.attr('d', d => `M${d.path.filter((c, j) => j > 0 && j < d.path.length - 1).join(' L')}`)
+		.style('stroke-width', d => 2 * 100 / d.height)
+
+
+	// ADD THE REFERENCES FOR THE DIVISIONS
+	let ref_division = sommet.filter(d => d.key === 'division')
+	.selectAll('svg.operation-ref')
+		.data(d => [d])
+	ref_division.exit().remove()
+	ref_division = ref_division.enter()
+		.append('svg')
+		.attr('class', 'operation-ref')
+	.merge(ref_division)
 		.attrs({ 'width': d => isFinite(d.width) ? d.width : 0,
 				 'height': d => isFinite(d.width) ? d.width : 0,
 				 'viewBox': '0 0 100 100',
 				 'preserveAspectRatio': 'xMinYMid meet' })
 		.style('top', d => `${d.height - d.width}px`)
-	ref.addElems('path', 'peak')
+	ref_division.addElems('path', 'line')
 		.attr('d', d => `M${d.path.join(' L')}`)
 		.style('stroke-width', d => 100 / d.height)
 
