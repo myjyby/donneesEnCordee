@@ -7,7 +7,7 @@
 	margin: 0;
 }
 html {
-	font-size: 12px;
+	/*font-size: 12px;*/
 }
 body {
 	/*font-family: 'Fira Sans', Helvetica, Arial, sans-serif;*/
@@ -179,6 +179,7 @@ div.node--logo {
 	top: -10px;
 	cursor: pointer;
 	transition: background-color .25s;
+	cursor: pointer !important;
 }
 div.stick div.node--logo:hover {
 	background-color: #27999c;
@@ -348,11 +349,16 @@ div.sommet--legende {
 }
 .sommet--legende.ordinal {
 	width: calc(7.5vh * 2 * .75);
-	clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
-	-webkit-clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
+	clip-path: polygon(0% 100%, 39.7577% 0%, 69.2732% 74.2383%, 79.5155% 48.4766%, 100% 100%);
+	-webkit-clip-path: polygon(0% 100%, 39.7577% 0%, 69.2732% 74.2383%, 79.5155% 48.4766%, 100% 100%);
+	-moz-clip-path: polygon(0% 100%, 39.7577% 0%, 69.2732% 74.2383%, 79.5155% 48.4766%, 100% 100%);
+	-o-clip-path: polygon(0% 100%, 39.7577% 0%, 69.2732% 74.2383%, 79.5155% 48.4766%, 100% 100%);
+	-ms-clip-path: polygon(0% 100%, 39.7577% 0%, 69.2732% 74.2383%, 79.5155% 48.4766%, 100% 100%);
+	/*clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);*/
+	/*-webkit-clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
 	-moz-clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
 	-o-clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
-	-ms-clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);
+	-ms-clip-path: polygon(0% 100%, 25% 0%, 50% 75%, 75% 25%, 100% 100%);*/
 }
 .sommet--legende.ordinal::before {
 	content: '';
