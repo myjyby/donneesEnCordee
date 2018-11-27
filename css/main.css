@@ -6,9 +6,9 @@
 	padding: 0;
 	margin: 0;
 }
-/*html {
-	font-size: 16px;
-}*/
+html {
+	font-size: 12px;
+}
 body {
 	/*font-family: 'Fira Sans', Helvetica, Arial, sans-serif;*/
 	/*background-color: #E5E2D9;*/
@@ -95,7 +95,7 @@ div.montagnes-logo.main {
 	/*border-bottom: 1px solid #fff;*/
 	padding: 2.5vh 5vh 15vh 5vh;
 	margin: 0 auto 5vh auto;
-	transition: width .25s, height .25s, padding .25s;
+	transition: width .5s, height .5s, padding .5s;
 }
 div.stick div.montagnes-logo.main,
 div.stuck div.montagnes-logo.main {
@@ -171,12 +171,12 @@ div.logo-separator {
 	position: relative;
 } 
 div.node--logo {
-	width: 25px;
-	height: 25px;
+	width: 20px;
+	height: 20px;
 	border-radius: 50%;
 	background-color: #fff;
 	position: absolute;
-	top: -12px;
+	top: -10px;
 	cursor: pointer;
 	transition: background-color .25s;
 }
@@ -441,6 +441,7 @@ div.slide.vis div.header {
 }
 div.slide.vis div.header div.btn {
 	line-height: 3rem;
+	font-size: 1rem;
 	display: inline-block;
 	height: calc(3rem - 2px);
 	min-width: 6rem;
