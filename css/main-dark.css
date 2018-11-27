@@ -20,7 +20,15 @@ body {
 	font-family: 'Fira Sans', Helvetica, Arial, sans-serif;
 }
 
-
+/*.retour a {
+  	background: url('../imgs/fleche.svg') no-repeat left center;
+  	background-size: contain;
+  	display: inline-block;
+ 	height: 3rem;
+ 	width:200px;
+ 	position:relative;
+ 	top:5px;
+}*/
 /*bouton retour à régler pour les deux pages*/
 li:last-child::after{
 	content:"";
