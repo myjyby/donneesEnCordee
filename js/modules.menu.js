@@ -7,7 +7,7 @@ Menu.init = _data => {
 	const title = body.addElem('div', 'title')
 		
 	title.addElem('h1', 'title-block').html('Données&mdash;en&mdash;cordée').fitText()
-	title.addElem('h3', 'title-block').html('Un paysage social du département Isère').fitText()
+	title.addElem('h3', 'title-block').html('Un paysage social du département de l’Isère').fitText()
 
 	const hierarchie = Menu.data(_data)
 	// Menu.colors.domain(hierarchie.map(d => d.key))
@@ -36,8 +36,9 @@ Menu.init = _data => {
 			d3.event.stopPropagation()
 			d3.select(this).classed('selected', !d3.select(this).classed('selected'))
 
-			Mountains.rangeValues.push(Object.assign({ type: 'value' }, d)) // CHANGE TYPE HERE
-
+			Mountains.rangeValues.push(Object.assign({ type: 'value' }, d)) // CHANGE TYPE HERE ++++++ OBJECT ASSIGN DOES NOT WORK IN IE
+			// console.log(d)
+			// console.log(Mountains.rangeValues)
 			// Mountains.init()
 			// Reasoning.init()
 			UI.redraw()

@@ -131,9 +131,7 @@ const pages = [
          					"<p><i>RSA Activité</i> <br>Intégralement financé par l'Etat, il correspond aux personnes ayant touché plus de 500€ en revenus d'activité, mais moins de 1000€ environ.</p>" +
          					"<p><i>RSA Socle</i> <br>Cette allocation est versée par le Département et concerne les personnes sans activité salariée sur la période considérée.</p>" +
          					"<p><i>RSA Socle Activité</i> <br>Il s'agit des personnes ayant gagné moins de 500€ de salaire d'activité dans le mois considéré. Elle est elle aussi versée par le Département.</p>" +
-         					"<h3> Le Fonds de Solidaité Logement (FSL)</h3><p>Aide financière qui vise à aider les personnes rencontrant des difficultés financières pour accéder au logement ou s’y maintenir. Le FSL permet par exemple de prendre en charge le dépôt de garantie lors de l’arrivée dans un logement ou le paiement de factures (électricité, gaz, eau, …) afin de faciliter le maintien.</p>"+
-         					"<h3> Allocation Bas Revenu </h3>" +
-         					"<p>A DEFINIR ??</p>",
+         					"<h3> Le Fonds de Solidaité Logement (FSL)</h3><p>Aide financière qui vise à aider les personnes rencontrant des difficultés financières pour accéder au logement ou s’y maintenir. Le FSL permet par exemple de prendre en charge le dépôt de garantie lors de l’arrivée dans un logement ou le paiement de factures (électricité, gaz, eau, …) afin de faciliter le maintien.</p>",
 				},
 				{
 					soustitre:"Les aides à l'autonomie",
@@ -150,17 +148,17 @@ const pages = [
 			{
 				nom:"CAF",
 				annee:"2015",
-				lien:"",
+				lien:"http://data.caf.fr/category/statistiques-allocataires-prestations-et-services",
 			},
 			{
 				nom:"Département",
 				annee:"2016",
-				lien:"",
+				lien:"https://www.isere.fr",
 			},
 			{
 				nom:"CARSAT",
 				annee:"2016",
-				lien:"",
+				lien:"https://www.observatoires-fragilites-grand-sud.fr/#c=indicator&f=00000&i=diag_rg_com.score_moyen&s=2017&view=map58",
 			},
 		],
 		charts: [
@@ -241,11 +239,6 @@ const pages = [
 		 	 	buttons:[]
 		 	},
 		 	{
-		 		titre:"Allocataires Bas Revenu 2015",
-		 		valeur_init:"Insertion_Aides_Alloc. Bas Revenu 2015",
-		 	 	buttons:[]
-		 	},
-		 	{
 		 		titre:"Nombre d'allocataires APA (2016)",
 		 		valeur_init:"Autonomie_Aides_Alloc. Personnalisée d'Autonomie_Domicile_Année_2016",
 		 	 	buttons:[
@@ -286,14 +279,14 @@ const pages = [
 	 					"<h3>Revenu Fiscal Moyen</h3>"+
 	 					"<p>Le revenu net moyen est calculé à partir du montant des déclarations d'impôts de tous les foyers fiscaux du département et du nombre de foyers recensés dans le département.</p>"+
 	 					"<h3>Foyers à Bas Revenu</h3>"+
-	 					"<p>??? À définir</p>",
+	 					"<p>Un foyer est dit à \"bas revenus\" lorsque son revenu par unité de consommation est inférieur à Ȝ0 % du revenu médian par unité de consommation de la population de référence. Pour des raisons méthodologiques, certains allocataires dont les ressources sont mal appréhendées ou inconnues sont exclus de l'approche revenus, notamment les étudiants ne percevant qu'une aide au logement, les allocataires de 65 ans ou plus et ceux dont le conjoint est âgé de 65 ans ou plus (le minimum vieillesse n'étant pas imposable). Le seuil des bas revenus est fixé à 1001€ par unité de consommation pour les données au 31/12/2012 (ressources 2011).</p>",
 				},
 			],
 		sources:[	
 			{
 				nom:"DGFiP",
 				annee:"Déclaration 2014 revenus 2013",
-				lien:"",
+				lien:"https://www.impots.gouv.fr/portail/statistiques",
 			},
 		],
 		charts: [
@@ -360,7 +353,7 @@ const pages = [
 			{
 				nom:"INSEE RP",
 				annee:"2013",
-				lien:"",
+				lien:"https://www.insee.fr/fr/information/2008354",
 			},
 		],
 		charts: [
@@ -458,7 +451,7 @@ const pages = [
 			{
 				nom:"DSDEN",
 				annee:"Rentrée 2015",
-				lien:"",
+				lien:"http://www.ac-grenoble.fr/ia38/siteiaspip/",
 			},
 		],
 		charts: [
@@ -522,7 +515,7 @@ const pages = [
 			{
 				nom:"Département",
 				annee:"2015 et 2016",
-				lien:"",
+				lien:"https://www.isere.fr",
 			},
 		],
 		charts: [
@@ -577,20 +570,20 @@ const pages = [
 	 			contenu:"<h3>Les Demandeurs d'Emploi en Fin de Mois (DEFM)</h3>"+
 	 					"<p>Les demandeurs d'emploi en fin de mois (DEFM) sont les personnes inscrites à Pôle Emploi et ayant une demande en cours au dernier jour du mois.</p>"+
 	 					"<p><i>Précision des catégories de DEFM </i> <br> • Catégorie A : demandeurs d'emploi inscrits à Pôle Emploi, tenus de faire des actes positifs de recherche d'emploi, sans emploi<br> • Catégorie B : Demandeurs d'emploi inscrits à Pôle Emploi, tenus de faire des actes positifs de recherche d'emploi, ayant exercé une activité réduite courte (i.e de 78 heures ou moins au cours du mois) <br> • Catégorie C : Demandeurs d'emploi inscrits à Pôle Emploi, tenus de faire des actes positifs de recherche d'emploi, ayant exercé une activité réduite longue (i.e de 78 heures ou moins au cours du mois).</p>"+
-	 					"<h3>Les emplois présents</h3>"+
-	 					"<p> A DEFINIR ??</p>",
+	 					"<h3>Les emplois </h3>"+
+	 					"<p> L'emploi total comprend l'emploi salarié et l'emploi non salarié. Les séries annuelles d'emploi total sont estimées depuis septembre 2009 avec le dispositif ESTEL (estimations d'emploi localisé) par département, région, statut et secteur d'activité à partir de deux sources principales : les déclarations annuelles de données sociales (DADS) dites « grand format » parce qu'elles incluent les effectifs de la fonction publique d'État et les salariés des particuliers employeurs, auxquelles on ajoute les effectifs des non salariés. L'unité mesurée est le nombre de personnes en emploi. L'emploi est exprimé en nombre de personnes, c'est à dire corrigé de la multi-activité de certains travailleurs.</p>",
 				},
 			],
 		sources:[	
 			{
 				nom:"Pôle Emploi",
 				annee:"Rentrée 2015",
-				lien:"",
+				lien:"https://www.pole-emploi.fr/region/auvergne-rhone-alpes/informations/statistiques-et-analyses-@/region/auvergne-rhone-alpes/index.jspz?id=419660",
 			},
 			{
 				nom:"INSEE RP",
 				annee:"2013",
-				lien:"",
+				lien:"https://www.insee.fr/fr/metadonnees/definition/c1504",
 			},
 		],
 		charts: [
@@ -637,7 +630,7 @@ const pages = [
 		 	 	],
 			},
 			{
-				titre:"Emplois disponibles",
+				titre:"Emplois (salariés et non-salariés)",
 		 		valeur_init:"Insertion_Emplois_Total",
 		 	 	buttons:[
 		 	 		{

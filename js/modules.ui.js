@@ -47,6 +47,7 @@ UI.drag = d3.drag()
 			d3.selectAll('div.sommet')
 				.style('transform', function (d) {
 					const datum = this.parentNode.parentNode['__data__']
+					// if (datum['Commune_court'] === 'Hors Isère') console.log(datum.z)
 					if (datum.top - evt.dy * datum.z / 25 > Mountains.horizon) {
 						datum.top -= evt.dy * datum.z / 25
 						if (datum.top >= datum.origin) datum.top = datum.origin
