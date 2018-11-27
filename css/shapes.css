@@ -338,7 +338,7 @@ g.label--name rect.bg {
 	pointer-events: none;
 }
 
-svg.division-ref path.peak,
+svg.operation-ref path.line,
 svg.trend-ref path.trend,
 #arrowhead path {
 	fill: none;
