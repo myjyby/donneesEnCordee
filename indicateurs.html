@@ -18,6 +18,7 @@
 <body>
 
 <script>
+const working = false
 
 let index = +getUrlParameter('i')
 if (index === null || index === undefined || index === '') index = 0
@@ -41,12 +42,14 @@ d3.csv("data/data.csv", function (error, data) {
 		d.Insertion_Population =(+d["Général_Population_Total"]) - (+d["Général_Population_Tranches d'âge_0-2 ans_2013"]) + (+d["Général_Population_Tranches d'âge_3-5 ans_2013"]) + (+d["Général_Population_Tranches d'âge_6-11 ans_2013"]) + (+d["Général_Population_Tranches d'âge_12-15 ans_2013"]) + (+d["Général_Population_Tranches d'âge_16-19 ans_2013"]) + (+d["Général_Population_Tranches d'âge_20-24 ans_2013"]) + (+d["Général_Population_Tranches d'âge_60-79 ans_2013"]) + (+d["Général_Population_Tranches d'âge_80-84 ans_2013"]) + (+d["Général_Population_Tranches d'âge_85 ans ou +_2013"])
 	});
 
-	displayMenu(data)
+	if (!working) displayMenu(data)
 	displayPage(pages[index], data)
 })
 
 const displayMenu = function (_data) {
-	const body = d3.select('body')
+	let body
+	if (!working) body = d3.select('body')
+	else body = d3.select('div.info')
 
 	const nav = body.append('div')
 		.attr('class', 'nav')
@@ -76,6 +79,12 @@ const displayMenu = function (_data) {
 			return `${url}?i=${i}` 
 		})
 		.html(function (d, i) { return pages[i].titre })
+
+	ul.append('li')
+		.attr('class', 'retour')
+	.append('a')
+		.attr('href', './')
+		// .html('')
 }
 
 const displayPage = function (_page, _data) {
@@ -85,12 +94,16 @@ const displayPage = function (_page, _data) {
 		.datum(_page)
 		.attr("class", "indicateur")
 
+
 	// ON CREE LE TITRE
 	content.append("h1")
 		.html(function (d) { return d.titre })
 
 	const info = content.append("div")
 		.attr("class", "info")
+
+	// ON PLACE LE MENU
+	if (working) displayMenu(_data)
 	
 	const methodo = info.append("div")
 		.attr("class", "methodo")
