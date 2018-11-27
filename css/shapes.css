@@ -67,7 +67,7 @@ g.label--name rect.bg {
 	height: 100%;
 	display: inline-block;
 	pointer-events: none;
-	position: relative;
+	/*position: relative;*/
 	/*animation: animate-sommet-in .5s;*/
 	/*will-change: transform;*/
 }
@@ -199,10 +199,11 @@ g.label--name rect.bg {
 	transition: transform .25s ease, opacity .25s ease;
 
 	will-change: transform, opacity;
-	overflow: hidden;
+	/*overflow: hidden;*/
 	/*padding: 0 75px;*/
 	pointer-events: none;
 	/*padding-top: 1.25rem;*/
+	cursor: ew-resize;
 }
 .sommet::after {
 	/*content: '';
@@ -257,12 +258,41 @@ g.label--name rect.bg {
 	transform: scale(0);
 	animation: scale-in .5s .5s ease forwards;
 }
+.sommet.addition::before {
+	content: '';
+	width: 10%;
+	height: 15%;
+	position: absolute;
+	left: 45%;
+	top: 50%;
+	z-index: 10;
+	background: url('../imgs/node-addition.svg') no-repeat center center;
+	background-size: contain;
+	transform: scale(0);
+	animation: scale-in .5s .5s ease forwards;
+}
+.sommet.division::before {
+	content: '';
+	width: 10%;
+	height: 15%;
+	position: absolute;
+	left: 45%;
+	top: 50%;
+	z-index: 10;
+	background: url('../imgs/node-division.svg') no-repeat center center;
+	background-size: contain;
+	transform: scale(0);
+	animation: scale-in .5s .5s ease forwards;
+}
+
 .sommet .shape {
 	width: 100%;
 	height: 100%;
 	background-color: #0a0203;
 	animation: animate-sommet-in .5s;
 	pointer-events: all;
+	position: absolute;
+	top: 1px;
 }
 .sommet .shape::after {
 	/*content: '';
@@ -276,15 +306,49 @@ g.label--name rect.bg {
 	content: '';
 	width: 100%;
 	height: 100%;
+	/*height: 100%;*/
 	display: block;
 	position: absolute;
 	bottom: 0;
 	
-	background: linear-gradient(rgba(10,2,3,1) 0%, rgba(136,129,127,.75) 50%, rgba(255,255,255,1) 100%);
+	/*background: linear-gradient(rgba(235,233,233,0) 0%, rgba(235,233,233,1) 100%);*/
+	/*background: linear-gradient(rgba(10,2,3,1) 0%, rgba(136,129,127,.75) 50%, rgba(255,255,255,1) 100%);*/
+	background: linear-gradient(rgba(10,2,3,1) 0%, rgba(136,129,127,.75) 50%, rgba(235,233,233,1) 100%);
+	
 	/*background: linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);*/
 	
+	/*mix-blend-mode: screen;*/
 	mix-blend-mode: difference;
 }
+
+
+.massif .sommet .shape:nth-child(even) {
+	background-position: 25% 25%;
+	/*box-shadow: inner 0 0 200px 200px #fff;*/
+	/*background: linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);*/
+}
+.massif .sommet .shape:nth-child(even)::after {
+	background: linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);
+}
+
+
+.sommet svg {
+	position: absolute;
+	display: block;
+	pointer-events: none;
+}
+
+svg.division-ref path.peak,
+svg.trend-ref path.trend,
+#arrowhead path {
+	fill: none;
+	stroke: #27999c;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	/*stroke-width: .5;*/
+}
+
+
 /*.sommet ~ .sommet {
 	margin-left: 25px;
 }*/
@@ -311,19 +375,23 @@ g.label--name rect.bg {
 }
 
 .commune:nth-child(odd) .sommet .shape {
-	background-image: url('../imgs/texture-v02-s.png');
+	background-image: url('../imgs/texture-v04-s.png');
 }
 .commune:nth-child(even) .sommet .shape {
-	background-image: url('../imgs/texture-v01-s.png');
+	background-image: url('../imgs/texture-v04-s.png');
+	background-position: left center;
 }
 .massif:nth-child(odd) .sommet .shape {
-	background-position: center center;
+	background-position: right center;
 	background-size: cover;
 }
 .massif:nth-child(even) .sommet .shape {
-	background-position: 25% center;
+	background-position: center center;
 	background-size: cover;
 }
+
+
+
 
 /*.massif::before {
 	content: '';
@@ -387,6 +455,7 @@ g.label--name rect.bg {
 	text-transform: capitalize;
 	position: absolute;
 	text-align: right;
+	white-space: nowrap;
 }
 
 .label--value {
@@ -398,9 +467,10 @@ g.label--name rect.bg {
 	padding: .25rem .5rem;
 
 	/*color: #0a0203;
-	border-bo*/ttom: 1px solid #0a0203;
+	border-bottom: 1px solid #0a0203;
 
 	/*background-color: #ebe9e9;*/
+	white-space: nowrap;
 }
 .label--connector {
 	content: '';
@@ -411,6 +481,19 @@ g.label--name rect.bg {
 	left: 0;
 	top: 0;
 	z-index: -1;
+}
+.trend--value {
+	position: absolute;
+	color: #27999c;
+	font-size: 1rem;
+	/*padding: .25rem 0;*/
+	/*padding: .25rem .5rem;*/
+	top: 1rem;
+	left: -.25rem;
+	white-space: nowrap;
+	width: 100%;
+	text-align: center;
+	font-weight: 700;
 }
 
 
