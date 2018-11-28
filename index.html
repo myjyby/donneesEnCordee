@@ -58,7 +58,7 @@
 			<p class='lead'>Les données ouvertes fournies sont représentées par des monts, dont les hauteurs varient selon les valeurs et les formes selon les types de données. Pour mieux comprendre certaines tendances, des opérations de base sont également permises et permettent de combiner ces données. En jouant avec les différents indicateurs et opérateurs, chacun peut ainsi composer son paysage, tout en sachant en lire le sens.</p>
 
 			<div class='legende'>
-				<p class='small'><u>Trois types de données</u></p>
+				<p class='small'><u>Trois types de données et deux opérations</u></p>
 				<div class='ligne-1'>
 					<div class='legende--flexbox'>
 						<div class='s-group discrete'>
@@ -75,7 +75,7 @@
 						</div>
 					</div>
 				</div>
-				<p class='small'><u>Deux opérations</u></p>
+				<!-- <p><u>Deux opérations</u></p> -->
 				<div class='ligne-2'>
 					<div class='legende--flexbox'>
 						<div class='s-group addition'>
@@ -122,7 +122,6 @@
 	promise.push(d3.csv('./data/indicators.csv'))
 	promise.push(d3.json('./data/carte-redessinee.json'))
 	Promise.all(promise).then(res => {
-			// if (err) throw err
 			const data = res[0]
 			const indicators = res[1]
 			const dessin = res[2]
@@ -135,8 +134,6 @@
 			})
 
 			maxHeight = height() / data.length
-
-			// const geojson = topojson.feature(topo, topo.objects.lc_EPSG2154)
 
 			// // INITIALIZE THE USER INTERFACE
 			Menu.init(indicators)
@@ -153,11 +150,16 @@
 	const header = d3.select('div.sticky-content')
 	const legende = d3.select('div.slide.vis')
 	
-	const startsticky = header.node().clientTop || header.node().offsetTop
-	const endsticky = (legende.node().clientTop || legende.node().offsetTop)// + (legende.node().clientHeight || legende.node().offsetHeight)
+	let startsticky = header.node().clientTop || header.node().offsetTop
+	let endsticky = legende.node().clientTop || legende.node().offsetTop
+
+	d3.select(window).on('resize.sticky', function () {
+		startsticky = header.node().clientTop || header.node().offsetTop
+		endsticky = legende.node().clientTop || legende.node().offsetTop
+	})
 
 	d3.select(window).on('scroll', function () {
-		console.log(window.pageYOffset, endsticky - header.node().clientHeight)
+		// console.log(window.pageYOffset, endsticky - header.node().clientHeight)
 		// console.log(window.pageYOffset > endsticky + height() - header.node().clientHeight)
 		if (window.pageYOffset > startsticky && window.pageYOffset <= endsticky - header.node().clientHeight) {
 			header.classed('stuck', false)
@@ -165,9 +167,9 @@
 			header.select('div.logo-separator').classed('hide', false)
 		}
 		else if (window.pageYOffset > endsticky - header.node().clientHeight) {
-			console.log('here')
+			// console.log('here')
 			header.classed('stick', false)
-				.classed('stuck', true)//.style('top', `-${window.pageYOffset - (endsticky + height() - header.node().clientHeight)}px`)
+				.classed('stuck', true)
 			header.select('div.logo-separator').classed('hide', true)
 		}
 		else {
@@ -175,6 +177,156 @@
 			header.select('div.logo-separator').classed('hide', false)
 		}
 	})
+
+	console.log(detectBrowser(), detectVersion())
+	console.log('are clip-paths supported? ' + areClipPathShapesSupported())
+
+	// if (detectVersion() === 'Firefox 52') {
+	if (!areClipPathShapesSupported()) {
+		const svg = d3.select('body').addElems('svg', 'img-pattern')
+			.attrs({ 'width': 0, 'height': 0 })
+		const defs = svg.addElems('defs')
+		const gradient = defs.addElems('linearGradient', 'main-gradient')
+			.attrs({ 'id': 'svg-gradient',
+					 'x1': '0%',
+					 'y1': '0%',
+					 'x2': '0%',
+					 'y2': '100%',
+					 'spreadMethod': 'pad' })
+		gradient.addElems('stop', 'gradient-stop', [{ offset: '0%', color: 'rgba(10,2,3,1)', opacity: .75 }, { offset: '50%', color: 'rgba(136,129,127,.75)', opacity: .75 }, { offset: '100%', color: 'rgba(235,233,233,1)', opacity: 1 }])
+			.attrs({ 'offset': function (d) { return d.offset },
+					 'stop-color': function (d) { return d.color },
+					 'stop-opacity': function (d) { return d.opacity } })
+
+		const inverted_gradient = defs.addElems('linearGradient', 'inverted-gradient')
+			.attrs({ 'id': 'svg-inverted-gradient',
+					 'x1': '0%',
+					 'y1': '0%',
+					 'x2': '0%',
+					 'y2': '100%',
+					 'spreadMethod': 'pad' })
+		inverted_gradient.addElems('stop', 'gradient-stop', [{ offset: '0%', color: 'rgba(235,233,233,1)', opacity: 1 }, { offset: '50%', color: 'rgba(136,129,127,.75)', opacity: .75 }, { offset: '100%', color: 'rgba(10,2,3,1)', opacity: .75 }])
+			.attrs({ 'offset': function (d) { return d.offset },
+					 'stop-color': function (d) { return d.color },
+					 'stop-opacity': function (d) { return d.opacity } })
+
+		const logo_gradient = defs.addElems('linearGradient', 'logo-gradient')
+			.attrs({ 'id': 'svg-logo-gradient',
+					 'x1': '0%',
+					 'y1': '0%',
+					 'x2': '0%',
+					 'y2': '100%',
+					 'spreadMethod': 'pad' })
+		logo_gradient.addElems('stop', 'gradient-stop', [{ offset: '0%', color: 'rgba(10,2,3,0)', opacity: 1 }, { offset: '100%', color: 'rgba(10,2,3,1)', opacity: 1 }])
+			.attrs({ 'offset': function (d) { return d.offset },
+					 'stop-color': function (d) { return d.color },
+					 'stop-opacity': function (d) { return d.opacity } })
+
+		const pattern = defs.addElems('pattern', 'main-pattern')
+			.attrs({ 'id': 'bg-img',
+					 'patternUnits': 'objectBoundingBox',
+					 'width': 1,
+					 'height': 1 })
+		pattern.addElems('image')
+			.attrs({ 'xlink:href': './imgs/texture-v04-s.png',
+					 'x': 0,
+					 'y': 0,
+					 'width': Math.round(1361 / 3),
+					 'height': Math.round(743 / 3) })
+		pattern.addElems('rect', 'texture-gradient')
+			.attrs({ 'width': 125,
+					 'height': 125,
+					 'x': 0,
+					 'y': 0,
+					 'fill': 'url(#svg-gradient)' })
+
+		const logo_pattern = defs.addElems('pattern', 'logo-pattern')
+			.attrs({ 'id': 'logo-bg-img',
+					 // 'patternUnits': 'userSpaceOnUse',
+					 // 'width': Math.round(1361 / 3),
+					 // 'height': Math.round(743 / 3) })
+					 'patternUnits': 'objectBoundingBox',
+					 'width': 1,
+					 'height': 1 })
+		logo_pattern.addElems('image')
+			.attrs({ 'xlink:href': './imgs/texture-v04-s.png',
+					 'x': -Math.round(1361 / 3) * .53,
+					 'y': 0,
+					 'width': Math.round(1361 / 3),
+					 'height': Math.round(743 / 3) })
+		logo_pattern.addElems('rect', 'texture-gradient')
+			.attrs({ 'width': 100,
+					 'height': 100,
+					 'x': 0,
+					 'y': 0,
+					 'fill': 'url(#svg-logo-gradient)' })
+
+		d3.selectAll('.sommet--logo.logo-sommet-1, .sommet--logo.logo-sommet-2, .sommet--logo.logo-sommet-3')
+			.classed('transparent', true)
+		.addElems('svg')
+			.attrs({ 'width': '100%', 
+					 'height': '100%',
+					 'viewBox': '0 0 100 100',
+					 'preserveAspectRatio': 'none' })
+		.addElems('polygon')
+			.attrs({ 'points': '0,100 50,0 100,100',
+					 'fill': 'url(#logo-bg-img)' })
+
+		d3.select('.sommet--legende.discrete')
+			.classed('transparent', true)
+		.addElems('svg')
+			.attrs({ 'width': '100%', 
+					 'height': '100%',
+					 'viewBox': '0 0 100 100',
+					 'preserveAspectRatio': 'none' })
+		.addElems('polygon')
+			.attrs({ 'points': '0,100 50,0 100,100',
+					 'fill': 'url(#svg-inverted-gradient)' })
+
+		d3.select('.sommet--legende.series')
+			.classed('transparent', true)
+		.addElems('svg', 'shape')
+			.attrs({ 'width': '100%', 
+					 'height': '100%',
+					 'viewBox': '0 0 100 100',
+					 'preserveAspectRatio': 'none' })
+		.addElems('polygon')
+			.attrs({ 'points': '0,100 25,12.5 75,0 100,100',
+					 'fill': 'url(#svg-inverted-gradient)' })
+
+		d3.select('.sommet--legende.ordinal')
+			.classed('transparent', true)
+		.addElems('svg', 'shape')
+			.attrs({ 'width': '100%', 
+					 'height': '100%',
+					 'viewBox': '0 0 100 100',
+					 'preserveAspectRatio': 'none' })
+		.addElems('polygon')
+			.attrs({ 'points': '0,100 39.7577,0 69.2732,74.2383 79.5155,48.4766 100,100',
+					 'fill': 'url(#svg-inverted-gradient)' })
+
+		d3.select('.sommet--legende.addition')
+			.classed('transparent', true)
+		.addElems('svg')
+			.attrs({ 'width': '100%', 
+					 'height': '100%',
+					 'viewBox': '0 0 100 100',
+					 'preserveAspectRatio': 'none' })
+		.addElems('polygon')
+			.attrs({ 'points': '0,100 50,0 100,100',
+					 'fill': 'url(#svg-inverted-gradient)' })
+
+		d3.select('.sommet--legende.division')
+			.classed('transparent', true)
+		.addElems('svg')
+			.attrs({ 'width': '100%', 
+					 'height': '100%',
+					 'viewBox': '0 0 100 100',
+					 'preserveAspectRatio': 'none' })
+		.addElems('polygon')
+			.attrs({ 'points': '0,100 50,50 100,100',
+					 'fill': 'url(#svg-inverted-gradient)' })
+	}
 
 </script>
 
