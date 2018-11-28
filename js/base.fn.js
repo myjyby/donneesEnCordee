@@ -5,7 +5,7 @@ const jsonQueryHeader = { 'Accept': 'application/json', 'Content-Type': 'applica
 const apiURL = 'https://qatalog-api.unglobalpulse.net/'
 const childProcess = true
 
-const detectBrowser = () => {
+const detectBrowser = function () {
 	// Opera 8.0+
 	const isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
 	if (isOpera) return 'Opera'
@@ -28,6 +28,21 @@ const detectBrowser = () => {
 	const isBlink = (isChrome || isOpera) && !!window.CSS
 	if (isBlink) return 'Blink'
 }
+const detectVersion = function(){
+	var ua = navigator.userAgent, tem, 
+	M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []
+	if(/trident/i.test(M[1])){
+		tem = /\brv[ :]+(\d+)/g.exec(ua) || []
+		return 'IE '+(tem[1] || '')
+	}
+	if (M[1] === 'Chrome'){
+		tem = ua.match(/\b(OPR|Edge)\/(\d+)/)
+		if (tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera')
+	}
+	M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?']
+	if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1])
+	return M.join(' ')
+};
 
 const pointerType = detectBrowser() === 'Safari' ? 'mouse' : 'pointer'
 
@@ -59,7 +74,7 @@ const height = function () {
 }
 const DOMnode = function (_sel, _method, _element, _class, _data) {
 	const node = _sel.selectAll(_class ? `${_element}.${_class.replace(/\s/g, '.')}` : `${_element}`)
-		.data(_data ? (typeof _data === 'function' ? d => _data(d) : _data) : d => [d])
+		.data(_data ? (typeof _data === 'function' ? function (d) { return _data(d) } : _data) : function (d) { return [d] })
 	node.exit().remove()
 	return node.enter()
 		[typeof _method === 'object' ? _method[0] : _method](_element, typeof _method === 'object' ? _method[1] : null)
@@ -74,15 +89,15 @@ UI.staticElement = function (_sel, _method, _element, _class) {
 }
 UI.dynamicElement = function (_sel, _method, _element, _class, _data, _key) { // THIS REPLACES DOMnode
 	const node = _sel.selectAll(_class ? `${_element}.${_class.replace(/\s/g, '.')}` : `${_element}`)
-		.data(	_data ? (typeof _data === 'function' ? d => _data(d) : _data) : d => [d], 
-				(c, j) => _key ? (typeof _key === 'function' ? _ => _key(c) : c[_key]) : j)
+		.data(	_data ? (typeof _data === 'function' ? function (d) { return _data(d) } : _data) : function (d) { return [d] },
+				function (c, j) { return _key ? (typeof _key === 'function' ? _key(c) : c[_key]) : j })
 	node.exit().remove()
 	return node.enter()
 		[typeof _method === 'object' ? _method[0] : _method](_element, typeof _method === 'object' ? _method[1] : null)
 		.attr('class', _class ? _class : '')
-		.each(_ => { if (_key) console.log(`(re)created div.${_class}`) })
+		// .each(function () { if (_key) console.log(`(re)created div.${_class} with key ${_key}`) })
 	.merge(node)
-		.each(_ => { if (_key) console.log(`updated div.${_class}`) })
+		// .each(function () { if (_key) console.log(`updated div.${_class} with key ${_key}`) })
 }
 
 
@@ -110,27 +125,28 @@ d3.selection.prototype.moveToFront = function() {
 }
 d3.selection.prototype.fitText = function (factor) {
 	if (!factor) factor = 9.5
-	// console.dir(this.node())
 	this.classed('resized', true)
 		.style('font-size', null)
-	const resizer = _ => {
-		const node = this.node()
-		const parent = node.parentNode
+	
+	const sel = this
+	const node = sel.node()
+	const parent = node.parentNode
+
+	const resizer = function () {
 		let child 
-		if (this.select('span.resized-text').node()) child = this.select('span.resized-text').node()
+		if (sel.select('span.resized-text').node()) child = sel.select('span.resized-text').node()
 		else {
-			const text = this.html()
-			this.html('')
-			const span = this.append('span')
+			const text = sel.html()
+			sel.html('')
+			const span = sel.append('span')
 				.attr('class', 'resized-text')
 				.html(text)
 			child = span.node()
 		}
-		// this.style('font-size', `${Math.min(Math.floor(((node.clientWidth || node.offsetWidth) / (child.clientWidth || child.offsetWidth)) * factor), Math.floor(((parent.clientHeight || parent.offsetHeight) / (child.clientHeight || child.offsetHeight)) / factor))}px`)
-		this.style('font-size', `${(node.getBoundingClientRect().width / child.getBoundingClientRect().width) * factor}px`)
+		sel.style('font-size', `${(node.getBoundingClientRect().width / child.getBoundingClientRect().width) * factor}px`)
 	}
 	resizer()
-	d3.select(window).on('resize.fittext orientationchange.fittext', _ => {
+	d3.select(window).on('resize.fittext orientationchange.fittext', function () {
 		d3.selectAll('.resized').fitText()
 	})
 
@@ -179,17 +195,17 @@ d3.selection.prototype.fitText = function (factor) {
 }
 
 if (!Actions) { var Actions = {} }
-Actions.fetch = (_uri, _q, _loader) => {
-	return new Promise(resolve => 
-		fetch(_uri, { method: 'POST', headers: jsonQueryHeader, body: JSON.stringify(_q) })
-			.then(response => response.json())
-			.then(results => resolve(results))
-			.then(() => _loader.clear())
-			.catch(err => { if (err) throw (err) })
-	)
+Actions.fetch = function (_uri, _q, _loader) {
+	return new Promise(function (resolve) { 
+		return fetch(_uri, { method: 'POST', headers: jsonQueryHeader, body: JSON.stringify(_q) })
+			.then(function (response) { return response.json() })
+			.then(function (results) { return resolve(results) })
+			.then(function () { _loader.clear() })
+			.catch(function (err) { if (err) throw (err) })
+	})
 }
 
-Actions.clearSelection = () => {
+Actions.clearSelection = function () {
 	if (window.getSelection) {
 		if (window.getSelection().empty) {
 			window.getSelection().empty()
@@ -253,14 +269,8 @@ Array.prototype.chunk = function(_size) {
 	return groups
 }
 Array.prototype.median = function () {
-	this.sort((a, b) => a - b)
-
+	this.sort(function (a, b) { return a - b })
 	var half = Math.floor(this.length / 2)
-
-	// if(this.length % 2)
-	// 	return this[half]
-	// else
-	// 	return (this[half - 1] + this[half]) / 2
 	return this[half]
 }
 Array.prototype.shuffle = function () {
@@ -290,10 +300,10 @@ String.prototype.replaceURLWithHTMLLinks = function () {
 	return this.valueOf().replace(exp, '<a href="$1" target="_blank">$1</a>')
 }
 String.prototype.capitalize = function () {
-	return this.valueOf().replace(/^\w/, c => c.toUpperCase())
+	return this.valueOf().replace(/^\w/, function (c) { return c.toUpperCase() })
 }
 
-const printNumber = x => {
+const printNumber = function (x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 const axisStep = function (number) {
@@ -312,12 +322,44 @@ const axisStep = function (number) {
 }
 
 if (!Heuristics) { var Heuristics = {} }
-Heuristics.isDate = _val => {
+Heuristics.isDate = function (_val) {
 	const parser = d3.timeParse('%Y')
 	const epoch = new Date(0)
 	if (parser(_val) && parser(_val) > epoch) return true
 	return false
 }
-Heuristics.hasYear = _arr => {
-	return _arr.map(d => Heuristics.isDate(d)).indexOf(true)
+Heuristics.hasYear = function (_arr) {
+	return _arr.map(function (d) { return Heuristics.isDate(d) }).indexOf(true)
 }
+
+// CODE FROM: https://stackoverflow.com/questions/27558996/how-can-i-test-for-clip-path-support
+const areClipPathShapesSupported = function () {
+    var base = 'clipPath',
+        prefixes = [ 'webkit', 'moz', 'ms', 'o' ],
+        properties = [ base ],
+        testElement = document.createElement( 'testelement' ),
+        attribute = 'polygon(50% 0%, 0% 100%, 100% 100%)'
+
+    // Push the prefixed properties into the array of properties.
+    for ( var i = 0, l = prefixes.length; i < l; i++ ) {
+        var prefixedProperty = prefixes[i] + base.charAt( 0 ).toUpperCase() + base.slice( 1 ); // remember to capitalize!
+        properties.push( prefixedProperty )
+    }
+
+    // Interate over the properties and see if they pass two tests.
+    for ( var i = 0, l = properties.length; i < l; i++ ) {
+        var property = properties[i]
+
+        // First, they need to even support clip-path (IE <= 11 does not)...
+        if ( testElement.style[property] === '' ) {
+
+            // Second, we need to see what happens when we try to create a CSS shape...
+            testElement.style[property] = attribute;
+            if ( testElement.style[property] !== '' ) {
+                return true
+            }
+        }
+    }
+
+    return false
+};

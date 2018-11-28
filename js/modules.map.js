@@ -1,6 +1,6 @@
 if (!Map) { var Map = {} }
 
-Map.init = _data => {
+Map.init = function (_data) {
 	let body = d3.select('div.menu--vis')
 		.insertElems('div.title', 'div', 'carte')
 	let w = body.node().clientWidth || body.node().offsetWidth
@@ -13,18 +13,17 @@ Map.init = _data => {
 
 	svg.addElems('g', 'carte--communes', [_data])
 		.attr('transform', `translate(${[(w * (850 / h) - 850) / 2, -44]})`) // THE y = -44 IS DEPENDENT ON THE BASE DRAWING
-	.addElems('path', 'active outline', d => d)
+	.addElems('path', 'active outline', function (d) { return d })
 		.each(function (d) { 
 			if (d['commune'] === 'Total') d3.select(this).classed('total', true) 
 			else if (d['commune'] === 'Toutes les communes') d3.select(this).classed('toutes-communes', true)
 			else d3.select(this).classed('commune', true) 
 		})
-		.attr('d', d => d.path)
-		.style('stroke-width', d => {
+		.attr('d', function (d) { return d.path })
+		.style('stroke-width', function (d) {
 			if (d['commune'] === 'Total') return 850 / h * .75
 			else if (d['commune'] === 'Toutes les communes') return 850 / h
 			else return 850 / h * .75
-			// d['commune'] !== 'Toutes les communes' ? 850 / h * .75 : 850 / h
 		})
 	.on('mouseover', function (d) { 
 		const sel = d3.select(this)
@@ -35,37 +34,29 @@ Map.init = _data => {
 
 		d3.selectAll('div.sommet, div.label--name')
 			.classed('semi-transparent', false)
-		d3.selectAll('div.commune').filter(c => c['Commune_court'] !== d['commune'])
+		d3.selectAll('div.commune').filter(function (c) { return c['Commune_court'] !== d['commune'] })
 			.selectAll('div.sommet, div.label--name')
 			.classed('semi-transparent', true)
 
 		const bbox = this.getBBox()
 		const label = svg.addElems('g', 'label--name', [d])
-			.attr('transform', c => {
-				// if (c['commune'] === 'Toutes les communes') return `translate(${[0, bbox.y + (850 / h) * 20]})`
-				// else return `translate(${[bbox.x + bbox.width / 2, bbox.y + bbox.height / 2 <= w / 2 ? bbox.y + bbox.height + (850 / h) * 20 : bbox.y - (850 / h) * 10]})`
-				return `translate(${[0, 850 - 10 * (850 / h)]})`
-			})
+			.attr('transform', `translate(${[0, 850 - 10 * (850 / h)]})`)
 			.moveToFront()
 		const text = label.addElems('text')
 			.style('font-size', `${(850 / h) * .75}rem`)
 			.attrs({ 'dy': '.4rem',
 					 'x': 24 * (850 / h) / 2 })
-			.text(c => `${sel.classed('active') ? 'Masquer' : 'Afficher'}: ${c['commune']}`)
+			.text(function (c) { return `${sel.classed('active') ? 'Masquer' : 'Afficher'}: ${c['commune']}` })
 
 		label.insertElems('text', 'rect', 'bg')
 			.attrs({ 'width': text.node().getBBox().width + 24 * (850 / h),
 					 'height': text.node().getBBox().height + 15 * (850 / h),
-					 'x': 0, //-(text.node().getBBox().width + 60) / 2,
+					 'x': 0,
 					 'y': -(text.node().getBBox().height + 15 * (850 / h)) / 2 })
-			// .style('stroke-width', 850 / h)
-
 	})
 	.on('mouseout', function (d) { 
 		if (d['commune'] !== 'Toutes les communes') d3.select(this).style('stroke-width', 850 / h * .75)
 		d3.selectAll('div.sommet, div.label--name').classed('semi-transparent', false)
-		// d3.selectAll('div.label--name').classed('semi-transparent', false)
-
 		d3.selectAll('g.label--name').remove()
 	})
 	.on('click', function (d) {
@@ -73,83 +64,17 @@ Map.init = _data => {
 
 		// IF THE PLACE IS ACTIVE, THEN DEACTIVATE IT
 		if (sel.classed('active')) {
-			Mountains.data.forEach(c => { if (c['Commune_court'] === d['commune']) c.display = false })
+			Mountains.data.forEach(function (c) { if (c['Commune_court'] === d['commune']) c.display = false })
 			d3.selectAll('div.sommet, div.label--name').classed('semi-transparent', false)
 		}
 		else {
-			Mountains.data.forEach(c => { if (c['Commune_court'] === d.commune) c.display = true })
+			Mountains.data.forEach(function (c) { if (c['Commune_court'] === d.commune) c.display = true })
 		}
 		sel.classed('active', !sel.classed('active'))
-		d3.select('g.label--name text').text(c => `${sel.classed('active') ? 'Masquer' : 'Afficher'}: ${c['commune']}`)
+		d3.select('g.label--name text').text(function (c) { return `${sel.classed('active') ? 'Masquer' : 'Afficher'}: ${c['commune']}` })
 
 		UI.redraw()
 	})
 
-
-
-	d3.select(window).on('resize.map', _ => Map.init(_data))
-
-
-
-	return null
-
-	/*const path = d3.geoPath()
-		.projection(null)
-	const mapSide = 250
-
-	const svg = d3.select('svg')
-	const map = svg.select('g.map')
-		// .attr('transform', `translate(${[0, 100]})`)
-		.attr('transform', `translate(${[width() - mapSide, 0]})`)
-
-	map.addElems('path', 'community', _geojson.features)
-		.attr('d', path)
-	.on('mouseover', function (d) {
-		if (d3.select(this).classed('inactive')) return null
-
-		d3.selectAll('g.range')
-			.filter(c => c['Commune'] !== d.properties['NOM'])
-		.transition()
-			.duration(150)
-			.style('opacity', .25)
-
-		d3.selectAll('g.namelabel')
-			.filter(c => c['Commune'] !== d.properties['NOM'])
-		.transition()
-			.duration(150)
-			.style('opacity', .25)
-	})
-	.on('mouseout', function (d) {
-		if (d3.select(this).classed('inactive')) return null
-
-		d3.selectAll('g.range')
-			.transition()
-			.duration(150)
-			.style('opacity', 1)
-
-		d3.selectAll('g.namelabel')
-			.transition()
-			.duration(150)
-			.style('opacity', 1)
-	})
-	.on('click', function (d) {
-		const sel = d3.select(this)
-		console.log(d.properties['NOM'])
-
-		// IF THE PLACE IS ACTIVE, THEN DEACTIVATE IT
-		if (!sel.classed('inactive')) {
-			Mountains.data.forEach(c => { if (c['Commune'] === d.properties['NOM']) c.display = false })
-			d3.selectAll('g.namelabel')
-				.filter(c => c['Commune'] === d.properties['NOM'])
-				.each(c => console.log(c))
-				.remove()
-		}
-		else {
-			Mountains.data.forEach(c => { if (c['Commune'] === d.properties['NOM']) c.display = true })
-		}
-		sel.classed('inactive', !sel.classed('inactive'))
-		UI.redraw()
-	})*/
-
+	d3.select(window).on('resize.map', function () { Map.init(_data) })
 }
-
