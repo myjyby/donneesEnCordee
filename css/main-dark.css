@@ -65,6 +65,16 @@ p.lead {
 	margin-bottom: 2.6em;
 	/*margin-bottom: 3rem;*/
 }
+.methodo p {
+	color: #fff;
+	/*margin: auto;*/
+	font-size: 1.25rem;
+	line-height: 1.3em;
+	font-weight: 200;
+	text-align: left;
+	margin-bottom: 2.6em;
+	/*margin-bottom: 3rem;*/
+}
 /* p.intertitre IS COPIED FROM main.css */
 p.intertitre {
 	color: #27999c;
@@ -275,7 +285,7 @@ i{
 	font-weight: 400;
 }
 
-.span1{
+/*.span1{
 	float:left;
     -moz-column-count: 2;
     -moz-column-gap: 1em;
@@ -285,7 +295,7 @@ i{
     column-gap: 1em;
     margin-top:15px;
     margin-bottom: 30px;
-}
+}*/
 
 .span1 > h3{
 	    -webkit-column-break-inside: avoid; page-break-inside: avoid; break-inside: avoid-column; 
