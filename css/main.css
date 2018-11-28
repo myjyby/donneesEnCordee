@@ -152,7 +152,7 @@ div.montagnes-logo div.logo-sommet-3 {
 	margin-left: -12.5%;
 	position: relative;
 }
-div.montagnes-logo div.sommet--logo::after {
+div.montagnes-logo div.sommet--logo:not(.transparent)::after {
 	content: '';
 	width: 100%;
 	height: 100%;
@@ -231,7 +231,8 @@ p.small {
 	color: #fff;
 	width: 40%;
 	margin: auto;
-	font-size: .75rem;
+	font-size: 1rem;
+	/*font-size: .75rem;*/
 	line-height: 1.3em;
 	font-weight: 200;
 	text-align: left;
@@ -257,7 +258,7 @@ p.intertitre {
 
 div.legende {
 	width: 100%;
-	margin-top: 2.6rem;
+	/*margin-top: 1.3rem;*/
 	margin-bottom: 25vh;
 	/*height: 75%;*/
 }
@@ -397,14 +398,14 @@ div.sommet--legende {
 .s-group {
 	position: relative;
 }
-.s-group svg {
+.s-group svg:not(.shape) {
 	width: 7.5vh;
 	height: 7.5vh;
 	position: absolute;
 	left: 0;
 	top: 0;
 }
-.s-group svg path {
+.s-group svg:not(.shape) path {
 	stroke: #27999c;
 	fill: none;
 	stroke-linecap: round;
@@ -932,4 +933,7 @@ rect.bg--transparent {
 
 rect.ground {
 	fill: #0a0203;
+}
+.transparent {
+	background: transparent !important;
 }
