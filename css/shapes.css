@@ -288,7 +288,7 @@ g.label--name rect.bg {
 .sommet .shape {
 	width: 100%;
 	height: 100%;
-	background-color: #0a0203;
+	/*background-color: #0a0203;*/
 	animation: animate-sommet-in .5s;
 	pointer-events: all;
 	position: absolute;
@@ -318,6 +318,16 @@ g.label--name rect.bg {
 	/*background: linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);*/
 	
 	/*mix-blend-mode: screen;*/
+	mix-blend-mode: difference;
+}
+
+
+.sommet svg.shape polygon {
+	/*fill: url('data:image/svg+xml:utf8,<svg xmlns="http://www.w3.org/2000/svg"><image xlink:href="../imgs/texture-v04-s.png" x="0" y="0" width="453" height="247"></image></svg>');*/
+	fill: url('#bg-img');
+}
+
+.texture-gradient {
 	mix-blend-mode: difference;
 }
 
@@ -374,18 +384,18 @@ svg.trend-ref path.trend,
 	/*transition: height .25s ease;*/
 }
 
-.commune:nth-child(odd) .sommet .shape {
+.commune:nth-child(odd) .sommet:not(.transparent) .shape {
 	background-image: url('../imgs/texture-v04-s.png');
 }
-.commune:nth-child(even) .sommet .shape {
+.commune:nth-child(even) .sommet:not(.transparent) .shape {
 	background-image: url('../imgs/texture-v04-s.png');
 	background-position: left center;
 }
-.massif:nth-child(odd) .sommet .shape {
+.massif:nth-child(odd) .sommet:not(.transparent) .shape {
 	background-position: right center;
 	background-size: cover;
 }
-.massif:nth-child(even) .sommet .shape {
+.massif:nth-child(even) .sommet:not(.transparent) .shape {
 	background-position: center center;
 	background-size: cover;
 }
@@ -520,3 +530,8 @@ svg.trend-ref path.trend,
 	/*max-width: 100px;*/
 }
 
+
+svg.img-pattern {
+	position: absolute;
+	top: -100px;
+}
