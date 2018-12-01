@@ -42,7 +42,7 @@ const detectVersion = function(){
 	M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?']
 	if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1])
 	return M.join(' ')
-};
+}
 
 const pointerType = detectBrowser() === 'Safari' ? 'mouse' : 'pointer'
 
@@ -73,7 +73,7 @@ const height = function () {
 	}
 }
 const DOMnode = function (_sel, _method, _element, _class, _data) {
-	const node = _sel.selectAll(_class ? `${_element}.${_class.replace(/\s/g, '.')}` : `${_element}`)
+	const node = _sel.selectAll(_class ? _element + '.' + _class.replace(/\s/g, '.') : _element)
 		.data(_data ? (typeof _data === 'function' ? function (d) { return _data(d) } : _data) : function (d) { return [d] })
 	node.exit().remove()
 	return node.enter()
@@ -88,7 +88,7 @@ UI.staticElement = function (_sel, _method, _element, _class) {
 		.attr('class', _class)
 }
 UI.dynamicElement = function (_sel, _method, _element, _class, _data, _key) { // THIS REPLACES DOMnode
-	const node = _sel.selectAll(_class ? `${_element}.${_class.replace(/\s/g, '.')}` : `${_element}`)
+	const node = _sel.selectAll(_class ? _element + '.' + _class.replace(/\s/g, '.') : _element)
 		.data(	_data ? (typeof _data === 'function' ? function (d) { return _data(d) } : _data) : function (d) { return [d] },
 				function (c, j) { return _key ? (typeof _key === 'function' ? _key(c) : c[_key]) : j })
 	node.exit().remove()
@@ -143,7 +143,7 @@ d3.selection.prototype.fitText = function (factor) {
 				.html(text)
 			child = span.node()
 		}
-		sel.style('font-size', `${(node.getBoundingClientRect().width / child.getBoundingClientRect().width) * factor}px`)
+		sel.style('font-size', ((node.getBoundingClientRect().width / child.getBoundingClientRect().width) * factor) + 'px')
 	}
 	resizer()
 	d3.select(window).on('resize.fittext orientationchange.fittext', function () {
@@ -225,22 +225,22 @@ Date.prototype.displayDMY = function () {
 	const M = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 	const Ms = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 	const d = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-	const h = this.getHours() < 10 ? `0${this.getHours()}` : this.getHours()
-	const m = this.getMinutes() < 10 ? `0${this.getMinutes()}` : this.getMinutes()
-	return `${this.getDate()} ${Ms[this.getMonth()]}, ${this.getFullYear()}`
+	const h = this.getHours() < 10 ? '0' + this.getHours() : this.getHours()
+	const m = this.getMinutes() < 10 ? '0' + this.getMinutes() : this.getMinutes()
+	return this.getDate() + ' ' + Ms[this.getMonth()] +', ' + this.getFullYear()
 }
 Date.prototype.displayMY = function () {
 	const M = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 	const Ms = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 	const d = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-	const h = this.getHours() < 10 ? `0${this.getHours()}` : this.getHours()
-	const m = this.getMinutes() < 10 ? `0${this.getMinutes()}` : this.getMinutes()
-	return `${Ms[this.getMonth()]}, ${this.getFullYear()}`
+	const h = this.getHours() < 10 ? '0' + this.getHours() : this.getHours()
+	const m = this.getMinutes() < 10 ? '0' + this.getMinutes() : this.getMinutes()
+	return Ms[this.getMonth()] + ', ' + this.getFullYear()
 }
 Date.prototype.display_for_query = function () {
-	const m = this.getMonth() + 1 < 10 ? `0${this.getMonth() + 1}` : this.getMonth() + 1
-	const d = this.getDate() < 10 ? `0${this.getDate()}` : this.getDate()
-	return `${this.getFullYear()}-${m}-${d}`
+	const m = this.getMonth() + 1 < 10 ? '0' + this.getMonth() + 1 : this.getMonth() + 1
+	const d = this.getDate() < 10 ? '0' + this.getDate() : this.getDate()
+	return this.getFullYear() + '-' + m + '-' + d
 }
 Date.prototype.getDaysInMonth = function () {
 	const date = new Date(this.getFullYear(), this.getMonth(), 1)
@@ -253,7 +253,7 @@ Date.prototype.getDaysInMonth = function () {
 	return days
 }
 Date.prototype.render = function () {
-	return `${this.getDate() < 10 ? `0${this.getDate()}` : this.getDate()}-${(this.getMonth() + 1 < 10 ? `0${this.getMonth() + 1}` : this.getMonth() + 1)}-${this.getFullYear()}`
+	return (this.getDate() < 10 ? '0' + this.getDate() : this.getDate()) + '-' + ((this.getMonth() + 1 < 10 ? '0' + (this.getMonth() + 1) : this.getMonth() + 1)) + '-' + this.getFullYear()
 }
 Array.prototype.flatten = function () {
 	return [].concat.apply([], this)

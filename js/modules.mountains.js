@@ -55,8 +55,8 @@ Mountains.drag = d3.drag()
 			const evt = d3.event
 			d.originleft += evt.dx
 
-			d3.select(this).selectAll('div.sommet').style('transform', `translate(${d.originleft}px, ${d.top}px)`)
-			d3.select(this).selectAll('div.axis').style('transform', `translateX(${d.originleft}px)`)
+			d3.select(this).selectAll('div.sommet').style('transform', 'translate(' + d.originleft + 'px, ' + d.top + 'px)')
+			d3.select(this).selectAll('div.axis').style('transform', 'translateX(' + d.originleft + 'px)')
 		}
 	})
 	.on('end',function () {
@@ -256,7 +256,7 @@ Mountains.rangeRelations = function () {
 		else if (d1.type === 'division') {
 			const dividendEchelle = indicators.filter(function (d) { return d['Structure'] === d1.sources.filter(function (c) { return c.division === 'dividend' })[0].path })[0]['Index_Echelle']
 			const divisorEchelle = indicators.filter(function (d) { return d['Structure'] === d1.sources.filter(function (c) { return c.division === 'divisor' })[0].path })[0]['Index_Echelle']
-			const indexEchelle = `${dividendEchelle} / ${divisorEchelle}`
+			const indexEchelle = dividendEchelle + ' / ' + divisorEchelle
 			// WE NEED TO CREATE A NEW ELEMENT
 			// AND THEN ADD ALL THE SOURCE ELEMENTS TO IT
 			const max_y = d3.max(Mountains.data.filter(function (d) { return d.display && d[normalizingCol] > 0 }).map(function (d) {
@@ -476,10 +476,10 @@ Mountains.draw = function (_d, _i) {
 			
 	sel.addElems('div', 'label--name')
 		.html(function (d) { return d['Commune_court'] })
-		.style('transform', `translateY(${_d.top}px)`)
+		.style('transform', 'translateY(' + _d.top + 'px)')
 	.on('mouseover', function (d) {
 		if (!d3.select('.paysage--vis').classed('dragging')) {
-			d3.select(this).html(`Masquer: ${d['Commune_court']}`) 
+			d3.select(this).html('Masquer: ' + d['Commune_court']) 
 			
 			d3.selectAll('div.sommet, div.label--name')
 				.classed('semi-transparent', false)
@@ -511,13 +511,13 @@ Mountains.draw = function (_d, _i) {
 	const massif = sel.addElems('div', 'massif', renderData)
 		
 	let s_i = 0 // THIS IS AN INCREMENTOR HACK FOR THE div.sommet
-	const sommet = massif.addElems('div', 'sommet', function (d) { return d.values }, function (d) { return `${d.key}-${d.values.map(function (c) { return c.path }).join('-')}-${'rien'}` }) // UPDATE HERE
-		.attr('class', function (d) { return `sommet ${d.key} ${d.key}-${s_i ++}` })
-		.style('width', function (d) { return `${isFinite(d.width) ? d.width : 0}px` })
-		.style('height', function (d) { return `${isFinite(d.height) ? d.height : 0}px` })
-		.style('top', function (d) { return `${-d.top}px` }) // THE 1.25rem ARE EXTRA FOR THE VALUE LABELS
-		.style('left', function (d) { return `${d.left}px` })
-		.style('transform', function (d) { return `translate(${_d.left}px, ${_d.top}px)` })
+	const sommet = massif.addElems('div', 'sommet', function (d) { return d.values }, function (d) { return d.key + '-' + d.values.map(function (c) { return c.path }).join('-') }) // UPDATE HERE
+		.attr('class', function (d) { return 'sommet ' + d.key + ' ' + d.key + '-' + (s_i ++) })
+		.style('width', function (d) { return (isFinite(d.width) ? d.width : 0) + 'px' })
+		.style('height', function (d) { return (isFinite(d.height) ? d.height : 0) + 'px' })
+		.style('top', function (d) { return -d.top + 'px' }) // THE 1.25rem ARE EXTRA FOR THE VALUE LABELS
+		.style('left', function (d) { return d.left + 'px' })
+		.style('transform', function (d) { return 'translate(' + _d.left + 'px, ' + _d.top + 'px)' })
 
 	
 
@@ -526,8 +526,8 @@ Mountains.draw = function (_d, _i) {
 		sommet.classed('transparent', true)
 
 		const shape = sommet.addElems('div', 'overflow--hidden')
-			.style('width', function (d) { return `${d.width}px` })
-			.style('height', function (d) { return `${d.height}px` })
+			.style('width', function (d) { return d.width + 'px' })
+			.style('height', function (d) { return d.height + 'px' })
 		const svg = shape.addElems('svg', 'shape')
 			.attrs({ 'width': '100%', 
 					 'height': '100%',
@@ -584,14 +584,14 @@ Mountains.draw = function (_d, _i) {
 	}
 	else {
 		const shape = sommet.addElems('div', 'overflow--hidden')
-			.style('width', function (d) { return `${d.width}px` })
-			.style('height', function (d) { return `${d.height}px` })
+			.style('width', function (d) { return d.width + 'px' })
+			.style('height', function (d) { return d.height + 'px' })
 		.addElems('div', 'shape')
-			.style('clip-path', function (d) { return `polygon(${d.path.map(function (c) { return c.map(function (b) { return `${b}%` }).join(' ') }).join(',')})` })
-			.style('-webkit-clip-path', function (d) { return `polygon(${d.path.map(function (c) { return c.map(function (b) { return `${b}%` }).join(' ') }).join(',')})` })
-			.style('-moz-clip-path', function (d) { return `polygon(${d.path.map(function (c) { return c.map(function (b) { return `${b}%` }).join(' ') }).join(',')})` })
-			.style('-o-clip-path', function (d) { return `polygon(${d.path.map(function (c) { return c.map(function (b) { return `${b}%` }).join(' ') }).join(',')})` })
-			.style('-ms-clip-path', function (d) { return `polygon(${d.path.map(function (c) { return c.map(function (b) { return `${b}%` }).join(' ') }).join(',')})` })
+			.style('clip-path', function (d) { return 'polygon(' + d.path.map(function (c) { return c.map(function (b) { return b + '%' }).join(' ') }).join(',') + ')' })
+			.style('-webkit-clip-path', function (d) { return 'polygon(' + d.path.map(function (c) { return c.map(function (b) { return b + '%' }).join(' ') }).join(',') + ')' })
+			.style('-moz-clip-path', function (d) { return 'polygon(' + d.path.map(function (c) { return c.map(function (b) { return b + '%' }).join(' ') }).join(',') + ')' })
+			.style('-o-clip-path', function (d) { return 'polygon(' + d.path.map(function (c) { return c.map(function (b) { return b + '%' }).join(' ') }).join(',') + ')' })
+			.style('-ms-clip-path', function (d) { return 'polygon(' + d.path.map(function (c) { return c.map(function (b) { return b + '%' }).join(' ') }).join(',') + ')' })
 		.on('mouseover', function (d) {
 			if (!d3.select('.paysage--vis').classed('dragging')) {
 				const sel = d3.select(this)
@@ -629,7 +629,7 @@ Mountains.draw = function (_d, _i) {
 			.style('top', '0px')
 		
 		ref_addition.addElems('path', 'line')
-			.attr('d', function (d) { return `M${d.path.filter(function (c, j) { return j > 0 && j < d.path.length - 1 }).join(' L')}` })
+			.attr('d', function (d) { return 'M' + d.path.filter(function (c, j) { return j > 0 && j < d.path.length - 1 }).join(' L') })
 			.style('stroke-width', function (d) { return 2 * 100 / d.height })
 
 
@@ -640,10 +640,10 @@ Mountains.draw = function (_d, _i) {
 					 'height': function (d) { return isFinite(d.width) ? d.width : 0 },
 					 'viewBox': '0 0 100 100',
 					 'preserveAspectRatio': 'xMinYMid meet' })
-			.style('top', function (d) { return `${d.height - d.width}px` })
+			.style('top', function (d) { return (d.height - d.width) + 'px' })
 		
 		ref_division.addElems('path', 'line')
-			.attr('d', function (d) { return `M${d.path.join(' L')}` })
+			.attr('d', function (d) { return 'M' + d.path.join(' L') })
 			.style('stroke-width', function (d) { return 100 / d.width })
 	}
 
@@ -651,10 +651,10 @@ Mountains.draw = function (_d, _i) {
 	// IF THIS IS THE TOP CHAIN, DRAW AEXS
 	if (_d.z === 0) {
 		massif.addElems('div', 'axis')
-			.style('height', function (d) { return `${d.maxHeight}px` })
-			.style('left', function (d) { return `${d3.min(d.values, function (c) { return c.left })}px` })
-			.style('top', function (d) { return `${_d.top - d.maxHeight}px` })
-			.style('transform', function (d) { return `translateX(${_d.left}px)` })
+			.style('height', function (d) { return d.maxHeight + 'px' })
+			.style('left', function (d) { return d3.min(d.values, function (c) { return c.left }) + 'px' })
+			.style('top', function (d) { return (_d.top - d.maxHeight) + 'px' })
+			.style('transform', function (d) { return 'translateX(' + _d.left + 'px)' })
 			.each(function (d) {
 				const sel = d3.select(this)
 
@@ -668,7 +668,7 @@ Mountains.draw = function (_d, _i) {
 					.range([this.clientHeight || this.offsetHeight, 0])
 
 				sel.addElems('div', 'tick', !normalize ? d3.range(Math.ceil(d.max / step)).map(function (c) { return c * step }) : [0, Math.floor(d.max * 10) / 10])
-					.style('transform', function (c) { return `translateY(${tickScale(c) - (this.clientHeight || this.offsetHeight) - 1}px)` })
+					.style('transform', function (c) { return 'translateY(' + (tickScale(c) - (this.clientHeight || this.offsetHeight) - 1) + 'px)' })
 					.html(function (c) { return printNumber(Math.round(c * 100) / 100) })
 			})
 		.addElems('div', 'axis--label')
@@ -686,17 +686,17 @@ Mountains.labels = function (d, i) {
 	const _d = commune.datum()
 	const datum = sommet.datum()
 	
-	massif.insertElems(`div.${sommet.node().className.replace(/\s/g, '.')}`, 'div', `label--value label--${i}`, d.points)
+	massif.insertElems('div.' + sommet.node().className.replace(/\s/g, '.'), 'div', 'label--value label--' + i, d.points)
 		.style('transform', function (c, j) {
-			if (d.height > 100) return `translate(${Math.floor((!normalize ? _d.originleft : _d.left) + datum.left + datum.width * c[0] / 100)}px, calc(${Math.round(_d.top - datum.top * (100 - c[1]) / 100)}px - ${1.25 * 2}rem))`
-			else return `translate(${Math.floor((!normalize ? _d.originleft : _d.left) + datum.left + datum.width * c[0] / 100)}px, calc(${Math.round(_d.top - datum.top)}px - ${1.25 * (j % 2 ? 1 : 2)}rem))`
+			if (d.height > 100) return 'translate(' + (Math.floor((!normalize ? _d.originleft : _d.left) + datum.left + datum.width * c[0] / 100)) + 'px, calc(' + (Math.round(_d.top - datum.top * (100 - c[1]) / 100)) + 'px - ' + (1.25 * 2) + 'rem))'
+			else return 'translate(' + (Math.floor((!normalize ? _d.originleft : _d.left) + datum.left + datum.width * c[0] / 100)) + 'px, calc(' + (Math.round(_d.top - datum.top)) + 'px - ' + (1.25 * (j % 2 ? 1 : 2)) + 'rem))'
 		})
 		.html(function (c) { return printNumber(Math.round(c[2] * 100) / 100) })
 	.each(function (c, j) {
 		d3.select(this).addElems('div', 'label--connector')
 			.style('height', function () {
-				if (d.height > 100) return `calc(${1.25 * 2}rem + ${Math.floor(datum.top * (100 - c[1]) / 100)}px)`
-				return `calc(${(j % 2 ? 1 : 2) * 1.25}rem + ${datum.top}px)`
+				if (d.height > 100) return 'calc(' + (1.25 * 2) + 'rem + ' + (Math.floor(datum.top * (100 - c[1]) / 100)) + 'px)'
+				return 'calc(' + ((j % 2 ? 1 : 2) * 1.25) + 'rem + ' + datum.top + 'px)'
 			})
 	})
 
@@ -706,10 +706,10 @@ Mountains.labels = function (d, i) {
 			const padding = 10
 			const trend = sommet.addElems('svg', 'trend-ref')
 				.attrs({ 'width': function (c) { return isFinite(c.width) ? c.width : 0 },
-						 'height': function (c) { return `${(isFinite(c.height) ? c.height : 0) + padding}` },
+						 'height': function (c) { return (isFinite(c.height) ? c.height : 0) + padding },
 						 'viewBox': '0 0 100 100',
 						 'preserveAspectRatio': 'none' })
-				.style('top', `${-padding}px`)
+				.style('top', -padding + 'px')
 			
 			const defs = trend.addElems('defs')
 			const arrowhead = defs.addElems('marker')
@@ -726,7 +726,7 @@ Mountains.labels = function (d, i) {
 					.style('stroke-width', 2)
 
 			trend.addElems('path', 'trend')
-				.attrs({ 'd': function (c) { return `M${c.points.sort(function (a, b) { return a[3] - b[3] }).map(function (b) { return [b[0], isFinite(b[1] + padding * 100 / c.height) ? b[1] + padding * 100 / c.height : 0] }).join(' L')}` },
+				.attrs({ 'd': function (c) { return 'M' + c.points.sort(function (a, b) { return a[3] - b[3] }).map(function (b) { return [b[0], isFinite(b[1] + padding * 100 / c.height) ? b[1] + padding * 100 / c.height : 0] }).join(' L') },
 						 'marker-end': 'url(#arrowhead)'}) // NEED TO Y OFFSET
 				.style('stroke-width', function (c) { return 2 * 100 / c.height })
 		}
@@ -737,7 +737,7 @@ Mountains.labels = function (d, i) {
 				const vi = _d[values[0].path]
 				const vf = _d[values[values.length - 1].path]
 				const evol = Mountains.calculateAnnualRate(vi, vf, years) || 0
-				return `${evol >= 0 ? '+' : '-'} ${Math.abs(Math.round(evol * 1000) / 10).toString().replace(/\./g, ',')} %`
+				return (evol >= 0 ? '+' : '-') + ' ' + (Math.abs(Math.round(evol * 1000) / 10).toString().replace(/\./g, ',')) + ' %'
 			})
 	}
 }

@@ -32,13 +32,13 @@ Reasoning.drag = d3.drag()
 
 
 		if ((target.findAncestor('operations') && target.findAncestor('node') && target.findAncestor('raisonnement')) === false && (Math.abs(d.top) >= Reasoning.yLimit)) {
-			sel.style('transform', `translate(${d.left}px, ${d.top}px)`)
+			sel.style('transform', 'translate(' + d.left + 'px, ' + d.top + 'px)')
 
-			sel.attr('data--label', `Supprimer l’indicateur “${d.value}” du paysage`)
+			sel.attr('data--label', 'Supprimer l’indicateur “' + d.value + '” du paysage')
 			// NEED TO ADD LABEL HERE: REMOVE NODE?
 		}
 		else {
-			sel.style('transform', `translate(${d.left}px, ${d.origintop}px)`)
+			sel.style('transform', 'translate(' + d.left + 'px, ' + d.origintop + 'px)')
 			sel.attr('data--label', d.value)
 		}
 
@@ -71,8 +71,8 @@ Reasoning.drag = d3.drag()
 			targetNode.select('div.circle').style('transform', 'scale(2)')
 			
 			targetNode.addElems('div', 'operations')
-				.style('height', `${(operations.length * 1.75) + 1.5}rem`)
-				.style('top', `-${(operations.length * 1.75) + 1.5}rem`)
+				.style('height', ((operations.length * 1.75) + 1.5) + 'rem')
+				.style('top', -((operations.length * 1.75) + 1.5) + 'rem')
 				.addElems('div', 'operation-option', operations)
 				.html(function (c) { return c.label })
 		}
@@ -127,14 +127,14 @@ Reasoning.drag = d3.drag()
 				if (d.type === 'value' && d1.type !== 'value') obj.sources = d1.sources.concat([Object.assign({}, d)])
 				if (d.type !== 'value' && d1.type === 'value') obj.sources = ([Object.assign({}, d1)]).concat(d.sources)
 
-				obj.path = `${d1.path}+${d.path}`
-				obj.value = `${d1.value} + ${d.value}`
+				obj.path = d1.path + '+' + d.path
+				obj.value = d1.value + ' + ' + d.value
 			}
 			else if (target.datum().operation === 'division') {
 				obj.type = 'division'
 				if (d.type === 'value' && d1.type === 'value') obj.sources = [Object.assign({ division: 'divisor' }, d1), Object.assign({ division: 'dividend' }, d)]
-				obj.path = `${d.path}/${d1.path}`
-				obj.value = `${d.value} / ${d1.value}`
+				obj.path = d.path + '/' + d1.path
+				obj.value = d.value + ' / ' + d1.value
 			}
 			Mountains.rangeValues.splice(idx, 0, obj)
 		}
@@ -222,19 +222,19 @@ Reasoning.draw = function (_d, _i) {
 	node.exit().remove()
 	node = node.enter()
 		.append('div')
-		.attr('class', function (d, i) { return `node ${_d.ref[i].type}` })
-		.style('width', `${Reasoning.nodeSize}px`)
-		.style('height', `${Reasoning.nodeSize}px`)
+		.attr('class', function (d, i) { return 'node ' + _d.ref[i].type })
+		.style('width', Reasoning.nodeSize + 'px')
+		.style('height', Reasoning.nodeSize + 'px')
 		.style('transform', function (d, i) {
 		 	const ref = _d.ref[i]
-		 	return `translate(${d.left = Math.round(Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset)}px, ${d.top = d.origintop = -Reasoning.nodeSize / 2}px)` 
+		 	return 'translate(' + (d.left = Math.round(Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset)) + 'px, ' + (d.top = d.origintop = -Reasoning.nodeSize / 2) + 'px)'
 		})
 	.merge(node)
-		.attrs({ 'class': function (d, i) { return `node ${_d.ref[i].type}` },
+		.attrs({ 'class': function (d, i) { return 'node ' + _d.ref[i].type },
 				 'data--label': function (d) { return d.value } })
 		.style('transform', function (d, i) {
 		 	const ref = _d.ref[i]
-		 	return `translate(${d.left = Math.round(Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset)}px, ${d.top = d.origintop = -Reasoning.nodeSize / 2}px)` 
+		 	return 'translate(' + (d.left = Math.round(Reasoning.scale(ref.groupIndex + 1) + ref.offsetFactor * nodeoffset)) + 'px, ' + (d.top = d.origintop = -Reasoning.nodeSize / 2) + 'px)'
 		})
 	.on('mouseover', function (d) {
 		if (!d3.select('div.paysage--vis').classed('dragging')) {

@@ -12,7 +12,7 @@ Map.init = function (_data) {
 				 'preserveAspectRatio': 'xMinYMid meet' })
 
 	svg.addElems('g', 'carte--communes', [_data])
-		.attr('transform', `translate(${[(w * (850 / h) - 850) / 2, -44]})`) // THE y = -44 IS DEPENDENT ON THE BASE DRAWING
+		.attr('transform', 'translate(' + [(w * (850 / h) - 850) / 2, -44] + ')') // THE y = -44 IS DEPENDENT ON THE BASE DRAWING
 	.addElems('path', 'active outline', function (d) { return d })
 		.each(function (d) { 
 			if (d['commune'] === 'Total') d3.select(this).classed('total', true) 
@@ -40,13 +40,13 @@ Map.init = function (_data) {
 
 		const bbox = this.getBBox()
 		const label = svg.addElems('g', 'label--name', [d])
-			.attr('transform', `translate(${[0, 850 - 10 * (850 / h)]})`)
+			.attr('transform', 'translate(' + [0, 850 - 10 * (850 / h)] + ')')
 			.moveToFront()
 		const text = label.addElems('text')
-			.style('font-size', `${(850 / h) * .75}rem`)
+			.style('font-size', ((850 / h) * .75) + 'rem')
 			.attrs({ 'dy': '.4rem',
 					 'x': 24 * (850 / h) / 2 })
-			.text(function (c) { return `${sel.classed('active') ? 'Masquer' : 'Afficher'}: ${c['commune']}` })
+			.text(function (c) { return (sel.classed('active') ? 'Masquer' : 'Afficher') + ': ' + c['commune'] })
 
 		label.insertElems('text', 'rect', 'bg')
 			.attrs({ 'width': text.node().getBBox().width + 24 * (850 / h),
@@ -71,7 +71,7 @@ Map.init = function (_data) {
 			Mountains.data.forEach(function (c) { if (c['Commune_court'] === d.commune) c.display = true })
 		}
 		sel.classed('active', !sel.classed('active'))
-		d3.select('g.label--name text').text(function (c) { return `${sel.classed('active') ? 'Masquer' : 'Afficher'}: ${c['commune']}` })
+		d3.select('g.label--name text').text(function (c) { return (sel.classed('active') ? 'Masquer' : 'Afficher') + ': ' + c['commune'] })
 
 		UI.redraw()
 	})

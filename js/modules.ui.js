@@ -23,17 +23,17 @@ UI.drag = d3.drag()
 					else datum.top = Mountains.horizon
 					datum.originleft -= (evt.dx * (datum.z + 1) / 25)
 					
-					return `translate(${datum.originleft}px, ${datum.top}px)`
+					return 'translate(' + datum.originleft + 'px, ' + datum.top + 'px)'
 				})
 			d3.selectAll('div.axis')
 				.style('transform', function (d) {
 					const datum = this.parentNode.parentNode['__data__']
-					return `translateX(${datum.originleft}px)`
+					return 'translateX(' + datum.originleft + 'px)'
 				})
 			d3.selectAll('div.label--name')
 				.style('transform', function (d) {
 					const datum = this.parentNode['__data__']
-					return `translateY(${datum.top}px)`
+					return 'translateY(' + datum.top + 'px)'
 				})
 		}
 	})

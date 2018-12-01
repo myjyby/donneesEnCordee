@@ -51,11 +51,11 @@ Menu.data = function (_data) {
 			if (j > 0) {
 				if (!obj.values) obj.values = []
 				if (obj.values.map(function (b) { return b.key }).indexOf(c) === -1) {
-					if (_data.filter(function (a) { return a['Structure'] === `${obj.path}_${c}` })[0]) {
-						const indicateur_detail = _data.filter(function (a) { return a['Structure'] === `${obj.path}_${c}` })[0]['Indicateur']
-						obj.values.push({ key: c, path: `${obj.path}_${c}`, value: indicateur_detail })
+					if (_data.filter(function (a) { return a['Structure'] === obj.path + '_' + c })[0]) {
+						const indicateur_detail = _data.filter(function (a) { return a['Structure'] === obj.path + '_' + c })[0]['Indicateur']
+						obj.values.push({ key: c, path: obj.path + '_' + c, value: indicateur_detail })
 					}
-					else obj.values.push({ key: c, path: `${obj.path}_${c}` })
+					else obj.values.push({ key: c, path: obj.path + '_' + c })
 				}
 				obj = obj.values.filter(function (b) { return b.key === c })[0]
 			}
@@ -78,10 +78,10 @@ Menu.list = function (_d) {
 				.on('click', function () { d3.event.stopPropagation() })
 			.addElems('span', 'leaf', function (d) { return d.values })
 				.html(function (d, i) {
-					if (i === 0 && _d.values.length === 1) return ` (<u>${d.key}</u>)`
-					else if (i === 0 && _d.values.length > 1) return ` (<u>${d.key}</u> | `
-					else if (i === _d.values.length - 1) return `<u>${d.key}</u>)`
-					else return `<u>${d.key}</u> | `
+					if (i === 0 && _d.values.length === 1) return ' (<u>' + d.key + '</u>)'
+					else if (i === 0 && _d.values.length > 1) return ' (<u>' + d.key + '</u> | '
+					else if (i === _d.values.length - 1) return '<u>' + d.key + '</u>)'
+					else return '<u>' + d.key + '</u> | '
 				})
 		}
 		else {
@@ -105,19 +105,19 @@ Menu.expand = function (_sel) {
 			for (let node of sublist) {
 				const ul = d3.select(node)
 				const li = ul.select('li.sub-item').node()
-				li.style.maxHeight = `${lineHeight}rem`
+				li.style.maxHeight = lineHeight + 'rem'
 			}
 			
 			const parentItem = _sel.findAncestor('list-item')
 
 			parentItem.selectAll('li.expanded')
 			.style('max-height', function () {
-				return `${(
+				return ((
 					d3.select(this).selectAll('.sub-item')
 					.filter(function () { 
 						return this.style.maxHeight 
 					}).size() + 1) * lineHeight
-				}rem`
+				) + 'rem'
 			})
 		}
 		else {
