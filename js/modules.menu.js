@@ -100,9 +100,9 @@ Menu.expand = function (_sel) {
 	
 	if (sublist) {
 		if (!isExpanded) {
-			_sel.classed('expanded', true)
+			_sel.classed('expanded', true);
 
-			for (node of sublist) {
+			for (let node of sublist) {
 				const ul = d3.select(node)
 				const li = ul.select('li.sub-item').node()
 				li.style.maxHeight = lineHeight + 'rem'
