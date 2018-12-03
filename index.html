@@ -121,14 +121,14 @@
 	promise.push(d3.csv('./data/data.csv'))
 	promise.push(d3.csv('./data/indicators.csv'))
 	promise.push(d3.json('./data/carte-redessinee.json'))
-	Promise.all(promise).then(res => {
+	Promise.all(promise).then(function (res) {
 			const data = res[0]
 			const indicators = res[1]
 			const dessin = res[2]
 
-			const communes = d3.set(data.map(d => d.Commune_court)).values()
+			const communes = d3.set(data.map(function (d) { return d.Commune_court })).values()
 
-			data.forEach(d => {
+			data.forEach(function (d) {
 				for (let key in d) 
 					if (Number.isInteger(+d[key]) && d[key] !== 0) d[key] = +d[key]
 			})
