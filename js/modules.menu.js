@@ -94,7 +94,7 @@ Menu.list = function (_d) {
 }
 Menu.expand = function (_sel) {
 	if (!_sel.node()) return null
-	const sublist = _sel.node().childNodes
+	const sublist = Array.prototype.slice.call(_sel.node().children)
 	// const sublist = _sel.node().children
 	const isExpanded = _sel.classed('expanded')
 	const lineHeight = 9
