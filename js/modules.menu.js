@@ -94,19 +94,24 @@ Menu.list = function (_d) {
 }
 Menu.expand = function (_sel) {
 	if (!_sel.node()) return null
-	const sublist = _sel.node().children
+	const sublist = _sel.node().childNodes
+	// const sublist = _sel.node().children
 	const isExpanded = _sel.classed('expanded')
 	const lineHeight = 9
 	
 	if (sublist) {
 		if (!isExpanded) {
-			_sel.classed('expanded', true);
+			_sel.classed('expanded', true)
 
-			for (let node of sublist) {
-				const ul = d3.select(node)
-				const li = ul.select('li.sub-item').node()
-				li.style.maxHeight = lineHeight + 'rem'
-			}
+			// for (let node of sublist) {
+			sublist.forEach(function (node) {
+			// for (let node of sublist) {
+				if (node.nodeName === 'UL' || node.nodeName === 'ul') {
+					const ul = d3.select(node)
+					const li = ul.select('li.sub-item').node()
+					li.style.maxHeight = lineHeight + 'rem'
+				}
+			})
 			
 			const parentItem = _sel.findAncestor('list-item')
 
