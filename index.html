@@ -5,7 +5,7 @@
 	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
 	<title>Données en cordée</title>
 
-	<script type='text/javascript' src='https://d3js.org/d3.v5.min.js'></script>
+	<script type='text/javascript' src='https://d3js.org/d3.v4.min.js'></script>
 	<script type='text/javascript' src='https://d3js.org/d3-selection-multi.v1.min.js'></script>
 	<script type='text/javascript' src='https://unpkg.com/topojson@3'></script>
 	<script type='text/javascript' src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
@@ -117,34 +117,41 @@
 
 	var montagnes
 
-	const promise = []
-	promise.push(d3.csv('./data/data.csv'))
-	promise.push(d3.csv('./data/indicators.csv'))
-	promise.push(d3.json('./data/carte-redessinee.json'))
-	Promise.all(promise).then(function (res) {
-			const data = res[0]
-			const indicators = res[1]
-			const dessin = res[2]
+	// const promise = []
+	// promise.push(d3.csv('./data/data.csv'))
+	// promise.push(d3.csv('./data/indicators.csv'))
+	// promise.push(d3.json('./data/carte-redessinee.json'))
+	// Promise.all(promise).then(function (res) {
 
-			const communes = d3.set(data.map(function (d) { return d.Commune_court })).values()
+	d3.queue()
+	.defer(d3.csv, './data/data.csv')
+	.defer(d3.csv, './data/indicators.csv')
+	.defer(d3.json, './data/carte-redessinee.json')
+	.awaitAll(function(err, res) {
+		if (err) throw err
+		const data = res[0]
+		const indicators = res[1]
+		const dessin = res[2]
 
-			data.forEach(function (d) {
-				for (let key in d) 
-					if (Number.isInteger(+d[key]) && d[key] !== 0) d[key] = +d[key]
-			})
+		const communes = d3.set(data.map(function (d) { return d.Commune_court })).values()
 
-			maxHeight = height() / data.length
-
-			// // INITIALIZE THE USER INTERFACE
-			Menu.init(indicators)
-			UI.init() 
-
-			Mountains.init(data)
-			Map.init(dessin)
-			Reasoning.init()
-			// Reasoning.init(data)
-			// montagnes = new Mountains(data)
+		data.forEach(function (d) {
+			for (let key in d) 
+				if (Number.isInteger(+d[key]) && d[key] !== 0) d[key] = +d[key]
 		})
+
+		maxHeight = height() / data.length
+
+		// // INITIALIZE THE USER INTERFACE
+		Menu.init(indicators)
+		UI.init() 
+
+		Mountains.init(data)
+		Map.init(dessin)
+		Reasoning.init()
+		// Reasoning.init(data)
+		// montagnes = new Mountains(data)
+	})
 
 	// SET UP THE SCROLLING
 	const header = d3.select('div.sticky-content')
