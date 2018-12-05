@@ -117,6 +117,11 @@
 
 	var montagnes
 
+	console.log(detectBrowser(), detectVersion())
+	console.log('are clip-paths supported? ' + areClipPathShapesSupported())
+	console.log(window.devicePixelRatio)
+	console.log(window.screen.availWidth, window.screen.availHeight)
+
 	// const promise = []
 	// promise.push(d3.csv('./data/data.csv'))
 	// promise.push(d3.csv('./data/indicators.csv'))
@@ -184,9 +189,6 @@
 			header.select('div.logo-separator').classed('hide', false)
 		}
 	})
-
-	console.log(detectBrowser(), detectVersion())
-	console.log('are clip-paths supported? ' + areClipPathShapesSupported())
 
 	// if (detectVersion() === 'Firefox 52') {
 	if (!areClipPathShapesSupported()) {
