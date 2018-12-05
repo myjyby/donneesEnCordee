@@ -4,8 +4,8 @@ Menu.init = function (_data) {
 
 	const title = body.addElem('div', 'title')
 		
-	title.addElem('h1', 'title-block').html('Données&mdash;en&mdash;cordée').fitText()
-	title.addElem('h3', 'title-block').html('Un paysage social du département de l’Isère').fitText()
+	// title.addElem('h1', 'title-block').html('Données&mdash;en&mdash;cordée').fitText()
+	// title.addElem('h3', 'title-block').html('Un paysage social du département de l’Isère').fitText()
 
 	const hierarchie = Menu.data(_data)
 	
@@ -31,7 +31,10 @@ Menu.init = function (_data) {
 			d3.event.stopPropagation()
 			d3.select(this).classed('selected', !d3.select(this).classed('selected'))
 
-			Mountains.rangeValues.push(Object.assign({ type: 'value' }, d)) // CHANGE TYPE HERE ++++++ OBJECT ASSIGN DOES NOT WORK IN IE
+			const deepcopy = JSON.parse(JSON.stringify(d))
+			deepcopy.type = 'value'
+			Mountains.rangeValues.push(deepcopy)
+			// Mountains.rangeValues.push(Object.assign({ type: 'value' }, d)) // CHANGE TYPE HERE ++++++ OBJECT ASSIGN DOES NOT WORK IN IE
 
 			// REDRAW THE MOUNTAINS
 			UI.redraw()

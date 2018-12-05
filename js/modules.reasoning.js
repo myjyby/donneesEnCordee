@@ -123,16 +123,32 @@ Reasoning.drag = d3.drag()
 			// obj.index = scale
 			if (target.datum().operation === 'addition') {
 				obj.type = 'addition'
-				if (d.type === 'value' && d1.type === 'value') obj.sources = [Object.assign({}, d1), Object.assign({}, d)] // OBJECT ASSIGN DOES NOT WORK IN IE
-				if (d.type === 'value' && d1.type !== 'value') obj.sources = d1.sources.concat([Object.assign({}, d)])
-				if (d.type !== 'value' && d1.type === 'value') obj.sources = ([Object.assign({}, d1)]).concat(d.sources)
+				if (d.type === 'value' && d1.type === 'value') {
+					obj.sources = [JSON.parse(JSON.stringify(d1)), JSON.parse(JSON.stringify(d))] 
+					// obj.sources = [Object.assign({}, d1), Object.assign({}, d)] // OBJECT ASSIGN DOES NOT WORK IN IE
+				}
+				if (d.type === 'value' && d1.type !== 'value') {
+					obj.sources = d1.sources.concat([JSON.parse(JSON.stringify(d))])
+					// obj.sources = d1.sources.concat([Object.assign({}, d)])
+				}
+				if (d.type !== 'value' && d1.type === 'value') {
+					obj.sources = ([JSON.parse(JSON.stringify(d1))]).concat(d.sources)
+					// obj.sources = ([Object.assign({}, d1)]).concat(d.sources)
+				}
 
 				obj.path = d1.path + '+' + d.path
 				obj.value = d1.value + ' + ' + d.value
 			}
 			else if (target.datum().operation === 'division') {
 				obj.type = 'division'
-				if (d.type === 'value' && d1.type === 'value') obj.sources = [Object.assign({ division: 'divisor' }, d1), Object.assign({ division: 'dividend' }, d)]
+				if (d.type === 'value' && d1.type === 'value') {
+					const divisor = JSON.parse(JSON.stringify(d1))
+					divisor.division = 'divisor'
+					const dividend = JSON.parse(JSON.stringify(d))
+					dividend.division = 'dividend'
+					obj.sources = [divisor, dividend]
+					// obj.sources = [Object.assign({ division: 'divisor' }, d1), Object.assign({ division: 'dividend' }, d)]
+				}
 				obj.path = d.path + '/' + d1.path
 				obj.value = d.value + ' / ' + d1.value
 			}
