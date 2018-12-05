@@ -4,7 +4,7 @@ Menu.init = function (_data) {
 
 	const title = body.addElem('div', 'title')
 		
-	// title.addElem('h1', 'title-block').html('Données&mdash;en&mdash;cordée').fitText()
+	title.addElem('h1', 'title-block').html('Données&mdash;en&mdash;cordée').fitText()
 	// title.addElem('h3', 'title-block').html('Un paysage social du département de l’Isère').fitText()
 
 	const hierarchie = Menu.data(_data)
