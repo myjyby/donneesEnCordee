@@ -19,42 +19,53 @@
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
 	html {
-		font-size: 7px;
+		font-size: 6px;
 	}
 } 
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
 	html {
-		font-size: 8px;
+		font-size: 7px;
 	}
 } 
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
 	html {
-		font-size: 9px;
+		font-size: 8px;
 	}
 } 
 
 /* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
+@media only screen and (min-width: 1024px) {
 	html {
-		font-size: 12px;
+		font-size: 9px;
 	}
 } 
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 1280px) {
 	html {
-		font-size: 14px;
+		font-size: 10px;
 	}
 }
 @media only screen and (min-width: 1440px) {
 	html {
+		font-size: 12px;
+	}
+}
+@media only screen and (min-width: 1680px) {
+	html {
+		font-size: 14px;
+	}
+}
+@media only screen and (min-width: 1920px) {
+	html {
 		font-size: 16px;
 	}
 }
+
 
 
 body {
