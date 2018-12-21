@@ -9,13 +9,33 @@
 	<script type='text/javascript' src='https://d3js.org/d3-selection-multi.v1.min.js'></script>
 	
 	<script type='text/javascript' src='./js/content.indicateurs.js'></script>
+	<script type='text/javascript' src='./js/base.fn.js'></script>
 
-	<link rel='stylesheet' type='text/css' href='./css/main-dark.css'>
+	<link rel='stylesheet' type='text/css' href='./css/main.css'>
+	<link rel='stylesheet' type='text/css' href='./css/charts.css'>
 
 
 </head>
 
 <body>
+	<div class='slide bg-dark'>
+		<div class='main-header static-page'>
+			<div class='sticky-content small'>
+				<div class='montagnes-logo main'>
+					<div class='sommet--logo logo-sommet-1'></div>
+					<div class='sommet--logo logo-sommet-2'></div>
+					<div class='sommet--logo logo-sommet-3'></div>
+				</div>
+				<div class='logo-separator'>
+					<a href='a_propos.html'><div class='node--logo about' data-content='À propos'></div></a>
+					<a href='./'><div class='node--logo main-page' data-content='Données en cordée'></div></a>
+					<!-- <a href='indicateurs.html'><div class='node--logo indicators' data-content='Les données'></div></a> -->
+					<!-- <a href='a_propos.html'><div class='node--logo about' data-content='À propos'></div></a> -->
+					<!-- <a href='indicateurs.html'><div class='node--logo indicators' data-content='Les données'></div></a> -->
+				</div>
+			</div>
+		</div>
+	</div>
 
 <script>
 const working = true
@@ -33,7 +53,7 @@ var x = d3.scaleBand()
 var y = d3.scaleLinear()
 	.rangeRound([svgh, 0])
 
-d3.csv("data/data.csv", function (error, data) {
+d3.csv('data/data.csv', function (error, data) {
 	if (error) throw error
 
 	data = data.filter(function (d) {return d.Commune_court != "Total"})
@@ -49,10 +69,13 @@ d3.csv("data/data.csv", function (error, data) {
 const displayMenu = function (_data) {
 	let body
 	if (!working) body = d3.select('body')
-	else body = d3.select('div.info')
+	else body = d3.select('div.static-content')
 
 	const nav = body.append('div')
-		.attr('class', 'nav')
+		.attr('class', 'col-1')
+	.append('div')
+		.style('display', 'flex')
+		.style('justify-content', 'flex-end')
 
 	const ul = nav.append('ul')
 
@@ -75,12 +98,13 @@ const displayMenu = function (_data) {
 	.merge(links)
 
 	links.append('a')
+		.attr('class', 'lead')
 		.attr('href', function (d, i) { 
 			let url = window.location.href
 			if (url.indexOf('?') !== -1) url = url.split('?')[0]
 			return `${url}?i=${i}` 
 		})
-		.html(function (d, i) { return pages[i].titre })
+		.html(function (d, i) { return pages[i].titre.replace(/—/g, ' ') })
 
 	ul.append('li')
 		.attr('class', 'retour')
@@ -92,115 +116,123 @@ const displayMenu = function (_data) {
 const displayPage = function (_page, _data) {
 	const body = d3.select('body')
 
-	const content = body.append("div")
+	// const content = body.append('div')
+	// 	.datum(_page)
+	// 	.attr('class', 'slide')
+
+	const content = body.select('div.slide')
 		.datum(_page)
-		.attr("class", "indicateur")
 
 
-	// ON CREE LE TITRE
-	content.append("h1")
-		.html(function (d) { return d.titre })
-
-	const info = content.append("div")
-		.attr("class", "info")
+	const info = content.append('div')
+		.attr('class', 'static-content')
 
 	// ON PLACE LE MENU
 	if (working) displayMenu(_data)
 	
-	const methodo = info.append("div")
-		.attr("class", "methodo")
+	const methodo = info.append('div')
+		.attr('class', 'col-2')
 
-	
-	let contenuTexte = methodo.selectAll("div.methodo")
+	// ON CREE LE TITRE
+	methodo.append('div')
+		.attr('class', 'main-title')
+		.html(function (d) { return d.titre })
+
+	let contenuTexte = methodo.selectAll('div.contenu-textuel')
 		.data(function (d) { return d.span })
 	contenuTexte = contenuTexte.enter()
-		.append("div")
+		.append('div')
+		.attr('class', 'contenu-textuel')
 
-	contenuTexte.append("h2")
+	contenuTexte.append('div')
+		.attr('class', 'main-title')
 		.html(function (d){ return d.soustitre})
-	contenuTexte.append("div")
-		.attr("class", "span1")
+	contenuTexte.append('div')
+		.attr('class', 'span1')
 		.html(function (d){ return d.contenu})
 
-	const metadata = info.append("div")
-		.attr("class", "meta-data") 
+	const views = info.append('div')
+		.attr('class', 'col-3') 
+	.append('div')
+		.attr('class', 'inner')
 	
-	metadata.append("h2")
-		.html(function (d) { return "Sources"})
+	views.append('p')
+		.attr('class', 'lead intertitre')
+		.html(function (d) { return 'Source(s)'})
 
-	let donnees = metadata.selectAll("div")
+	let donnees = views.selectAll('div')
 		.data(function (d) { return d.sources })
 	donnees = donnees.enter()
-		.append("div")
-		.attr("class", "span2")
-		.html(function (d){ return "<a href=" + d.lien +" "+ "target='_blank' >" + d.nom + "</a> <br>" + d.annee})
+		.append('div')
+		.attr('class', 'source-link')
+		.html(function (d){ return '<a href=' + d.lien +' '+ 'target="_blank">' + d.nom + '</a> <br>' + d.annee})
 
-	let charts = metadata.selectAll("div.display")
+	let charts = views.selectAll('div.vis-block')
 		.data(function (d) { return d.charts })
 	charts = charts.enter()
-		.append("div")
-		.attr("class", "display")
+		.append('div')
+		.attr('class', 'vis-block')
 		.merge(charts)
 
-	charts.append("h3")
+	charts.append('p')
+		.attr('class', 'lead intertitre')
 		.html(function (d) {return d.titre})
 
-	const buttons = charts.append("div")
-		.attr("class", "buttons")
+	const buttons = charts.append('div')
+		.attr('class', 'buttons')
 		// .html(function (d) {return d.buttons.label})
 
-	buttons.selectAll("button")
+	buttons.selectAll('button')
 		.data(function (d) { return d.buttons })
 	.enter()
-		.append("button")
+		.append('button')
 		.classed('focus', function (d, i) { return i === 0 })
 		.html(function (d) { return d.label })
-		.on("click", function (d) {
+		.on('click', function (d) {
 			const sel = d3.select(this)
 			const parent = d3.select(this.parentNode)
 			parent.selectAll('button').classed('focus', false)
 			sel.classed('focus', true)
 			
 			const display = d3.select(this.parentNode.parentNode)
-			const g = display.select('.visu').select('svg').select('g')
+			const svg = display.select('.visu').select('svg')
+			const g = svg.select('g')
 
-			console.log(d.value)
-			drawChart(g, _data, d.value)
+			drawChart(svg, g, _data, d.value)
 		})
 
-	charts.append("h4")
+	// charts.append("h4")
 
-	let svg = charts.append("div")
-		.attr("class", "visu")
-	.append("svg")
-		.attr("width", svgw)
-	 	.attr("height", svgh)
-	 	.append("g")
+	let svg = charts.append('div')
+		.attr('class', 'visu')
+	.append('svg')
+		.attr('width', '100%')
+	 	.attr('height', svgh)
+	.append('g')
 	 	.each(function (d) {
 	 		const g = d3.select(this)
-	 		drawChart(g, _data, d.valeur_init)
-	 		
+	 		const svg = d3.select(this.parentNode)
+	 		drawChart(svg, g, _data, d.valeur_init)
 	 	})
+
+	 let labelcontainer = charts.addElems('div', 'label-container')
 
 	 
 }
 
-const drawChart = function (_chart, _data, _indicateur) {
+const drawChart = function (_svg, _chart, _data, _indicateur) {
 	// "Général_Population"
 	console.log(_indicateur)
 	_data.sort(function (a, b) { return +b[_indicateur] - +a[_indicateur] })
 
 	let xpadding = 0
 	
-	x.rangeRound([xpadding, svgw])
+	x.rangeRound([xpadding, (_svg.node().clientWidth || _svg.node().offsetWidth) - xpadding])
 		.domain(_data.map(function (d) { return d.Commune_court }))
 	y.domain([0, d3.max(_data, function (d) { return +d[_indicateur] })])
 
 	let bars = _chart.selectAll(".bar")
 		.data(_data, function (d) { return d.Commune_court })
-
-	console.log(_chart)
-	console.log(_chart.node())
 
 	// const tooltips = d3.select(_chart.node().parentNode.parentNode)	
 	// 	.append("div")
@@ -244,30 +276,29 @@ const drawChart = function (_chart, _data, _indicateur) {
 		.attr("height", svgh)
 	.merge(invisible_rects)
 
-	bars.on("mouseover", function (d) {
-		console.log(d3.selectAll('div.visu').data())
-
-		const tooltips = d3.selectAll('div.visu')
-			.append('div')
+	bars.on('mouseover', function (d) {
+		const tooltips = d3.selectAll('div.vis-block')
+			.selectAll('div.label-container')
+		.append('div')
 			.attr('class', 'tooltip')
-			.style("top", svgh + 3 + "px")
 			.each(function (c) { 
 				const sel = d3.select(this)
-				const parent = d3.select(this.parentNode)
+				const parent = sel.findAncestor('vis-block').select('div.visu')
 				const bar = parent.selectAll('.bar').filter(function (b) { return b.Commune_court === d.Commune_court })
 				const datum = bar.datum()
 				let barX = parseInt(bar.select('rect.visible').attr('x'))
 				
-				sel.html(datum.Commune_court + "<br/>" + +datum[c.valeur_init])
+				sel.html(datum.Commune_court + ' : <strong>' + printNumber(+datum[c.valeur_init]) + '</strong>')
 					// .style('left', barX + 'px')
-					.style("left", function () {
-						if (barX <= svgw / 2) return barX  + 'px'
-						else return null
+					.style('left', function () {
+						// if (barX <= svgw / 2) 
+						return barX  + 'px'
+						// else return null
 					})
-					.style("right", function () {
-						if (barX > svgw / 2) return 0 + 'px'
-						else return null
-					})
+					// .style("right", function () {
+					// 	if (barX > svgw / 2) return 0 + 'px'
+					// 	else return null
+					// })
 				bar.classed('hover', true)
 			})
 	})
