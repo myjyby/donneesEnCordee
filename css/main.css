@@ -92,6 +92,41 @@ div.slide.intro {
 	/*background-repeat: no-repeat;*/
 	/*background-position: center;*/
 }
+div.static-content {
+	width: 100%;
+}
+div.static-content p.lead {
+	width: 100%;
+}
+div.col-1 {
+	display: inline-block;
+	vertical-align: top;
+	width: calc(30% - 6rem);
+	color: #fff;
+	padding: 1rem 4rem 1rem 2rem;
+}
+div.col-2 {
+	display: inline-block;
+	vertical-align: top;
+	/*width: calc(40% - 4rem);*/
+	width: 40%;
+	color: #fff;
+	padding: 1rem 0;
+}
+div.col-3 {
+	display: inline-block;
+	vertical-align: top;
+	width: calc(30% - 6rem);
+	color: #fff;
+	/*padding: 1rem 2rem;*/
+	padding: 1rem 2rem 1rem 4rem;
+}
+div.col-3 div.inner {
+	width: 50%;
+}
+div.col-3 div.vis-block {
+	margin-bottom: 2.6rem;
+}
 .v-align {
 	display: table;
 }
@@ -122,6 +157,10 @@ div.slide.welcome {
 div.main-header {
 	padding-top: 12.5vh;
 }
+div.main-header.static-page {
+	padding-top: 0;
+	margin-bottom: 4rem;
+}
 div.montagnes-logo {
 	width: 100%;
 	/*position: relative;*/
@@ -145,6 +184,11 @@ div.sticky-content.stuck {
 	z-index: 100;
 	margin-bottom: 0vh;
 }
+div.sticky-content.small {
+	top: 0;
+	width: 100%;
+	margin-bottom: 0vh;
+}
 div.montagnes-logo.main {
 	width: 70vh;
 	height: 35vh;
@@ -154,7 +198,8 @@ div.montagnes-logo.main {
 	transition: width .5s, height .5s, padding .5s;
 }
 div.stick div.montagnes-logo.main,
-div.stuck div.montagnes-logo.main {
+div.stuck div.montagnes-logo.main,
+div.small div.montagnes-logo.main {
 	width: 20vh;
 	height: 10vh;
 	padding: 2.5vh 5vh 0vh 5vh;
@@ -237,10 +282,12 @@ div.node--logo {
 	transition: background-color .25s;
 	cursor: pointer !important;
 }
-div.stick div.node--logo:hover {
+div.stick div.node--logo:hover,
+div.small div.node--logo:hover {
 	background-color: #27999c;
 }
-div.stick div.node--logo::before {
+div.stick div.node--logo::before,
+div.small div.node--logo::before {
 	content: attr(data-content);
 	font-size: 1rem;
 	color: #fff;
@@ -254,6 +301,9 @@ div.stick div.node--logo::before {
 }
 div.node--logo.about {
 	left: 7%;
+}
+div.node--logo.main-page {
+	left: 50%;
 }
 div.node--logo.indicators {
 	right: 7%;
@@ -294,7 +344,8 @@ p.small {
 	text-align: left;
 	margin-bottom: 2.6em;
 }
-p.lead {
+p.lead,
+a.lead {
 	color: #fff;
 	width: 40%;
 	margin: auto;
@@ -303,12 +354,24 @@ p.lead {
 	font-weight: 200;
 	text-align: left;
 	margin-bottom: 2.6em;
+	text-decoration: none;
 	/*margin-bottom: 3rem;*/
+}
+li a.lead {
+	font-size: 1rem;
+	font-weight: bold;
+	/*letter-spacing: .05rem;*/
+}
+li.active a.lead {
+	text-decoration: underline;
 }
 p.intertitre {
 	color: #27999c;
 	margin-bottom: 1.3em;
 	/*text-transform: uppercase;*/
+}
+p.soustitre {
+	margin-bottom: 1.3rem;
 }
 
 
@@ -872,8 +935,17 @@ path.commune {
 path.toutes-communes {
 	cursor: pointer;
 	pointer-events: all;
+	fill: transparent;
+	stroke: rgba(255,255,255,1);
 	/*fill: #ebe9e9;*/
+	/*fill: #0a0203;*/
+}
+path.toutes-communes.active {
 	fill: #0a0203;
+}
+path.toutes-communes:hover {
+	/*fill: #27999c;*/
+	stroke: #27999c;
 }
 path.total {
 	fill: #0a0203;
@@ -992,4 +1064,20 @@ rect.ground {
 }
 .transparent {
 	background: transparent !important;
+}
+
+div.source-link {
+	margin-bottom: 3.9rem;
+	font-size: 1rem;
+}
+div.source-link a {
+	color: #fff;
+}
+div.logos {
+	font-size: 0;
+}
+div.logos img {
+	display: inline-block;
+	vertical-align: top;
+	margin: 1.3rem 2.5%;
 }
