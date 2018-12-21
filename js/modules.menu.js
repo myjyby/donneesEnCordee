@@ -4,10 +4,50 @@ Menu.init = function (_data) {
 
 	const title = body.addElem('div', 'title')
 		
-	title.addElem('h1', 'title-block').html('Données&mdash;en&mdash;cordée').fitText()
+	// title.addElem('h1', 'title-block').html('Données&mdash;en&mdash;cordée').fitText()
+	title.addElems('p', 'instruction')
+		.html('Le paysage actuel est généré aléatoirement. Sélectionnez un ou plusieurs indicateurs dans les listes déroulantes ci-dessous pour peindre un nouveau paysage social.')
 	// title.addElem('h3', 'title-block').html('Un paysage social du département de l’Isère').fitText()
 
 	const hierarchie = Menu.data(_data)
+
+
+	// THIS SETS UP AN INITIAL SET OF MOUNTAINS
+	const hierarchieflat = hierarchie.map(function (d) {
+		if (d.values) {
+			return d.values.map(function (c) {
+				if (c.values) {
+					return c.values.map(function (b) {
+						if (b.values) {
+							return b.values.map(function (a) {
+								if (a.values) {
+									return a.values.map(function (z) {
+										if (z.values) return z.values
+										else return z
+									}).flatten()
+								}
+								else return a
+							}).flatten()
+						}
+						else return b
+					}).flatten()
+				}
+				else return c
+			}).flatten()
+		}
+		else return d
+	}).flatten()
+
+	const rand = Math.round(Math.random() * 10)
+	const randRange = d3.range(Math.max(2, rand))
+	randRange.forEach(function (d) {
+		const randId = Math.round(Math.random() * d)
+		const deepcopy = JSON.parse(JSON.stringify(hierarchieflat[randId]))
+		hierarchieflat.splice(randId, 1)
+		deepcopy.type = 'value'
+		Mountains.rangeValues.push(deepcopy)
+	})
+
 	
 	const menu = body.addElems('div', 'menu--indicators', [_data])
 	menu.addElems('ul', 'menu-list', hierarchie)
@@ -34,6 +74,8 @@ Menu.init = function (_data) {
 			const deepcopy = JSON.parse(JSON.stringify(d))
 			deepcopy.type = 'value'
 			Mountains.rangeValues.push(deepcopy)
+			// console.log(Mountains.rangeValues)
+
 			// Mountains.rangeValues.push(Object.assign({ type: 'value' }, d)) // CHANGE TYPE HERE ++++++ OBJECT ASSIGN DOES NOT WORK IN IE
 
 			// REDRAW THE MOUNTAINS

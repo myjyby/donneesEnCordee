@@ -12,7 +12,7 @@ Map.init = function (_data) {
 				 'preserveAspectRatio': 'xMinYMid meet' })
 
 	svg.addElems('g', 'carte--communes', [_data])
-		.attr('transform', 'translate(' + [(w * (850 / h) - 850) / 2, -44] + ')') // THE y = -44 IS DEPENDENT ON THE BASE DRAWING
+		.attr('transform', 'translate(' + [(w * (850 / h) - 850) / 2, 0] + ')') // THE y = -44 IS DEPENDENT ON THE BASE DRAWING
 	.addElems('path', 'active outline', function (d) { return d })
 		.each(function (d) { 
 			if (d['commune'] === 'Total') d3.select(this).classed('total', true) 
@@ -27,10 +27,9 @@ Map.init = function (_data) {
 		})
 	.on('mouseover', function (d) { 
 		const sel = d3.select(this)
-		if (d['commune'] !== 'Toutes les communes') {
-			if (d['commune'] !== 'Total') d3.select(this).moveToFront()
-			d3.select(this).style('stroke-width', 850 / h * 2)
-		}
+		if (d['commune'] !== 'Toutes les communes' && d['commune'] !== 'Total') d3.select(this).moveToFront()
+			// d3.select(this).style('stroke-width', 850 / h * 2)
+		d3.select(this).style('stroke-width', 850 / h * 2)
 
 		d3.selectAll('div.sommet, div.label--name')
 			.classed('semi-transparent', false)
@@ -64,11 +63,28 @@ Map.init = function (_data) {
 
 		// IF THE PLACE IS ACTIVE, THEN DEACTIVATE IT
 		if (sel.classed('active')) {
-			Mountains.data.forEach(function (c) { if (c['Commune_court'] === d['commune']) c.display = false })
-			d3.selectAll('div.sommet, div.label--name').classed('semi-transparent', false)
+			if (d['commune'] !== 'Toutes les communes') {
+				Mountains.data.forEach(function (c) { if (c['Commune_court'] === d['commune']) c.display = false })
+				d3.selectAll('div.sommet, div.label--name').classed('semi-transparent', false)
+			}
+			else {
+				Mountains.data.forEach(function (c) { c.display = false })
+				d3.selectAll('div.sommet, div.label--name').classed('semi-transparent', false)
+				sel.findAncestor('carte--communes').selectAll('path.outline')
+					.filter(function () { return this !== sel.node() })
+					.classed('active', false)
+			}
 		}
 		else {
-			Mountains.data.forEach(function (c) { if (c['Commune_court'] === d.commune) c.display = true })
+			if (d['commune'] !== 'Toutes les communes') {
+				Mountains.data.forEach(function (c) { if (c['Commune_court'] === d.commune) c.display = true })
+			}
+			else {
+				Mountains.data.forEach(function (c) { c.display = true })
+				sel.findAncestor('carte--communes').selectAll('path.outline')
+					.filter(function () { return this !== sel.node() })
+					.classed('active', true)
+			}
 		}
 		sel.classed('active', !sel.classed('active'))
 		d3.select('g.label--name text').text(function (c) { return (sel.classed('active') ? 'Masquer' : 'Afficher') + ': ' + c['commune'] })
