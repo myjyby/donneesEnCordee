@@ -30,42 +30,42 @@ const pages = [
 		 	},
 		 	{
 		 		titre: "Répartition de la population par tranches d’âges (2013)",
-		 		valeur_init:"Général_Population_Tranches d’âge_0-2 ans_2013",
+		 		valeur_init:"Général_Population_Tranches d'âge_0-2 ans_2013",
 		 	 	buttons: [ 
 			 	 	{
 			 	 		label: "0 - 2",
-			 	 		value: "Général_Population_Tranches d’âge_0-2 ans_2013",
-			 	 		ticks: "Général_Population_Tranches d’âge_60-79 ans_2013",
+			 	 		value: "Général_Population_Tranches d'âge_0-2 ans_2013",
+			 	 		ticks: "Général_Population_Tranches d'âge_60-79 ans_2013",
 			 	 		echelle_label: "10.000 personnes"
 			 	 	},
 			 	 	{
 			 	 		label: "3 - 5",
-			 	 		value: "Général_Population_Tranches d’âge_3-5 ans_2013",
-			 	 		ticks: "Général_Population_Tranches d’âge_60-79 ans_2013",
+			 	 		value: "Général_Population_Tranches d'âge_3-5 ans_2013",
+			 	 		ticks: "Général_Population_Tranches d'âge_60-79 ans_2013",
 			 	 		echelle_label: "10.000 personnes"
 			 	 	},
 			 	 	{
 			 	 		label: "6 - 11",
-			 	 		value: "Général_Population_Tranches d’âge_6-11 ans_2013",
-			 	 		ticks: "Général_Population_Tranches d’âge_60-79 ans_2013",
+			 	 		value: "Général_Population_Tranches d'âge_6-11 ans_2013",
+			 	 		ticks: "Général_Population_Tranches d'âge_60-79 ans_2013",
 			 	 		echelle_label: "10.000 personnes"
 			 	 	},
 			 	 	{
 			 	 		label: "12 - 15",
-			 	 		value: "Général_Population_Tranches d’âge_12-15 ans_2013",
-			 	 		ticks: "Général_Population_Tranches d’âge_60-79 ans_2013",
+			 	 		value: "Général_Population_Tranches d'âge_12-15 ans_2013",
+			 	 		ticks: "Général_Population_Tranches d'âge_60-79 ans_2013",
 			 	 		echelle_label: "10.000 personnes"
 			 	 	},
 			 	 	{
 			 	 		label: "16 - 19",
-			 	 		value: "Général_Population_Tranches d’âge_16-19 ans_2013",
-			 	 		ticks: "Général_Population_Tranches d’âge_60-79 ans_2013",
+			 	 		value: "Général_Population_Tranches d'âge_16-19 ans_2013",
+			 	 		ticks: "Général_Population_Tranches d'âge_60-79 ans_2013",
 			 	 		echelle_label: "10.000 personnes"
 			 	 	},
 			 	 	{
 			 	 		label: "20 - 24",
-			 	 		value: "Général_Population_Tranches d’âge_20-24 ans_2013",
-			 	 		ticks: "Général_Population_Tranches d’âge_60-79 ans_2013",
+			 	 		value: "Général_Population_Tranches d'âge_20-24 ans_2013",
+			 	 		ticks: "Général_Population_Tranches d'âge_60-79 ans_2013",
 			 	 		echelle_label: "10.000 personnes"
 			 	 	},
 			 	 	{
@@ -76,20 +76,20 @@ const pages = [
 			 	 	},
 			 	 	{
 			 	 		label: "60 - 79",
-			 	 		value: "Général_Population_Tranches d’âge_60-79 ans_2013",
-			 	 		ticks: "Général_Population_Tranches d’âge_60-79 ans_2013",
+			 	 		value: "Général_Population_Tranches d'âge_60-79 ans_2013",
+			 	 		ticks: "Général_Population_Tranches d'âge_60-79 ans_2013",
 			 	 		echelle_label: "10.000 personnes"
 			 	 	},
 			 	 	{
 			 	 		label: "80 - 84",
-			 	 		value: "Général_Population_Tranches d’âge_80-84 ans_2013",
-			 	 		ticks: "Général_Population_Tranches d’âge_60-79 ans_2013",
+			 	 		value: "Général_Population_Tranches d'âge_80-84 ans_2013",
+			 	 		ticks: "Général_Population_Tranches d'âge_60-79 ans_2013",
 			 	 		echelle_label: "10.000 personnes"
 			 	 	},
 			 	 	{
 			 	 		label: "85 et +",
-			 	 		value: "Général_Population_Tranches d’âge_85 ans ou +_2013",
-			 	 		ticks: "Général_Population_Tranches d’âge_60-79 ans_2013",
+			 	 		value: "Général_Population_Tranches d'âge_85 ans ou +_2013",
+			 	 		ticks: "Général_Population_Tranches d'âge_60-79 ans_2013",
 			 	 		echelle_label: "10.000 personnes"
 			 	 	}
 		 	 	],
@@ -249,18 +249,18 @@ const pages = [
 		 	},
 		 	{
 		 		titre:"Nombre d’allocataires APA (2016)",
-		 		valeur_init:"Autonomie_Aides_Alloc. Personnalisée d’Autonomie_Domicile_Année_2016",
+		 		valeur_init:"Autonomie_Aides_Alloc. Personnalisée d'Autonomie_Domicile_Année_2016",
 		 	 	buttons:[
 		 	 		{
 			 	 		label: "À Domicile",
-			 	 		value: "Autonomie_Aides_Alloc. Personnalisée d’Autonomie_Domicile_Année_2016",
-			 	 		ticks: "Autonomie_Aides_Alloc. Personnalisée d’Autonomie_Domicile_Année_2016",
+			 	 		value: "Autonomie_Aides_Alloc. Personnalisée d'Autonomie_Domicile_Année_2016",
+			 	 		ticks: "Autonomie_Aides_Alloc. Personnalisée d'Autonomie_Domicile_Année_2016",
 			 	 		echelle_label:""
 			 	 	},
 			 	 	{
 			 	 		label: "En Établissement",
-			 	 		value: "Autonomie_Aides_Alloc. Personnalisée d’Autonomie_Établissement_Année_2016",
-			 	 		ticks: "Autonomie_Aides_Alloc. Personnalisée d’Autonomie_Domicile_Année_2016",
+			 	 		value: "Autonomie_Aides_Alloc. Personnalisée d'Autonomie_Établissement_Année_2016",
+			 	 		ticks: "Autonomie_Aides_Alloc. Personnalisée d'Autonomie_Domicile_Année_2016",
 			 	 		echelle_label:""
 			 	 	},
 			 	 ],
@@ -368,30 +368,30 @@ const pages = [
 		charts: [
 		 	{	
 		 		titre:"Nombre de résidences principales",
-		 		valeur_init:"Insertion_Résidences_Principales",
+		 		valeur_init:"Général_Résidences_Principales",
 		 	 	buttons:[
 		 	 		{
 		 	 			label: "Total",
-			 	 		value: "Insertion_Résidences_Principales",
-			 	 		ticks: "Insertion_Résidences_Principales",
+			 	 		value: "Général_Résidences_Principales",
+			 	 		ticks: "Général_Résidences_Principales",
 			 	 		echelle_label:""
 		 	 		},
 		 	 		{
 		 	 			label: "Propriétaires",
-			 	 		value: "Insertion_Résidences_Types_propriétaires",
-			 	 		ticks: "Insertion_Résidences_Principales",
+			 	 		value: "Général_Résidences_Types_propriétaires",
+			 	 		ticks: "Général_Résidences_Principales",
 			 	 		echelle_label:""
 		 	 		},
 		 	 		{
 		 	 			label: "Locataires",
-			 	 		value: "Insertion_Résidences_Types_locataires",
-			 	 		ticks: "Insertion_Résidences_Principales",
+			 	 		value: "Général_Résidences_Types_locataires",
+			 	 		ticks: "Général_Résidences_Principales",
 			 	 		echelle_label:""
 		 	 		},
 		 	 		{
 		 	 			label: "Locataires du parc public",
-			 	 		value: "Insertion_Résidences_Types_locataires du parc public",
-			 	 		ticks: "Insertion_Résidences_Principales",
+			 	 		value: "Général_Résidences_Types_locataires du parc public",
+			 	 		ticks: "Général_Résidences_Principales",
 			 	 		echelle_label:""
 		 	 		},
 
@@ -603,42 +603,42 @@ const pages = [
 		charts: [
 			{
 				titre:"Nombre de demandeurs d’emploi (2015)",
-		 		valeur_init:"Insertion_Demandeurs d’emploi_Total_2015",
+		 		valeur_init:"Insertion_Demandeurs d'emploi_Total_2015",
 		 	 	buttons:[
 		 	 		{
 		 	 			label: "Total",
-			 	 		value: "Insertion_Demandeurs d’emploi_Total_2015",
-			 	 		ticks: "Insertion_Demandeurs d’emploi_Total_2015",
+			 	 		value: "Insertion_Demandeurs d'emploi_Total_2015",
+			 	 		ticks: "Insertion_Demandeurs d'emploi_Total_2015",
 			 	 		echelle_label:""
 		 	 		},
 		 	 		{
 		 	 			label: "- 25 ans",
-			 	 		value: "Insertion_Demandeurs d’emploi_Types_Age_< 25 ans",
-			 	 		ticks: "Insertion_Demandeurs d’emploi_Total_2015",
+			 	 		value: "Insertion_Demandeurs d'emploi_Types_Age_< 25 ans",
+			 	 		ticks: "Insertion_Demandeurs d'emploi_Total_2015",
 			 	 		echelle_label:""
 		 	 		},
 		 	 		{
 		 	 			label: "+ 50 ans",
-			 	 		value: "Insertion_Demandeurs d’emploi_Types_Age_> 50 ans",
-			 	 		ticks: "Insertion_Demandeurs d’emploi_Total_2015",
+			 	 		value: "Insertion_Demandeurs d'emploi_Types_Age_> 50 ans",
+			 	 		ticks: "Insertion_Demandeurs d'emploi_Total_2015",
 			 	 		echelle_label:""
 		 	 		},
 		 	 		{
 		 	 			label: "Très longue durée",
-			 	 		value: "Insertion_Demandeurs d’emploi_Types_Très longue durée",
-			 	 		ticks: "Insertion_Demandeurs d’emploi_Total_2015",
+			 	 		value: "Insertion_Demandeurs d'emploi_Types_Très longue durée",
+			 	 		ticks: "Insertion_Demandeurs d'emploi_Total_2015",
 			 	 		echelle_label:""
 		 	 		},
 		 	 		{
 		 	 			label: "Femmes",
-			 	 		value: "Insertion_Demandeurs d’emploi_Types_Sexe_homme",
-			 	 		ticks: "Insertion_Demandeurs d’emploi_Total_2015",
+			 	 		value: "Insertion_Demandeurs d'emploi_Types_Sexe_homme",
+			 	 		ticks: "Insertion_Demandeurs d'emploi_Total_2015",
 			 	 		echelle_label:""
 		 	 		},
 		 	 		{
 		 	 			label: "Hommes",
-			 	 		value: "Insertion_Demandeurs d’emploi_Types_Sexe_femme",
-			 	 		ticks: "Insertion_Demandeurs d’emploi_Total_2015",
+			 	 		value: "Insertion_Demandeurs d'emploi_Types_Sexe_femme",
+			 	 		ticks: "Insertion_Demandeurs d'emploi_Total_2015",
 			 	 		echelle_label:""
 		 	 		},
 		 	 	],
