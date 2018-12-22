@@ -234,6 +234,8 @@ const drawChart = function (_svg, _chart, _data, _indicateur) {
 
 	y.domain([0, d3.max(_data, function (d) { return +d[_indicateur] })])
 
+	console.log(y.domain(), _data, _indicateur)
+
 	let bars = _chart.selectAll(".bar")
 		.data(_data, function (d) { return d.Commune_court })
 
