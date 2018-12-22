@@ -130,7 +130,7 @@ const pages = [
          					"<p class='lead'>Similaire au FAJ, mais pouvant être versé immédiatement.</p>"
 				},
 				{
-					soustitre:"Les aides à l’insertion",
+					soustitre:"Les—aides—à—l’insertion",
 					contenu:"<p class='lead intertitre'> Le Revenu de Solidarité Active (RSA) </p>" + 
 							"<p class='lead'>Il s'agit d’une allocation qui vise à remplacer les deux minimas sociaux existants (RMI et API), à se substituer à des dispositifs d’intéressement de retour à l’emploi comme la prime de retour à l’emploi (PRE) et la prime pour l’emploi (PPE). Son montant dépend de la composition et des revenus du ménage. Il se décline en trois types : RSA Socle, RSA Socle Activité, et RSA Activité. Ici, les données présentent une aggrégation de ces trois types.</p>" +
          					"<p class='lead soustitre'><u>RSA Activité</u></p>"+
@@ -142,7 +142,7 @@ const pages = [
          					"<p class='lead intertitre'> Le Fonds de Solidaité Logement (FSL)</p><p class='lead'>Aide financière qui vise à aider les personnes rencontrant des difficultés financières pour accéder au logement ou s’y maintenir. Le FSL permet par exemple de prendre en charge le dépôt de garantie lors de l’arrivée dans un logement ou le paiement de factures (électricité, gaz, eau, …) afin de faciliter le maintien.</p>"
 				},
 				{
-					soustitre:"Les aides à l’autonomie",
+					soustitre:"Les—aides—à—l’autonomie",
 					contenu:"<p class='lead intertitre'> L’Allocation Personnalisée d’Autonomie (APA) </p>" + 
 					    	"<p class='lead'> L’APA est une allocation attribuée aux personnes âgées d’au moins 60 ans qui se trouvent en situation de perte d’autonomie, nécessitant une aide pour l’accomplissement des actes de la vie courante. Elle concerne à la fois les personnes âgées résidant à domicile et celles demeurant en établissement.</p>" +
 					    	"<p class='lead soustitre'><u>Les Groupes Iso-Ressources (GIR)</u></p>"+
@@ -447,7 +447,7 @@ const pages = [
 		titre: "Les—établissements—scolaires",
 	 	span:[
 	 		{	
-	 			soustitre:"Types d’établissement",
+	 			soustitre:"Types—d’établissement",
 	 			contenu:"<p class='lead'>Sont recensés ici tous les établissements scolaires, qu’ils soient publics ou privés.</p>"+
 	 				"<p class='lead intertitre'>Les écoles du 1er degré</p>"+
          			"<p class='lead soustitre'><u>Les écoles maternelles</u></p>"+
