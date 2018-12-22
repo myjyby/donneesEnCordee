@@ -317,6 +317,15 @@ div.main-title {
 	line-height: 1.5em;
 	text-transform: uppercase;
 }
+div.sub-title {
+	font-weight: 400;
+	/*letter-spacing: .5rem;*/
+	color: #fff;
+	font-size: 1.5rem;
+	line-height: 1.5em;
+	margin-bottom: 2.6rem;
+	margin-top: 1.3rem;
+}
 div.main-subtitle {
 	/*font-family: 'Work Sans', sans-serif;*/
 	font-weight: 200;
