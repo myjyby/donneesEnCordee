@@ -373,10 +373,11 @@ a.lead {
 	font-weight: 200;
 	text-align: left;
 	margin-bottom: 2.6em;
-	/*text-decoration: none;*/
+	text-decoration: none;
 	/*margin-bottom: 3rem;*/
 }
-a.lead {
+a.white {
+	color: #fff;
 	text-decoration: underline;
 }
 li a.lead {
