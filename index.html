@@ -7,8 +7,8 @@
 
 	<script type='text/javascript' src='https://d3js.org/d3.v4.min.js'></script>
 	<script type='text/javascript' src='https://d3js.org/d3-selection-multi.v1.min.js'></script>
-	<script type='text/javascript' src='https://unpkg.com/topojson@3'></script>
-	<script type='text/javascript' src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+	<!-- <script type='text/javascript' src='https://unpkg.com/topojson@3'></script> -->
+	<!-- <script type='text/javascript' src='https://npmcdn.com/@turf/turf/turf.min.js'></script> -->
 	<!-- <script type='text/javascript' src='./libs/d3.min.js'></script>
 	<script type='text/javascript' src='./libs/d3-selection-multi.min.js'></script>
 	<script type='text/javascript' src='./libs/topojson.min.js'></script>
@@ -51,7 +51,7 @@
 			<!-- <p class='lead'>Véritable collectivité de proximité, <b>le Département de l’Isère </b>est un acteur clé de l’aménagement du territoire, de la protection et de l’accompagnement des populations à tous les âges de la vie. Chef de file de la solidarité, il est le garant d’une équité territoriale et sociale à l’échelle de l’Isère. Dans ce cadre, il s’est doté d’un observatoire sociodémographique qui produit annuellement des données fiabilisées, expertisées et consolidées. Réunies à l’intérieur d’un document unique d’observation, ces éléments permettent d’améliorer la connaissance du territoire et de ses habitants. Ce « Portrait Social de l’Isère en chiffres » est un véritable outil d’aide à la décision qui permet de caractériser les spécificités et dynamiques territoriales.Existant sous la forme « figée » d’un tableur, il est revisité sur ce site en un outil de data-visualisation qui doit permettre aux citoyens d’appréhender de manière ludique et facile les enjeux sociaux et démographiques des territoires isérois. En illustrant la diversité des réalités territoriales, cet outil doit permettre au citoyen de créer son propre diagnostic « éclairé » en allant parfois à l’encontre des images et idées reçues qui collent à certains territoires. Organisé autour de 4 grandes thématiques (population, économie et emploi, vie sociale, solidarités) cette publication observe une 400ène de zonages différents allant des communes aux EPCI en passant par les territoires départementaux. Existant sous la forme « figée » d’un tableur, il est revisité sur ce site en un outil de data visualisation qui doit permettre aux citoyens d’appréhender de manière ludique et facile les enjeux sociaux et démographiques des territoires isérois. En illustrant la diversité des réalités territoriales, cet outil doit permettre au citoyen de créer son propre diagnostic « éclairé » en allant parfois à l’encontre des images et idées reçues qui collent à certains territoires.</p> -->
 
 			<!-- <p class='lead'>Données en cordée est un démonstrateur réalisé par Pauline Gourlet et Jeremy Boy dans le cadre du projet Open City. Il propose à chacun de peindre un paysage singulier des données publiques du département de l’Isère à l’aide d’un outil de visualisation graphique et ludique. Ce projet s’inscrit dans la stratégie d’ouverture des données du département.</p> -->
-			<p class='lead'>Le projet Données en cordée s’inscrit dans une volonté d’ouverture et de partage des données publiques du département de l’Isère. Ce site, réalisé par Pauline Gourlet et Jeremy Boy, propose un outil d’exploration des spécificités et des dynamiques territoriales. Sous la forme d’un paysage de montagne, il rend visibles et manipulables les données du « Portrait social de l’Isère en chiffres », développé par l’observatoire sociodémographique du département.</p>
+			<p class='lead'>Le projet Données en cordée s’inscrit dans une volonté d’ouverture et de partage des données publiques du département de l’Isère. Ce site propose un outil d’exploration des spécificités et des dynamiques territoriales. Sous la forme d’un paysage de montagne, il rend visibles et manipulables les données du « Portrait social de l’Isère en chiffres », développé par l’observatoire sociodémographique du département.</p>
 			 <!-- — jeu de données téléchargeable ici.</p> -->
 
 			<p class='lead intertitre'>Déclinaison de la métaphore du paysage de montagne.</p>
@@ -91,6 +91,16 @@
 					</div>
 				</div>
 			</div>
+
+
+			
+			<div class='download large flex--col'>
+				<a href="./data/src/donnees.zip" download>
+					<button class='download'>Télécharger les données</button>
+				</a>
+			</div>
+
+
 		</div>
 	</div>
 
@@ -202,7 +212,7 @@
 					 'x2': '0%',
 					 'y2': '100%',
 					 'spreadMethod': 'pad' })
-		gradient.addElems('stop', 'gradient-stop', [{ offset: '0%', color: 'rgba(10,2,3,1)', opacity: .75 }, { offset: '50%', color: 'rgba(136,129,127,.75)', opacity: .75 }, { offset: '100%', color: 'rgba(235,233,233,1)', opacity: 1 }])
+		gradient.addElems('stop', 'gradient-stop', [{ offset: '0%', color: 'rgba(203,171,84,1)', opacity: .5 }, { offset: '100%', color: 'rgba(10,0,41,1)', opacity: .75 }])
 			.attrs({ 'offset': function (d) { return d.offset },
 					 'stop-color': function (d) { return d.color },
 					 'stop-opacity': function (d) { return d.opacity } })
@@ -214,7 +224,7 @@
 					 'x2': '0%',
 					 'y2': '100%',
 					 'spreadMethod': 'pad' })
-		inverted_gradient.addElems('stop', 'gradient-stop', [{ offset: '0%', color: 'rgba(235,233,233,1)', opacity: 1 }, { offset: '50%', color: 'rgba(136,129,127,.75)', opacity: .75 }, { offset: '100%', color: 'rgba(10,2,3,1)', opacity: .75 }])
+		inverted_gradient.addElems('stop', 'gradient-stop', [{ offset: '0%', color: 'rgba(235,233,233,1)', opacity: 1 }, { offset: '100%', color: 'rgba(10,0,41,1)', opacity: .75 }])
 			.attrs({ 'offset': function (d) { return d.offset },
 					 'stop-color': function (d) { return d.color },
 					 'stop-opacity': function (d) { return d.opacity } })
@@ -226,7 +236,7 @@
 					 'x2': '0%',
 					 'y2': '100%',
 					 'spreadMethod': 'pad' })
-		logo_gradient.addElems('stop', 'gradient-stop', [{ offset: '0%', color: 'rgba(10,2,3,0)', opacity: 1 }, { offset: '100%', color: 'rgba(10,2,3,1)', opacity: 1 }])
+		logo_gradient.addElems('stop', 'gradient-stop', [{ offset: '0%', color: 'rgba(10,2,3,0)', opacity: 1 }, { offset: '100%', color: 'rgba(10,0,41,1)', opacity: 1 }])
 			.attrs({ 'offset': function (d) { return d.offset },
 					 'stop-color': function (d) { return d.color },
 					 'stop-opacity': function (d) { return d.opacity } })
@@ -237,7 +247,7 @@
 					 'width': 1,
 					 'height': 1 })
 		pattern.addElems('image')
-			.attrs({ 'xlink:href': './imgs/texture-v04-s.png',
+			.attrs({ 'xlink:href': './imgs/texture-v04-c.png',
 					 'x': 0,
 					 'y': 0,
 					 'width': Math.round(1361 / 3),
@@ -258,7 +268,7 @@
 					 'width': 1,
 					 'height': 1 })
 		logo_pattern.addElems('image')
-			.attrs({ 'xlink:href': './imgs/texture-v04-s.png',
+			.attrs({ 'xlink:href': './imgs/texture-v04-c.png',
 					 'x': -Math.round(1361 / 3) * .53,
 					 'y': 0,
 					 'width': Math.round(1361 / 3),
