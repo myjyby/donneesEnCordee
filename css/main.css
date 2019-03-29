@@ -69,7 +69,8 @@
 
 
 body {
-	background-color: #0a0203;
+	/*background-color: #0a0203;*/
+	/*background-color: #0A0029;*/
 }
 body, 
 text {
@@ -79,12 +80,17 @@ a,
 a:link,
 a:hover,
 a:visited {
-	color: #0a0203;
+	color: #0A0029;
+	/*color: #0a0203;*/
 }
 div.slide {
 	min-height: 100vh;
 	width: 100%;
 	/*position: relative;*/
+}
+div.slide.bg-dark {
+	/*background: linear-gradient(#0A0029 0%, #030029 100%);*/
+	background-color: #0A0029;
 }
 div.slide.intro {
 	/*background-image: url('../imgs/dec_logo.svg');*/
@@ -166,7 +172,8 @@ div.montagnes-logo {
 	/*position: relative;*/
 }
 div.sticky-content {
-	background-color: #0a0203;
+	/*background-color: #0a0203;*/
+	background-color: #0A0029;
 	margin-bottom: 5vh;
 }
 div.sticky-content.stick {
@@ -213,7 +220,7 @@ div.montagnes-logo div.logo-sommet-1 {
 	height: 50%;
 	/*margin-top: 50%;*/
 	/*background-color: pink;*/
-	background-image: url('../imgs/texture-v03-s.png');
+	background-image: url('../imgs/texture-v03-c.png');
 	clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
 	-webkit-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
 	-moz-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
@@ -227,7 +234,7 @@ div.montagnes-logo div.logo-sommet-2 {
 	height: 100%;
 	/*margin-top: 50%;*/
 	/*background-color: pink;*/
-	background-image: url('../imgs/texture-v03-s.png');
+	background-image: url('../imgs/texture-v03-c.png');
 	background-position: center top;
 	clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
 	-webkit-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
@@ -243,7 +250,7 @@ div.montagnes-logo div.logo-sommet-3 {
 	height: 66%;
 	/*margin-top: 50%;*/
 	/*background-color: pink;*/
-	background-image: url('../imgs/texture-v03-s.png');
+	background-image: url('../imgs/texture-v03-c.png');
 	clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
 	-webkit-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
 	-moz-clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
@@ -257,11 +264,12 @@ div.montagnes-logo div.sommet--logo:not(.transparent)::after {
 	content: '';
 	width: 100%;
 	height: 100%;
-	background: linear-gradient(rgba(10,2,3,0) 0%, rgba(10,2,3,1) 100%);
-	/*background: linear-gradient(rgba(10,2,3,1) 0%, rgba(136,129,127,.75) 50%, rgba(255,255,255,1) 100%);*/
+	/*background: linear-gradient(rgba(203,171,84,1) 0%, rgba(10,0,41,1) 100%);*/
+	background: linear-gradient(rgba(203,171,84,.25) 0%, rgba(10,0,41,.75) 75%);
 	position: absolute;
 	left: 0;
 	top: 1px;
+	/*mix-blend-mode: screen;*/
 }
 div.logo-separator {
 	width: 60%;
@@ -275,7 +283,9 @@ div.node--logo {
 	width: 20px;
 	height: 20px;
 	border-radius: 50%;
-	background-color: #fff;
+	/*background-color: #fff;*/
+	background-color: #0A0029;
+	border: 1px solid rgba(255,255,255,.5);
 	position: absolute;
 	top: -10px;
 	cursor: pointer;
@@ -363,12 +373,15 @@ a.lead {
 	font-weight: 200;
 	text-align: left;
 	margin-bottom: 2.6em;
-	text-decoration: none;
+	/*text-decoration: none;*/
 	/*margin-bottom: 3rem;*/
+}
+a.lead {
+	text-decoration: underline;
 }
 li a.lead {
 	font-size: 1rem;
-	font-weight: bold;
+	/*font-weight: bold;*/
 	/*letter-spacing: .05rem;*/
 }
 li.active a.lead {
@@ -387,8 +400,11 @@ p.soustitre {
 div.legende {
 	width: 100%;
 	/*margin-top: 1.3rem;*/
-	margin-bottom: 25vh;
+	/*margin-bottom: 50vh;*/
 	/*height: 75%;*/
+}
+div.legende p.small {
+	margin-bottom: 7.8em;
 }
 div.ligne-1, 
 div.ligne-2 {
@@ -420,7 +436,7 @@ div.sommet--legende {
 	/*background-color: #ebe9e9;*/
 	/*background-color: rgba(136,129,127,1);*/
 	background: linear-gradient(rgba(235,233,233,1) 0%, rgba(136,129,127,0) 100%);
-	/*background: linear-gradient(rgba(255,255,255,1) 0%, rgba(235,233,233,1) 100%);*/
+	/*background: linear-gradient(rgba(203,171,84,1) 0%, rgba(10,0,41,1) 100%);*/
 	/*background-image: url('../imgs/texture-v02-s.png');*/
 	position: relative;
 	/*margin-right: 1rem;*/
@@ -523,6 +539,40 @@ div.sommet--legende {
 	transform: scale(0);
 	animation: scale-in .5s .5s ease forwards;
 }
+
+div.download.large {
+	height: 50vh;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 10vh;
+}
+button.download {
+	padding: 1rem;
+	background-color: transparent;
+	border: 1px solid #27999c;
+	/*color: #fff;*/
+	border-radius: 1rem;
+	font-size: 1rem;
+	font-weight: 400;
+	cursor: pointer !important;
+	transition: background-color .25s;
+	-webkit-transition: background-color .25s, color .25s;
+	-moz-transition: background-color .25s, color .25s;
+	-o-transition: background-color .25s, color .25s;
+	-ms-transition: background-color .25s, color .25s;
+	outline: none;
+	color: #27999c;
+	text-decoration: none;
+	/*-webkit-transition: color .25s;
+	-moz-transition: color .25s;
+	-o-transition: color .25s;
+	-ms-transition: color .25s;*/
+}
+button.download:hover {
+	background-color: #27999c;
+	color: #fff;
+}
+
 .s-group {
 	position: relative;
 }
@@ -574,13 +624,17 @@ div.slide.vis div.header {
 	height: 3rem;
 	text-align: center;
 }
+/*div.slide.vis div.header div.label {
+	display: inline-block;
+}*/
 div.slide.vis div.header div.btn {
 	line-height: 3rem;
 	font-size: 1rem;
 	display: inline-block;
 	height: calc(3rem - 2px);
 	min-width: 6rem;
-	color: #0a0203;
+	color: #0A0029;
+	/*color: #0a0203;*/
 	cursor: pointer;
 	transition: background-color .1s;
 	-webkit-transition: background-color .1s;
@@ -588,10 +642,25 @@ div.slide.vis div.header div.btn {
 	-o-transition: background-color .1s;
 	-ms-transition: background-color .1s;
 	margin: 0;
+	position: relative;
 }
 div.slide.vis div.header div.btn.active {
-	background-color: #0a0203;
+	/*background-color: #0a0203;*/
+	background-color: #0A0029;
 	color: #fff;
+}
+div.slide.vis div.header div.btn:first-child::before {
+	/*content: 'Peindre le paysage sur une échelle :';*/
+	content: 'Modifiez l’échelle :';
+	/*content: 'Afficher les données sur une échelle :';*/
+	text-align: right;
+	background-color: transparent !important;
+	position: absolute;
+	right: 100%;
+	min-width: 33vw;
+	margin-right: 1.3rem;
+	font-size: .75rem;
+	color: #0A0029;
 }
 h1 {
 	font-weight: 900;
@@ -635,10 +704,23 @@ div.slide.vis div.content div.menu--vis {
 	margin-top: -1rem;
 }
 div.slide.vis div.content div.menu--vis div.title {
-	color: #0a0203;
+	color: #0A0029;
+	/*color: #0a0203;*/
 	width: 100%;
 	margin-bottom: 1.75rem;
 }
+div.slide.vis div.content div.menu--vis div.title h1 {
+	font-size: 1rem;
+	margin: 1.5rem 0 1rem 1rem;
+	/*color: #27999c;*/
+	/*font-weight: 400;*/
+	/*text-align: left;*/
+}
+div.slide.vis div.content div.menu--vis div.foot {
+	color: #0A0029;
+	margin-top: 1.25rem;
+}
+
 div.slide.vis div.content div.menu--vis div.menu--indicators {
 	position: relative;
 	/*top: 7.25rem;*/
@@ -651,7 +733,8 @@ div.slide.vis div.content div.menu--vis div.menu--indicators a {
 	padding-left: 1rem;
 }
 div.slide.vis div.content div.menu--vis div.menu--indicators ul.menu-list {
-	border-top: 5px solid #0a0203;
+	border-top: 5px solid #0A0029;
+	/*border-top: 5px solid #0a0203;*/
 	overflow: auto;
 	padding: 1rem 1rem;
 	background-color: #fff;
@@ -674,7 +757,8 @@ li.list-item.node::before {
 	width: 0;
 	height: 0;
 	border-top: .25rem solid transparent;
-	border-left: .5rem solid #0a0203;
+	border-left: .5rem solid #0A0029;
+	/*border-left: .5rem solid #0a0203;*/
 	border-bottom: .25rem solid transparent;
 	margin-left: -1.5rem;
 	margin-top: .5rem;
@@ -716,7 +800,8 @@ span.leaf u:hover {
 	width: 0;
 	height: 0;
 	border-top: .25rem solid transparent;
-	border-left: .5rem solid #0a0203;
+	border-left: .5rem solid #0A0029;
+	/*border-left: .5rem solid #0a0203;*/
 	border-bottom: .25rem solid transparent;
 	margin-left: -1.5rem;
 	margin-top: .5rem;
@@ -756,7 +841,8 @@ div.cordee--vis div.raisonnement {
 	height: 50%;
 	top: 25%;
 	width: 75%;
-	border-top: 1px solid rgba(10,2,3,.33);
+	/*border-top: 1px solid rgba(10,2,3,.33);*/
+	border-top: 1px solid rgba(10,0,41,.33);
 }
 div.raisonnement div.node {
 	min-width: 10px;
@@ -782,7 +868,8 @@ div.raisonnement div.node div.circle {
 	-moz-border-radius: 50%;
 	-o-border-radius: 50%;
 	-ms-border-radius: 50%;
-	background-color: #0a0203;
+	/*background-color: #0a0203;*/
+	background-color: #0A0029;
 	transition: transform .25s ease;
 	position: absolute;
 	z-index: 1000;
@@ -795,8 +882,10 @@ div.raisonnement div.node::after {
 	/*background-color: #0a0203;*/
 	/*color: #fff;*/
 	background-color: #ebe9e9;
-	border-bottom: 1px solid #0a0203;
-	color: #0a0203;
+	border-bottom: 1px solid #0A0029;
+	/*border-bottom: 1px solid #0a0203;*/
+	color: #0A0029;
+	/*color: #0a0203;*/
 
 	font-size: .75rem;
 	padding: .25rem .5rem;
@@ -870,7 +959,8 @@ div.raisonnement div.node.division::before {
 div.operations {
 	position: absolute;
 	/*top: -5rem;*/
-	border-left: 1px solid #0a0203;
+	border-left: 1px solid #0A0029;
+	/*border-left: 1px solid #0a0203;*/
 	left: 50%;
 	background-color: #ebe9e9;
 	pointer-events: all;
@@ -887,6 +977,17 @@ div.operation-option {
 	padding: .25rem .5rem .25rem 1.75rem;
 	margin-left: -1.25rem;
 	cursor: pointer !important;
+}
+div.null-operation {
+	/*font-size: 1rem;*/
+	min-width: 6rem;
+	/*line-height: 1.5rem;*/
+	/*text-align: center;*/
+	height: 1.25rem;
+	font-size: .75rem;
+	padding: .25rem .5rem .25rem 1.75rem;
+	margin-left: -1.25rem;
+	cursor: default !important;
 }
 div.operation-option:hover {
 	text-decoration: underline;
@@ -928,7 +1029,8 @@ div.menu--vis div.carte svg {
 	/*margin-top: 1rem;*/
 }
 path.commune.active {
-	fill: #0a0203;
+	fill: #0A0029;
+	/*fill: #0a0203;*/
 	stroke: #fff;
 	cursor: pointer;
 }
@@ -937,7 +1039,9 @@ path.commune:hover {
 }
 path.commune {
 	fill: #ebe9e9;
-	stroke: rgba(255,255,255,1);
+	/*stroke: rgba(255,255,255,1);*/
+	stroke: #fff;
+	/*stroke: #cbab54;*/
 	cursor: pointer;
 	pointer-events: all;
 }
@@ -945,30 +1049,42 @@ path.toutes-communes {
 	cursor: pointer;
 	pointer-events: all;
 	fill: transparent;
-	stroke: rgba(255,255,255,1);
-	/*fill: #ebe9e9;*/
+	/*stroke: rgba(255,255,255,1);*/
+	stroke: #ebc55e;
+	/*stroke: #cbab54;*/
+	fill: #fff;
 	/*fill: #0a0203;*/
 }
 path.toutes-communes.active {
-	fill: #0a0203;
+	fill: #0A0029;
+	stroke: none;
+	/*fill: #0a0203;*/
 }
 path.toutes-communes:hover {
 	/*fill: #27999c;*/
 	stroke: #27999c;
 }
 path.total {
-	fill: #0a0203;
 	fill-opacity: 0;
 	stroke: #27999c;
+	cursor: pointer;
+	pointer-events: all;
+}
+path.total.active {
+	fill: #ebc55e;
+	/*fill: #cbab54; THIS IS THE BASE BRONZE-GOLD*/ 
+	/*fill: #0a0203;*/
+	fill-opacity: .75;
+	stroke: none;
+	/*stroke: #27999c;*/
 
 	/*#ffa355*/
 	/*stroke-width: 3;*/
-	cursor: pointer;
-	pointer-events: all;
 }
 path.total:hover {
 	/*fill: #27999c;*/
 	/*stroke: #0a0203;*/
+	stroke: #27999c;
 }
 
 
@@ -1055,7 +1171,8 @@ g.btn path.bg.active {
 
 text.btn--label {
 	text-anchor: middle;
-	fill: #0a0203;
+	fill: #0A0029;
+	/*fill: #0a0203;*/
 	pointer-events: none;
 }
 
@@ -1069,7 +1186,8 @@ rect.bg--transparent {
 }
 
 rect.ground {
-	fill: #0a0203;
+	fill: #0A0029;
+	/*fill: #0a0203;*/
 }
 .transparent {
 	background: transparent !important;
@@ -1089,4 +1207,15 @@ div.logos img {
 	display: inline-block;
 	vertical-align: top;
 	margin: 1.3rem 2.5%;
+}
+
+
+div.left-col.indicateurs {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+div.left-col.indicateurs button.download {
+	margin-top: 1.5rem;
+	/*align-self: flex-start;*/
 }

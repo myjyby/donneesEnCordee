@@ -1,9 +1,12 @@
+
 p.instruction {
 	font-size: .75rem;
 	/*text-align: center;*/
 	/*max-width: 200px;*/
 	margin: 0 0 0 1rem;
 }
+
+
 .montagnes {
 	height: 100%;
 	width: 100%;
@@ -28,7 +31,8 @@ p.instruction {
 	right: 0;
 	/*top: 100%;*/
 	/*width: 100%;*/
-	background-color: #0a0203;
+	background-color: #0A0029;
+	/*background-color: #0a0203;*/
 	color: #fff;
 	font-size: .75rem;
 	padding: .25rem .5rem;
@@ -50,7 +54,8 @@ g.label--name text {
 	fill: #fff;
 }
 g.label--name rect.bg {
-	fill: #0a0203;
+	fill: #0A0029;
+	/*fill: #0a0203;*/
 	/*stroke: #fff;*/
 }
 
@@ -146,7 +151,8 @@ g.label--name rect.bg {
 .massif .tooltip {
 	position: absolute;
 	/*top: 0;*/
-	background-color: #0a0203;
+	background-color: #0A0029;
+	/*background-color: #0a0203;*/
 	color: #fff;
 	font-size: .75rem;
 	padding: .25rem .5rem;
@@ -167,7 +173,8 @@ g.label--name rect.bg {
 	height: calc(100% + 1em + 1px);
 	width: 1px;
 	display: block;
-	background-color: #0a0203;
+	background-color: #0A0029;
+	/*background-color: #0a0203;*/
 }
 .sommet-contour {
 	height: 100%;
@@ -319,17 +326,18 @@ g.label--name rect.bg {
 	
 	/*background: linear-gradient(rgba(235,233,233,0) 0%, rgba(235,233,233,1) 100%);*/
 	/*background: linear-gradient(rgba(10,2,3,1) 0%, rgba(136,129,127,.75) 50%, rgba(255,255,255,1) 100%);*/
-	background: linear-gradient(rgba(10,2,3,1) 0%, rgba(136,129,127,.75) 50%, rgba(235,233,233,1) 100%);
+	/*background: linear-gradient(rgba(10,2,3,1) 0%, rgba(136,129,127,.75) 50%, rgba(235,233,233,1) 100%);*/
+	background: linear-gradient(rgba(203,171,84,.75) 0%, rgba(10,0,41,1) 100%);
 	
 	/*background: linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);*/
 	
 	/*mix-blend-mode: screen;*/
-	mix-blend-mode: difference;
+	mix-blend-mode: screen;
 }
 
 
 .sommet svg.shape polygon {
-	/*fill: url('data:image/svg+xml:utf8,<svg xmlns="http://www.w3.org/2000/svg"><image xlink:href="../imgs/texture-v04-s.png" x="0" y="0" width="453" height="247"></image></svg>');*/
+	/*fill: url('data:image/svg+xml:utf8,<svg xmlns="http://www.w3.org/2000/svg"><image xlink:href="../imgs/texture-v04-c.png" x="0" y="0" width="453" height="247"></image></svg>');*/
 	fill: url('#bg-img');
 }
 
@@ -344,7 +352,8 @@ g.label--name rect.bg {
 	/*background: linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);*/
 }
 .massif .sommet .shape:nth-child(even)::after {
-	background: linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);
+	/*background: linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);*/
+	background: linear-gradient(rgba(203,171,84,1) 0%, rgba(10,0,41,1) 100%);
 }
 
 
@@ -384,17 +393,18 @@ svg.trend-ref path.trend,
 	/*background: radial-gradient(circle farthest-side at top, rgba(10,2,3,1) 0%, rgba(235,233,233,1) 100%);*/
 	/*background: linear-gradient(rgba(10,2,3,1) 0%, rgba(136,129,127,.75) 50%, rgba(235,233,233,.75) 100%);*/
 	
-	background: linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);
+	/*background: linear-gradient(rgba(255,255,255,1) 0%, rgba(136,129,127,.75) 50%, rgba(10,2,3,1) 100%);*/
+	background: linear-gradient(rgba(203,171,84,1) 0%, rgba(10,0,41,1) 100%);
 	
 	mix-blend-mode: difference;
 	/*transition: height .25s ease;*/
 }
 
 .commune:nth-child(odd) .sommet:not(.transparent) .shape {
-	background-image: url('../imgs/texture-v04-s.png');
+	background-image: url('../imgs/texture-v04-c.png');
 }
 .commune:nth-child(even) .sommet:not(.transparent) .shape {
-	background-image: url('../imgs/texture-v04-s.png');
+	background-image: url('../imgs/texture-v04-c.png');
 	background-position: left center;
 }
 .massif:nth-child(odd) .sommet:not(.transparent) .shape {
@@ -426,7 +436,8 @@ svg.trend-ref path.trend,
 }*/
 
 .axis {
-	border-left: 1px solid #0a0203;
+	border-left: 1px solid #0A0029;
+	/*border-left: 1px solid #0a0203;*/
 	min-width: 25px;
 	position: absolute;
 
@@ -451,7 +462,8 @@ svg.trend-ref path.trend,
 	content: '';
 	width: .25rem;
 	height: 1px;
-	background-color: #0a0203;
+	background-color: #0A0029;
+	/*background-color: #0a0203;*/
 	position: absolute;
 	top: 1rem;
 	right: -.5rem;
@@ -459,8 +471,10 @@ svg.trend-ref path.trend,
 .axis .axis--label {
 	/*background-color: #0a0203;*/
 	/*background-color: #ebe9e9;*/
-	color: #0a0203;
-	border-bottom: 1px solid #0a0203;
+	color: #0A0029;
+	/*color: #0a0203;*/
+	border-bottom: 1px solid #0A0029;
+	/*border-bottom: 1px solid #0a0203;*/
 	/*color: #fff;*/
 	font-size: .75rem;
 	padding: .25rem 0;
@@ -476,7 +490,8 @@ svg.trend-ref path.trend,
 
 .label--value {
 	position: absolute;
-	background-color: #0a0203;
+	background-color: #0A0029;
+	/*background-color: #0a0203;*/
 	color: #fff;
 	font-size: .75rem;
 	/*padding: .25rem 0;*/
@@ -492,7 +507,8 @@ svg.trend-ref path.trend,
 	content: '';
 	/*max-height: calc(1.25rem * 2);*/
 	width: 100%;
-	border-left: 1px solid #0a0203;
+	border-left: 1px solid #0A0029;
+	/*border-left: 1px solid #0a0203;*/
 	position: absolute;
 	left: 0;
 	top: 0;
