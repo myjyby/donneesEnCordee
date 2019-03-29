@@ -81,6 +81,8 @@ Mountains.init = function (_data) {
 			const bValues = d3.sum(values, function (d) { return !normalize ? _d[d.path] : _d[d.path] / _d[normalizingCol] })
 			const bSums = d3.sum(sums.map(function (d) { return d3.sum(d.sources, function (c) { return !normalize ? _d[c.path] : _d[c.path] / _d[normalizingCol] }) }))
 			const bDivisions = d3.sum(divisions.map(function (d) {
+				// console.log(_d[d.sources.filter(function (c) { return c.division === 'dividend' })[0]] / _d[d.sources.filter(function (c) { return c.division === 'divisor' })[0]])
+				// console.log(_d, d)
 				const percentage = !normalize ? _d[d.sources.filter(function (c) { return c.division === 'dividend' })[0]] / _d[d.sources.filter(function (c) { return c.division === 'divisor' })[0]]
 					: (_d[d.sources.filter(function (c) { return c.division === 'dividend' })[0]] / _d[d.sources.filter(function (c) { return c.division === 'divisor' })[0]]) / _d[normalizingCol]
 				return percentage || 0
@@ -115,7 +117,8 @@ Mountains.init = function (_data) {
 	const commune = montagnes.addElems('div', 'commune', function (d) { return d.filter(function (c) { return c.display }) }, function (d) { return d['Commune_court'] })
 		.each(function (d, i) {
 			!normalize ? d.originleft ? d.left = d.originleft : d.originleft = d.left = Math.round((Math.random() * .5) * (this.clientWidth || this.offsetWidth)) : d.left = 0
-			d.origin = d.top = Math.round(baseHeight * (Mountains[normalize ? 'normHorizonP' : 'horizonP'] / 100) + i * baseHeight * (Mountains[normalize ? 'normCoverageP' : 'coverageP'] / 100) / Mountains.data.filter(function (d) { return d.display }).length)
+			if (!normalize) d.origin = d.top = Math.round(baseHeight * (Mountains[normalize ? 'normHorizonP' : 'horizonP'] / 100) + i * baseHeight * (Mountains[normalize ? 'normCoverageP' : 'coverageP'] / 100) / Mountains.data.filter(function (d) { return d.display }).length )
+			else d.origin = d.top = Math.round(baseHeight * (Mountains[normalize ? 'normHorizonP' : 'horizonP'] / 100) + (i + 1) * baseHeight * (Mountains[normalize ? 'normCoverageP' : 'coverageP'] / 100) / (Mountains.data.filter(function (d) { return d.display }).length + 1))
 		})
 		.style('z-index', function (d, i) { return d.z = i })
 	.each(Mountains.draw)
@@ -278,7 +281,7 @@ Mountains.rangeRelations = function () {
 Mountains.renderRelations = function (_relations, _commune, _i) {
 	const paysage = d3.select('div.paysage--vis')
 	const baseHeight = paysage.node().clientHeight || paysage.node().offsetHeight
-	const maxHeight = !normalize ? Math.round(Mountains.horizon * .75) : Math.round(baseHeight * (Mountains['normCoverageP'] / 100) / Mountains.data.filter(function (d) { return d.display }).length) * .75
+	const maxHeight = !normalize ? Math.round(Mountains.horizon * .75) : Math.min(Math.round(baseHeight * (Mountains['normCoverageP'] / 100) / Mountains.data.filter(function (d) { return d.display }).length) * .75, 300)
 	
 	const scale = d3.scaleLinear()
 		.range([0, maxHeight])

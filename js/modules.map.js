@@ -12,7 +12,7 @@ Map.init = function (_data) {
 				 'preserveAspectRatio': 'xMinYMid meet' })
 
 	svg.addElems('g', 'carte--communes', [_data])
-		.attr('transform', 'translate(' + [(w * (850 / h) - 850) / 2, 0] + ')') // THE y = -44 IS DEPENDENT ON THE BASE DRAWING
+		.attr('transform', 'translate(' + [((w * (850 / h) - 850) / 2) - 150, 0] + ')') // THE y = -44 IS DEPENDENT ON THE BASE DRAWING
 	.addElems('path', 'active outline', function (d) { return d })
 		.each(function (d) { 
 			if (d['commune'] === 'Total') d3.select(this).classed('total', true) 
@@ -20,16 +20,20 @@ Map.init = function (_data) {
 			else d3.select(this).classed('commune', true) 
 		})
 		.attr('d', function (d) { return d.path })
+		.attr('transform', function (d) {
+			if (d['commune'] === 'Total') return 'translate(150, 0)'
+			else return null
+		})
 		.style('stroke-width', function (d) {
-			if (d['commune'] === 'Total') return 850 / h * .75
+			if (d['commune'] === 'Total') return 850 / h
 			else if (d['commune'] === 'Toutes les communes') return 850 / h
-			else return 850 / h * .75
+			else return 850 / h
 		})
 	.on('mouseover', function (d) { 
 		const sel = d3.select(this)
 		if (d['commune'] !== 'Toutes les communes' && d['commune'] !== 'Total') d3.select(this).moveToFront()
 			// d3.select(this).style('stroke-width', 850 / h * 2)
-		d3.select(this).style('stroke-width', 850 / h * 2)
+		d3.select(this).style('stroke-width', 850 / h)
 
 		d3.selectAll('div.sommet, div.label--name')
 			.classed('semi-transparent', false)
@@ -54,7 +58,7 @@ Map.init = function (_data) {
 					 'y': -(text.node().getBBox().height + 15 * (850 / h)) / 2 })
 	})
 	.on('mouseout', function (d) { 
-		if (d['commune'] !== 'Toutes les communes') d3.select(this).style('stroke-width', 850 / h * .75)
+		if (d['commune'] !== 'Toutes les communes') d3.select(this).style('stroke-width', 850 / h)
 		d3.selectAll('div.sommet, div.label--name').classed('semi-transparent', false)
 		d3.selectAll('g.label--name').remove()
 	})

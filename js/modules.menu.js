@@ -5,9 +5,12 @@ Menu.init = function (_data) {
 	const title = body.addElem('div', 'title')
 		
 	// title.addElem('h1', 'title-block').html('Données&mdash;en&mdash;cordée').fitText()
-	title.addElems('p', 'instruction')
-		.html('Le paysage actuel est généré aléatoirement. Sélectionnez un ou plusieurs indicateurs dans les listes déroulantes ci-dessous pour peindre un nouveau paysage social.')
+	// title.addElems('p', 'instruction')
+	// 	.html('Le paysage actuel est généré aléatoirement. Vous pouvez filtrer les territoires qui vous intéressent en sélectionnant ou désélectionnant les zones de la carte ci-dessus. Puis, affichez les indicateurs de votre choix parmi ceux proposés dans les listes déroulantes ci-dessous. Les indicateurs sélectionnés s’affichent sous forme de cercles dans l’ordre de sélection sur la barre en bas de l’écran. Vous pouvez les combiner, les réordonner et les supprimer en manipulant (glisser/déplacer) les cercles qui les représentent.')
+		// .html('Le paysage actuel est généré aléatoirement. Sélectionnez un ou plusieurs indicateurs dans les listes déroulantes ci-dessous pour peindre un nouveau paysage social.')
 	// title.addElem('h3', 'title-block').html('Un paysage social du département de l’Isère').fitText()
+	title.addElems('h1')
+		.html('Les indicateurs')
 
 	const hierarchie = Menu.data(_data)
 
@@ -81,6 +84,10 @@ Menu.init = function (_data) {
 			// REDRAW THE MOUNTAINS
 			UI.redraw()
 		})
+
+	const foot = body.addElems('div', 'foot')
+		.addElems('p', 'instruction')
+		.html('Le paysage actuel est généré aléatoirement. Vous pouvez filtrer les territoires qui vous intéressent en sélectionnant ou désélectionnant les zones de la carte ci-dessus. Puis, affichez les indicateurs de votre choix parmi ceux proposés dans les listes déroulantes ci-dessous. Les indicateurs sélectionnés s’affichent sous forme de cercles dans l’ordre de sélection sur la barre en bas de l’écran. Vous pouvez les combiner, les réordonner et les supprimer en manipulant (glisser/déplacer) les cercles qui les représentent.')
 }
 Menu.data = function (_data) { 
 	indicateurs_nombres = _data.filter(function (d) { return d['Type_JB'].toLowerCase() === 'nombre' })

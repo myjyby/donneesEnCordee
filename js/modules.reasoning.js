@@ -24,6 +24,8 @@ Reasoning.drag = d3.drag()
 		const evt = d3.event
 		const target = d3.select(evt.sourceEvent.target)
 
+		// console.log(this, d)
+
 		d.left += evt.dx
 		d.left <= d3.min(Reasoning.scale.range()) ? d.left = d3.min(Reasoning.scale.range()) : null
 		d.left >= d3.max(Reasoning.scale.range()) ? d.left = d3.max(Reasoning.scale.range()) : null
@@ -65,16 +67,30 @@ Reasoning.drag = d3.drag()
 
 			// ANIMATE THE SIZE OF THE TARGET NODE
 			const operations = []
-			if (scale === targetScale) operations.push({ operation: 'addition', label: 'Ajouter à'})
-			operations.push({ operation: 'division', label: 'Diviser par' })
+			if (scale === targetScale && d.type !== 'division' && targetNode.datum().type !== 'division') operations.push({ operation: 'addition', label: 'Ajouter à'})
+			if (['addition', 'division'].indexOf(d.type) === -1 && ['addition', 'division'].indexOf(targetNode.datum().type) === -1) operations.push({ operation: 'division', label: 'Diviser par' })
 
 			targetNode.select('div.circle').style('transform', 'scale(2)')
 			
-			targetNode.addElems('div', 'operations')
-				.style('height', ((operations.length * 1.75) + 1.5) + 'rem')
-				.style('top', -((operations.length * 1.75) + 1.5) + 'rem')
+			if (operations.length) {
+				targetNode.addElems('div', 'operations')
+					.style('height', ((operations.length * 1.75) + 1.5) + 'rem')
+					.style('top', -((operations.length * 1.75) + 1.5) + 'rem')
 				.addElems('div', 'operation-option', operations)
-				.html(function (c) { return c.label })
+					.html(function (c) { return c.label })
+			}
+			else {
+				console.log('here')
+				targetNode.addElems('div', 'operations')
+					.style('height', (1.75 * 2 + 1.5) + 'rem')
+					.style('top', - (1.75 * 2 + 1.5) + 'rem')
+				.addElems('div', 'null-operation')
+					.html(function () {
+						if (d.type === 'division') return 'Vous ne pouvez ni ajouter ni diviser le résultat d’une division.' 
+						else if (d.type === 'addition' && targetNode.datum().type === 'division') return 'Vous ne pouvez pas diviser le résultat d’une addition.'
+						else return 'Vous ne pouvez ni ajouter ni diviser le résultat d’une division.'
+					})
+			}
 		}
 		else {
 			otherNodes.select('div.circle').style('transform', null)
